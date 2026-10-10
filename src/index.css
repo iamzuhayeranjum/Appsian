@@ -98,6 +98,18 @@
   }
 }
 
+@keyframes mintSweep {
+  0% {
+    transform: translateX(-100%);
+  }
+  50% {
+    transform: translateX(100%);
+  }
+  100% {
+    transform: translateX(-100%);
+  }
+}
+
 .animate-curtain-left {
   animation: curtainDriftLeft 14s ease-in-out infinite;
 }
@@ -119,12 +131,17 @@
   transform-origin: top center;
 }
 
+.animate-mint-sweep {
+  animation: mintSweep 6s ease-in-out infinite;
+}
+
 @media (prefers-reduced-motion: reduce) {
   .animate-curtain-left,
   .animate-curtain-right,
   .animate-pulse-glow,
   .animate-flow-pulse,
-  .animate-organic-breathe {
+  .animate-organic-breathe,
+  .animate-mint-sweep {
     animation: none !important;
   }
 }

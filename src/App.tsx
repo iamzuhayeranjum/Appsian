@@ -13,6 +13,7 @@ import { FeaturesSection } from './components/FeaturesSection';
 import { HowItWorks } from './components/HowItWorks';
 import { DarkBand1 } from './components/DarkBand1';
 import { TrustRow } from './components/TrustRow';
+import { WhyAppsian } from './components/WhyAppsian';
 import { PricingSection } from './components/PricingSection';
 import { TestimonialsSection } from './components/TestimonialsSection';
 import { FaqSection } from './components/FaqSection';
@@ -88,6 +89,9 @@ export default function App() {
 
       {/* 5. Three-Column Trust Row (1187px wide) */}
       <TrustRow />
+
+      {/* Why Appsian comparison table */}
+      <WhyAppsian />
 
       {/* 6. Pricing (1187px wide) */}
       <PricingSection onPlanSelect={handlePlanSelect} />
