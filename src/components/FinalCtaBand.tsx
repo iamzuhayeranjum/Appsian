@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
 import { motion } from 'motion/react';
-import { CurtainBackdrop } from './CurtainBackdrop';
 import { content } from '../content';
 import { Mail, Check, CheckCircle2 } from 'lucide-react';
 import { Headline, Button, Reveal } from './design-system';
+import { CurtainBackground } from './CurtainBackground';
 
 interface FinalCtaBandProps {
   onSuccessDemo?: () => void;
@@ -29,12 +29,11 @@ export const FinalCtaBand: React.FC<FinalCtaBandProps> = ({ onSuccessDemo }) => 
 
   return (
     <section className="w-full pb-[120px] bg-[#F5F6F7] flex justify-center px-4 sm:px-6">
-      {/* 28px radius dark container with curtain gradient inside */}
-      <div className="w-full max-w-[1248px] min-h-[440px] rounded-[28px] overflow-hidden relative shadow-2">
-        <CurtainBackdrop
-          variant="final-cta"
-          className="w-full h-full min-h-[440px] rounded-[28px] overflow-hidden flex flex-col items-center justify-center py-16 px-6 text-center relative"
-        >
+      {/* 56px radius dark container with violet moving curtain background */}
+      <div className="w-full max-w-[1248px] min-h-[440px] rounded-[56px] relative overflow-clip shadow-2 flex flex-col items-center justify-center py-16 px-6 text-center">
+        <CurtainBackground variant="violet" offset={420} />
+
+        <div className="relative z-10 w-full flex flex-col items-center">
           {/* Mixed-weight signature headline */}
           <Reveal delay={0.1}>
             <Headline
@@ -113,7 +112,7 @@ export const FinalCtaBand: React.FC<FinalCtaBandProps> = ({ onSuccessDemo }) => 
               )}
             </div>
           </Reveal>
-        </CurtainBackdrop>
+        </div>
       </div>
     </section>
   );

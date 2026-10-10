@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { content } from '../content';
 import { Calendar, UserCheck, FileAudio, Check } from 'lucide-react';
-import { GlassCard, Chip, SectionHeader, EyebrowPill, Reveal, BackgroundTexture } from './design-system';
+import { GlassCard, Chip, SectionHeader, EyebrowPill, Reveal } from './design-system';
+import { CurtainBackground } from './CurtainBackground';
 
 export const DarkBand1: React.FC = () => {
   const { darkBand1 } = content;
@@ -24,9 +25,9 @@ export const DarkBand1: React.FC = () => {
 
   return (
     <section className="w-full pb-[120px] bg-[#F5F6F7] flex justify-center px-4 sm:px-6">
-      {/* 28px-radius dark container inset 24px from viewport edges with black & glass */}
-      <div className="w-full max-w-[1248px] rounded-[28px] bg-[#060608] border border-[rgba(255,255,255,0.08)] py-16 md:py-20 px-6 sm:px-10 relative overflow-hidden text-[#F4F5F7]">
-        <BackgroundTexture theme="dark" />
+      {/* 56px-radius dark container inset 24px from viewport edges with blue curtain background */}
+      <div className="w-full max-w-[1248px] rounded-[56px] border border-[rgba(255,255,255,0.08)] py-16 md:py-20 px-6 sm:px-10 relative overflow-clip text-[#F4F5F7]">
+        <CurtainBackground variant="blue" offset={120} />
 
         <div className="relative z-10 max-w-[1187px] mx-auto">
           {/* Section Header */}

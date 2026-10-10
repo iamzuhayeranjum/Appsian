@@ -1,6 +1,6 @@
 import React from 'react';
 import { motion } from 'motion/react';
-import { HeroBackground } from './HeroBackground';
+import { CurtainBackground } from './CurtainBackground';
 import { Navbar } from './Navbar';
 import { DashboardMockup } from './DashboardMockup';
 import { DemoBar } from './DemoBar';
@@ -17,7 +17,7 @@ export const Hero: React.FC<HeroProps> = ({ onBookDemoClick, onPlayClick }) => {
   return (
     <section className="relative w-full h-[1095px] overflow-hidden bg-white">
       {/* Hero Background replacement layer: hard-edged panels with tapering bands, hairlines, organic dark top, bottom glow */}
-      <HeroBackground />
+      <CurtainBackground variant="hero" />
 
       {/* Floating Nav: 750x60px, top 27px, not sticky */}
       <Navbar onBookDemoClick={onBookDemoClick} />

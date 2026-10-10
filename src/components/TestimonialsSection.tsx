@@ -2,7 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { content } from '../content';
 import { Star } from 'lucide-react';
-import { SectionHeader, EyebrowPill, BackgroundTexture } from './design-system';
+import { SectionHeader, EyebrowPill } from './design-system';
+import { CurtainBackground } from './CurtainBackground';
 
 export const TestimonialsSection: React.FC = () => {
   const { testimonials } = content;
@@ -32,9 +33,9 @@ export const TestimonialsSection: React.FC = () => {
 
   return (
     <section className="w-full pb-[120px] bg-[#F5F6F7] flex justify-center px-4 sm:px-6">
-      {/* 28px-radius dark container inset 24px from viewport edges */}
-      <div className="w-full max-w-[1248px] rounded-[28px] bg-[#060608] border border-[rgba(255,255,255,0.08)] py-16 md:py-20 px-6 sm:px-10 relative overflow-hidden text-[#F4F5F7]">
-        <BackgroundTexture theme="dark" />
+      {/* 56px-radius dark container inset 24px from viewport edges with blue curtain background */}
+      <div className="w-full max-w-[1248px] rounded-[56px] border border-[rgba(255,255,255,0.08)] py-16 md:py-20 px-6 sm:px-10 relative overflow-clip text-[#F4F5F7]">
+        <CurtainBackground variant="blue" offset={280} />
 
         <div className="relative z-10 max-w-[1187px] mx-auto">
           {/* Headline */}
