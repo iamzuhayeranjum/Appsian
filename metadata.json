@@ -1,0 +1,6 @@
+{
+  "name": "Appsian - AI Inbound Receptionist & Call Booking",
+  "description": "Appsian answers every inbound call, qualifies the enquiry and books the next step 24/7 for busy trade and local businesses.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
