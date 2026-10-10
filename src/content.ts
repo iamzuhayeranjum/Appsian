@@ -3,6 +3,8 @@
  * All copy, pricing data, testimonials, and FAQs are centralized here.
  */
 
+export const BUILD_STAMP = '2026-10-10T16:00:00Z';
+
 export interface PricingPlan {
   id: string;
   name: string;
