@@ -54,7 +54,7 @@ export const FaqSection: React.FC = () => {
   };
 
   return (
-    <section className="w-full pb-[120px] bg-[#F5F6F7] flex justify-center px-4 sm:px-6">
+    <section id="faq" className="w-full pb-[120px] bg-[#F5F6F7] flex justify-center px-4 sm:px-6">
       <div className="w-full max-w-[1187px]">
         {/* Section Header */}
         <SectionHeader

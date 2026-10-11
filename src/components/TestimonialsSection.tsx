@@ -33,7 +33,7 @@ export const TestimonialsSection: React.FC = () => {
   ];
 
   return (
-    <section className="w-full pb-[120px] bg-[#F5F6F7] flex justify-center px-4 sm:px-6">
+    <section id="testimonials" className="w-full pb-[120px] bg-[#F5F6F7] flex justify-center px-4 sm:px-6">
       {/* Dark container with 56px rounded top, open bottom edge dissolving into page, blue curtain background */}
       <div
         className="w-full max-w-[1248px] rounded-t-[56px] rounded-b-none border-t border-x border-b-0 border-[rgba(255,255,255,0.08)] pt-16 md:pt-20 pb-[130px] px-6 sm:px-10 relative overflow-clip text-[#F4F5F7]"

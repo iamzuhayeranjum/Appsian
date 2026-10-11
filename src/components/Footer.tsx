@@ -10,7 +10,7 @@ export const Footer: React.FC = () => {
   };
 
   return (
-    <footer className="w-full bg-[#F5F6F7] pt-12 pb-16 flex justify-center px-4 sm:px-6">
+    <footer className="w-full bg-[#F5F6F7] pt-12 pb-[140px] flex justify-center px-4 sm:px-6">
       <div className="w-full max-w-[1187px] flex flex-col gap-10">
         {/* Top row: Tagline at left (15px, #5B5F68), Back to top button at right (8px radius) */}
         <div className="flex items-center justify-between">

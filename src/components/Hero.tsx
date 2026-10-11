@@ -1,7 +1,6 @@
 import React from 'react';
 import { motion } from 'motion/react';
 import { CurtainBackground } from './CurtainBackground';
-import { Navbar } from './Navbar';
 import { DashboardMockup } from './DashboardMockup';
 import { DemoBar } from './DemoBar';
 import { content } from '../content';
@@ -20,8 +19,8 @@ export const Hero: React.FC<HeroProps> = ({ onBookDemoClick, onPlayClick }) => {
       {/* Hero Background replacement layer: hard-edged panels with tapering bands, hairlines, organic dark top, bottom glow */}
       <CurtainBackground variant="hero" />
 
-      {/* Floating Nav: 750x60px, top 27px, not sticky */}
-      <Navbar onBookDemoClick={onBookDemoClick} />
+      {/* Spacing placeholder maintaining the exact 83px vertical offset so hero content does not shift */}
+      <div className="w-full h-[83px]" aria-hidden="true" />
 
       {/* Hero Copy Container */}
       <div className="max-w-[1187px] mx-auto px-4 pt-12 sm:pt-14 md:pt-[54px] text-center flex flex-col items-center z-10 relative">
@@ -61,6 +60,13 @@ export const Hero: React.FC<HeroProps> = ({ onBookDemoClick, onPlayClick }) => {
 
       {/* Soft blurry dissolve into next section (#F5F6F7) */}
       <SectionFade fadeTo="#F5F6F7" height={200} zIndex={30} />
+
+      {/* 1px sentinel element at the very bottom of the hero for useHeroPast IntersectionObserver */}
+      <div
+        id="hero-sentinel"
+        className="absolute bottom-0 left-0 w-full h-[1px] pointer-events-none opacity-0"
+        aria-hidden="true"
+      />
     </section>
   );
 };

@@ -21,10 +21,14 @@ import { FaqSection } from './components/FaqSection';
 import { FinalCtaBand } from './components/FinalCtaBand';
 import { Footer } from './components/Footer';
 import { VoiceDemoModal } from './components/VoiceDemoModal';
+import { Navbar } from './components/Navbar';
+import { BottomNav } from './components/BottomNav';
+import { useHeroPast } from './hooks/useHeroPast';
 import { Analytics } from '@vercel/analytics/react';
 
 export default function App() {
   const [isDemoModalOpen, setIsDemoModalOpen] = useState(false);
+  const pastHero = useHeroPast();
 
   // Initialize Lenis smooth scroll
   useEffect(() => {
@@ -68,6 +72,9 @@ export default function App() {
 
   return (
     <div className="w-full min-h-screen bg-white text-[#2D283C] flex flex-col items-center">
+      {/* Top Header Navigation (active while hero is in view) */}
+      <Navbar onBookDemoClick={handleOpenDemoModal} pastHero={pastHero} />
+
       {/* 1. Hero (full viewport height, curtain gradient, flush to top) */}
       <Hero
         onBookDemoClick={handleOpenDemoModal}
@@ -118,6 +125,9 @@ export default function App() {
         isOpen={isDemoModalOpen}
         onClose={handleCloseDemoModal}
       />
+
+      {/* Floating Bottom Navigation Dock (active when scrolled past hero) */}
+      <BottomNav onCtaClick={handleOpenDemoModal} pastHero={pastHero} />
 
       <Analytics />
     </div>
