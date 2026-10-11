@@ -102,7 +102,7 @@ export const HowItWorks: React.FC = () => {
   };
 
   return (
-    <div className="w-full bg-white pb-[120px] sm:pb-[140px]">
+    <div className="w-full bg-[var(--page-gray,#F5F6F8)] pb-[120px] sm:pb-[140px]">
       {/* SECTION SHELL: Full-width black section with crisp, straight top and bottom edges (overflow: clip) */}
       <section
         id="how-it-works"

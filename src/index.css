@@ -8,6 +8,7 @@
 
 @layer base {
   :root {
+    --page-gray: #F5F6F8;
     --font-display: 'Instrument Sans', 'Inter', 'Helvetica Neue', Arial, sans-serif;
     --font-body: 'Inter', 'Helvetica Neue', Arial, sans-serif;
   }

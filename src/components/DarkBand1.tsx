@@ -15,12 +15,36 @@ export const DarkBand1: React.FC = () => {
   const [activeTimeline, setActiveTimeline] = useState('Today');
 
   return (
-    <section className="w-full bg-[#F5F6F7] flex justify-center px-4 sm:px-6">
-      {/* Container with rounded top corners matching Image 1, blue curtain background */}
-      <div className="w-full max-w-[1248px] rounded-t-[56px] rounded-b-none border-t border-x border-[rgba(255,255,255,0.12)] pt-16 md:pt-20 pb-20 md:pb-28 px-6 sm:px-10 relative overflow-clip text-[#F4F5F7]">
-        <CurtainBackground variant="blue" offset={120} />
+    <section className="w-full bg-[var(--page-gray,#F5F6F8)] flex justify-center px-4 sm:px-6">
+      {/* (a) Wrapper: relative, transparent background, 48px top radius, no border/shadow, pb-130px, mb-80px */}
+      <div
+        className="w-full max-w-[1248px] pt-16 md:pt-20 pb-[130px] px-6 sm:px-10 relative overflow-clip mb-[80px] text-[#F4F5F7]"
+        style={{
+          borderRadius: '48px 48px 0 0',
+          background: 'transparent',
+        }}
+      >
+        {/* (b) Background layer holding the curtain (position: absolute; inset: 0; z-index: 0) */}
+        <div
+          className="absolute inset-0 pointer-events-none overflow-hidden"
+          style={{ zIndex: 0, borderRadius: '48px 48px 0 0' }}
+        >
+          <CurtainBackground variant="blue" offset={120} />
+        </div>
 
-        <div className="relative z-10 max-w-[1187px] mx-auto">
+        {/* FADE OVERLAY: smooth ease-in gradient to EXACTLY var(--page-gray) at 100% (height: 150px; z-index: 1) */}
+        <div
+          className="absolute left-0 right-0 bottom-0 pointer-events-none"
+          style={{
+            height: '150px',
+            zIndex: 1,
+            background:
+              'linear-gradient(to bottom, rgba(245,246,248,0) 0%, rgba(245,246,248,0.06) 12%, rgba(245,246,248,0.16) 25%, rgba(245,246,248,0.32) 40%, rgba(245,246,248,0.55) 58%, rgba(245,246,248,0.78) 75%, rgba(245,246,248,0.93) 90%, rgba(245,246,248,1) 100%)',
+          }}
+        />
+
+        {/* (c) Content layer holding eyebrow, headline, cards (position: relative; z-index: 2) */}
+        <div className="relative max-w-[1187px] mx-auto" style={{ zIndex: 2 }}>
           {/* Section Header */}
           <SectionHeader
             theme="dark"

@@ -55,7 +55,7 @@ export const TrustRow: React.FC = () => {
   ];
 
   return (
-    <section className="w-full pb-[120px] bg-[#F5F6F7]">
+    <section className="w-full pb-[120px] bg-[var(--page-gray,#F5F6F8)]">
       <div className="max-w-[1200px] mx-auto px-4 sm:px-6">
         <SectionHeader
           eyebrow={<EyebrowPill>Principles</EyebrowPill>}
