@@ -1,7 +1,8 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { motion } from 'motion/react';
+import { ArrowRight } from 'lucide-react';
 import { content, PricingPlan } from '../content';
-import { Check } from 'lucide-react';
-import { Card, GlassCard, Button, Chip, SectionHeader, Reveal, EyebrowPill } from './design-system';
+import { CurtainBackground } from './CurtainBackground';
 
 interface PricingSectionProps {
   onPlanSelect: (planName: string) => void;
@@ -9,172 +10,224 @@ interface PricingSectionProps {
 
 export const PricingSection: React.FC<PricingSectionProps> = ({ onPlanSelect }) => {
   const { pricing } = content;
-  const [isPilot, setIsPilot] = useState(false);
+  const [isReducedMotion, setIsReducedMotion] = useState(false);
+
+  useEffect(() => {
+    const mq = window.matchMedia('(prefers-reduced-motion: reduce)');
+    setIsReducedMotion(mq.matches);
+    const handler = (e: MediaQueryListEvent) => setIsReducedMotion(e.matches);
+    mq.addEventListener('change', handler);
+    return () => mq.removeEventListener('change', handler);
+  }, []);
 
   return (
-    <section id="pricing" className="w-full pb-[120px] bg-[#F5F6F7] flex justify-center px-4 sm:px-6">
-      <div className="w-full max-w-[1200px]">
-        {/* Section Header */}
-        <SectionHeader
-          eyebrow={<EyebrowPill>Transparent Pricing</EyebrowPill>}
-          headline={[
-            { text: 'Plans To Suit', weight: 'light' },
-            { text: 'The Way You Work', weight: 'strong' },
-          ]}
-        />
-
-        {/* 8px Radius Segmented Toggle (No large pill) */}
-        <div className="flex justify-center mb-12">
-          <div className="h-[38px] p-1 bg-[#EEF0F2] rounded-[8px] border border-[rgba(11,11,15,0.06)] flex items-center">
-            <button
-              type="button"
-              onClick={() => setIsPilot(false)}
-              className={`h-full px-4 rounded-[6px] text-xs font-[500] transition-all duration-200 cursor-pointer ${
-                !isPilot
-                  ? 'bg-white text-[#0B0B0F] shadow-xs'
-                  : 'text-[#5B5F68] hover:text-[#0B0B0F]'
-              }`}
-            >
-              {pricing.toggleMonthly}
-            </button>
-            <button
-              type="button"
-              onClick={() => setIsPilot(true)}
-              className={`h-full px-4 rounded-[6px] text-xs font-[500] transition-all duration-200 cursor-pointer ${
-                isPilot
-                  ? 'bg-white text-[#0B0B0F] shadow-xs'
-                  : 'text-[#5B5F68] hover:text-[#0B0B0F]'
-              }`}
-            >
-              {pricing.togglePilot}
-            </button>
+    <section
+      id="pricing"
+      className="w-full pt-[110px] pb-[110px] overflow-clip relative flex flex-col items-center px-4 sm:px-6"
+      style={{
+        background: 'linear-gradient(180deg, #FFFFFF 0%, #FFFFFF 68%, #F7F7FA 100%)',
+      }}
+    >
+      <div className="w-full max-w-[1100px] flex flex-col items-center">
+        {/* ========================================================= */}
+        {/* SECTION HEADER                                            */}
+        {/* ========================================================= */}
+        <div className="flex flex-col items-center text-center pt-2 sm:pt-4 mb-[56px]">
+          {/* Eyebrow pill with upper padding */}
+          <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-[10px] bg-white border border-[rgba(11,11,15,0.08)] shadow-xs uppercase text-[11px] font-sans font-medium tracking-[0.08em] text-[#0B0B0F] mb-4 select-none">
+            <span className="w-1.5 h-1.5 rounded-full bg-[#6EEDC2]" />
+            <span>TRANSPARENT PRICING</span>
           </div>
+
+          {/* Heading: ONE line, 44px / 1.1, Instrument Sans, light weight (300), color #2D283C */}
+          <h2 className="text-3xl sm:text-4xl md:text-[44px] leading-[1.1] font-display font-[300] text-[#2D283C] tracking-[-0.02em] text-center">
+            {pricing.h2 || 'Plans to suit the way you work'}
+          </h2>
         </div>
 
-        {/* Three 20px-Radius Cards (385px wide, 491px tall, 15px gap) */}
-        <div className="flex flex-col lg:flex-row items-center justify-center gap-[15px]">
+        {/* ========================================================= */}
+        {/* THREE CARDS (3 equal-width cards in a row, 24px gap)       */}
+        {/* ========================================================= */}
+        <div className="w-full grid grid-cols-1 lg:grid-cols-3 gap-[24px] items-stretch justify-items-center lg:justify-items-stretch">
           {pricing.plans.map((plan: PricingPlan, index: number) => {
             const isMiddle = plan.highlightCurtain;
 
-            if (isMiddle) {
-              return (
-                <Reveal key={plan.id} delay={0.05}>
-                  <div className="w-full max-w-[385px] lg:w-[385px] h-[491px] rounded-[20px] bg-[#060608] border border-[rgba(255,255,255,0.12)] p-[40px] flex flex-col justify-start relative shadow-2 shrink-0 text-[#F4F5F7]">
-                    {/* Top: Plan Name & Most Popular Chip */}
-                    <div className="flex items-center justify-between">
-                      <h3 className="text-[20px] font-display font-[500] text-white tracking-tight">
-                        {plan.name}
-                      </h3>
-                      <Chip active theme="dark">Most popular</Chip>
+            return (
+              <motion.div
+                key={plan.id}
+                initial={isReducedMotion ? {} : { opacity: 0, filter: 'blur(10px)', y: 14 }}
+                whileInView={isReducedMotion ? {} : { opacity: 1, filter: 'blur(0px)', y: 0 }}
+                viewport={{ once: true, amount: 0.15 }}
+                transition={{
+                  duration: 0.8,
+                  delay: index * 0.1,
+                  ease: [0.22, 1, 0.36, 1],
+                }}
+                className="w-full max-w-[420px] lg:max-w-none flex flex-col"
+              >
+                {isMiddle ? (
+                  /* ===================================================== */
+                  /* FEATURED CARD: #08070D with bottom ~65% violet curtain */
+                  /* ===================================================== */
+                  <div className="relative w-full h-full rounded-[32px] p-[28px] overflow-clip bg-[#08070D] text-white flex flex-col justify-start">
+                    {/* Drifting violet curtain occupying bottom ~65% */}
+                    <div className="absolute inset-x-0 bottom-0 h-[65%] pointer-events-none overflow-hidden z-0">
+                      <CurtainBackground variant="violet" />
+                      {/* Black fade at top edge of curtain */}
+                      <div
+                        className="absolute inset-x-0 top-0 h-[70px] pointer-events-none"
+                        style={{
+                          background: 'linear-gradient(180deg, #08070D 0%, rgba(8,7,13,0) 100%)',
+                        }}
+                      />
                     </div>
 
-                    {/* Description: 16px, 2 lines */}
-                    <p className="text-[15px] leading-[22px] text-[#9A9EA8] h-[44px] line-clamp-2 mt-2">
+                    {/* Card Content (z-10) */}
+                    <div className="relative z-10 flex flex-col h-full">
+                      {/* Plan Name */}
+                      <div className="h-[20px] flex items-center">
+                        <h3 className="text-[16px] font-[500] text-white leading-none">
+                          {plan.name}
+                        </h3>
+                      </div>
+
+                      {/* Description: 14px/1.5, ~60% opacity, max 3 lines */}
+                      <p className="text-[14px] leading-[1.5] text-white/60 line-clamp-3 h-[63px] mt-2">
+                        {plan.description}
+                      </p>
+
+                      {/* Price: 44px, Instrument Sans light (300) */}
+                      <div className="h-[52px] flex items-baseline gap-1 mt-4">
+                        <span className="text-[44px] font-display font-[300] tracking-[-0.02em] text-white leading-none tabular-nums">
+                          ${plan.monthlyPrice}
+                        </span>
+                        <span className="text-[14px] font-normal text-white/55 leading-none">
+                          /month
+                        </span>
+                      </div>
+
+                      {/* Mint Button: 44px tall, radius 12px, mint #6EEDC2, text #062B20 */}
+                      <div className="mt-4">
+                        <button
+                          type="button"
+                          onClick={() => onPlanSelect(plan.name)}
+                          className="group relative w-full h-[44px] rounded-[12px] bg-[#6EEDC2] text-[#062B20] text-[14px] font-[500] border-t border-white/50 shadow-[0_6px_20px_rgba(110,237,194,0.28)] flex items-center justify-center transition-all duration-200 cursor-pointer overflow-hidden hover:-translate-y-[1px] hover:bg-[#82F2CB] hover:shadow-[0_8px_24px_rgba(110,237,194,0.36)]"
+                        >
+                          <span className="inline-flex items-center gap-1.5 transition-transform duration-200 ease-out group-hover:-translate-x-1">
+                            <span>{plan.ctaLabel}</span>
+                            <span className="relative w-4 h-4 overflow-hidden inline-flex items-center justify-center">
+                              <ArrowRight className="w-3.5 h-3.5 absolute transition-transform duration-200 ease-out group-hover:translate-x-4" />
+                              <ArrowRight className="w-3.5 h-3.5 absolute -translate-x-4 transition-transform duration-200 ease-out group-hover:translate-x-0" />
+                            </span>
+                          </span>
+                        </button>
+                      </div>
+
+                      {/* Feature list: 13.5px/1.4, 20px gap below button, items spaced 14px apart */}
+                      <ul className="mt-[20px] flex flex-col gap-[14px] pb-2">
+                        {plan.features.map((feat) => (
+                          <li
+                            key={feat}
+                            className="flex items-start gap-[12px] text-[13.5px] leading-[1.4] text-white [text-shadow:0_1px_8px_rgba(8,7,13,0.35)]"
+                          >
+                            <span className="w-1 h-1 rounded-full shrink-0 mt-[7.5px] bg-white/75" />
+                            <span>{feat}</span>
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  </div>
+                ) : (
+                  /* ===================================================== */
+                  /* SIDE CARD: #F4F4F9, no border, inset top highlight   */
+                  /* ===================================================== */
+                  <div className="w-full h-full rounded-[32px] p-[28px] bg-[#F4F4F9] border-0 shadow-[inset_0_1px_0_rgba(255,255,255,0.8)] text-[#2D283C] flex flex-col justify-start transition-all duration-300 hover:-translate-y-1 hover:shadow-[inset_0_1px_0_rgba(255,255,255,0.8),0_16px_40px_-12px_rgba(30,30,60,0.12)]">
+                    {/* Plan Name */}
+                    <div className="h-[20px] flex items-center">
+                      <h3 className="text-[16px] font-[500] text-[#2D283C] leading-none">
+                        {plan.name}
+                      </h3>
+                    </div>
+
+                    {/* Description: 14px/1.5, ~60% opacity, max 3 lines */}
+                    <p className="text-[14px] leading-[1.5] text-[#2D283C]/60 line-clamp-3 h-[63px] mt-2">
                       {plan.description}
                     </p>
 
-                    {/* Price: 40px */}
-                    <div className="h-[48px] flex items-baseline gap-1 mt-3">
-                      {!isPilot ? (
-                        <>
-                          <span className="text-[40px] font-display font-[400] text-white tracking-tight tabular-nums leading-none">
-                            ${plan.monthlyPrice}
-                          </span>
-                          <span className="text-xs text-[#9A9EA8]">/ month</span>
-                        </>
-                      ) : (
-                        <>
-                          <span className="text-[40px] font-display font-[400] text-[#6EEDC2] tracking-tight leading-none">
-                            $0
-                          </span>
-                          <span className="text-xs text-[#9A9EA8]">/ 30-day pilot</span>
-                        </>
-                      )}
+                    {/* Price: 44px, Instrument Sans light (300) */}
+                    <div className="h-[52px] flex items-baseline gap-1 mt-4">
+                      <span className="text-[44px] font-display font-[300] tracking-[-0.02em] text-[#2D283C] leading-none tabular-nums">
+                        ${plan.monthlyPrice}
+                      </span>
+                      <span className="text-[14px] font-normal text-[#2D283C]/55 leading-none">
+                        /month
+                      </span>
                     </div>
 
-                    {/* Primary Button directly below price */}
-                    <div className="mt-[16px]">
-                      <Button
-                        variant="primary"
+                    {/* White Button: 44px tall, radius 12px, white #FFFFFF, text #1A1A24 */}
+                    <div className="mt-4">
+                      <button
+                        type="button"
                         onClick={() => onPlanSelect(plan.name)}
-                        className="w-full"
+                        className="group relative w-full h-[44px] rounded-[12px] bg-[#FFFFFF] text-[#1A1A24] text-[14px] font-[500] shadow-[0_1px_2px_rgba(20,20,40,0.08),0_6px_16px_rgba(20,20,40,0.07)] flex items-center justify-center transition-all duration-200 cursor-pointer overflow-hidden hover:-translate-y-[1px] hover:shadow-[0_2px_4px_rgba(20,20,40,0.1),0_8px_20px_rgba(20,20,40,0.09)]"
                       >
-                        {plan.ctaLabel}
-                      </Button>
+                        <span className="inline-flex items-center gap-1.5 transition-transform duration-200 ease-out group-hover:-translate-x-1">
+                          <span>{plan.ctaLabel}</span>
+                          <span className="relative w-4 h-4 overflow-hidden inline-flex items-center justify-center">
+                            <ArrowRight className="w-3.5 h-3.5 absolute transition-transform duration-200 ease-out group-hover:translate-x-4" />
+                            <ArrowRight className="w-3.5 h-3.5 absolute -translate-x-4 transition-transform duration-200 ease-out group-hover:translate-x-0" />
+                          </span>
+                        </span>
+                      </button>
                     </div>
 
-                    {/* Feature list: starts 34px below the button */}
-                    <ul className="mt-[34px] space-y-2 text-xs text-white/85">
-                      {plan.features.slice(0, 4).map((feat) => (
-                        <li key={feat} className="flex items-center gap-2">
-                          <Check className="w-3.5 h-3.5 text-[#6EEDC2] shrink-0" />
-                          <span className="truncate">{feat}</span>
+                    {/* Feature list: 13.5px/1.4, 20px gap below button, items spaced 14px apart */}
+                    <ul className="mt-[20px] flex flex-col gap-[14px] pb-2">
+                      {plan.features.map((feat) => (
+                        <li
+                          key={feat}
+                          className="flex items-start gap-[12px] text-[13.5px] leading-[1.4] text-[#2D283C]"
+                        >
+                          <span className="w-1 h-1 rounded-full shrink-0 mt-[7.5px] bg-[#2D283C]/55" />
+                          <span>{feat}</span>
                         </li>
                       ))}
                     </ul>
                   </div>
-                </Reveal>
-              );
-            }
-
-            // Left / Right cards (Starter, Scale) with Card component
-            return (
-              <Reveal key={plan.id} delay={index === 0 ? 0.15 : 0.25}>
-                <Card className="w-full max-w-[385px] lg:w-[385px] h-[491px] p-[40px] flex flex-col justify-start shrink-0">
-                  {/* Top: Plan Name */}
-                  <h3 className="text-[20px] font-display font-[500] text-[#0B0B0F] tracking-tight">
-                    {plan.name}
-                  </h3>
-
-                  {/* Description: 16px, 2 lines */}
-                  <p className="text-[15px] leading-[22px] text-[#5B5F68] h-[44px] line-clamp-2 mt-2">
-                    {plan.description}
-                  </p>
-
-                  {/* Price: 40px */}
-                  <div className="h-[48px] flex items-baseline gap-1 mt-3">
-                    {!isPilot ? (
-                      <>
-                        <span className="text-[40px] font-display font-[400] text-[#0B0B0F] tracking-tight tabular-nums leading-none">
-                          ${plan.monthlyPrice}
-                        </span>
-                        <span className="text-xs text-[#5B5F68]">/ month</span>
-                      </>
-                    ) : (
-                      <>
-                        <span className="text-[40px] font-display font-[400] text-[#0B0B0F] tracking-tight leading-none">
-                          $0
-                        </span>
-                        <span className="text-xs text-[#5B5F68]">/ 30-day pilot</span>
-                      </>
-                    )}
-                  </div>
-
-                  {/* Button directly below price */}
-                  <div className="mt-[16px]">
-                    <Button
-                      variant="glass"
-                      onClick={() => onPlanSelect(plan.name)}
-                      className="w-full"
-                    >
-                      {plan.ctaLabel}
-                    </Button>
-                  </div>
-
-                  {/* Feature list: starts 34px below the button */}
-                  <ul className="mt-[34px] space-y-2 text-xs text-[#0B0B0F]/85">
-                    {plan.features.slice(0, 4).map((feat) => (
-                      <li key={feat} className="flex items-center gap-2">
-                        <Check className="w-3.5 h-3.5 text-emerald-600 shrink-0" />
-                        <span className="truncate">{feat}</span>
-                      </li>
-                    ))}
-                  </ul>
-                </Card>
-              </Reveal>
+                )}
+              </motion.div>
             );
           })}
         </div>
+
+        {/* ========================================================= */}
+        {/* FOUNDING CLIENT PROGRAM (Slim full-width bar below cards)  */}
+        {/* ========================================================= */}
+        <motion.div
+          initial={isReducedMotion ? {} : { opacity: 0, filter: 'blur(10px)', y: 14 }}
+          whileInView={isReducedMotion ? {} : { opacity: 1, filter: 'blur(0px)', y: 0 }}
+          viewport={{ once: true, amount: 0.2 }}
+          transition={{
+            duration: 0.8,
+            delay: 0.35,
+            ease: [0.22, 1, 0.36, 1],
+          }}
+          className="w-full max-w-[1100px] mt-[24px] bg-[#F4F4F9] rounded-[20px] px-6 py-4 flex flex-col sm:flex-row items-center justify-between gap-4"
+        >
+          <div className="flex items-center gap-3 text-center sm:text-left">
+            <span className="w-2 h-2 rounded-full bg-[#6EEDC2] shrink-0" />
+            <span className="text-[14px] text-[#2D283C] leading-normal font-sans">
+              {pricing.pilotTagline}
+            </span>
+          </div>
+          <button
+            type="button"
+            onClick={() => onPlanSelect('Founding pilot')}
+            className="shrink-0 h-[32px] px-4 rounded-full bg-white text-[#1A1A24] text-[13px] font-medium shadow-[0_1px_2px_rgba(20,20,40,0.08)] hover:shadow-[0_4px_12px_rgba(20,20,40,0.08)] hover:-translate-y-0.5 transition-all cursor-pointer whitespace-nowrap"
+          >
+            Claim pilot spot
+          </button>
+        </motion.div>
       </div>
     </section>
   );

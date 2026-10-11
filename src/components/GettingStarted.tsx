@@ -3,19 +3,8 @@ import { motion, useScroll, useTransform, useInView } from 'motion/react';
 import {
   Sparkles,
   Check,
-  Wrench,
-  MapPin,
-  Clock,
-  Tag,
-  Siren,
-  MessageCircleQuestion,
-  Star,
-  Volume2,
-  Play,
-  PhoneIncoming,
-  ListChecks,
-  CalendarCheck,
-  CheckCircle2,
+  ArrowRight,
+  Phone,
   Calendar,
 } from 'lucide-react';
 import { DemoBar } from './DemoBar';
@@ -23,16 +12,6 @@ import { DemoBar } from './DemoBar';
 interface GettingStartedProps {
   onSuccessDemo?: () => void;
 }
-
-// Background noise overlay (3% opacity SVG feTurbulence)
-const NoiseOverlay: React.FC = () => (
-  <div
-    className="absolute inset-0 pointer-events-none opacity-[0.035] mix-blend-overlay z-10"
-    style={{
-      backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E")`,
-    }}
-  />
-);
 
 export const GettingStarted: React.FC<GettingStartedProps> = ({ onSuccessDemo }) => {
   const [isReducedMotion, setIsReducedMotion] = useState(false);
@@ -46,10 +25,10 @@ export const GettingStarted: React.FC<GettingStartedProps> = ({ onSuccessDemo })
     return () => mq.removeEventListener('change', handler);
   }, []);
 
-  // Formatted date for Phone mockup in Step 4
+  // Formatted date for Phone mockup in Step 4 ("Sunday, October 11")
   const formattedDate = new Intl.DateTimeFormat('en-US', {
     weekday: 'long',
-    month: 'short',
+    month: 'long',
     day: 'numeric',
   }).format(new Date());
 
@@ -107,16 +86,7 @@ export const GettingStarted: React.FC<GettingStartedProps> = ({ onSuccessDemo })
 
               {/* Visual half: Right (Node diagram) */}
               <div className="p-3 h-full">
-                <div className="w-full h-[400px] lg:h-full rounded-[20px] bg-[#07080A] border border-white/[0.06] relative overflow-hidden flex flex-col items-center justify-between p-4 sm:p-5">
-                  <NoiseOverlay />
-                  {/* Soft radial light behind hero element */}
-                  <div
-                    className="absolute inset-0 pointer-events-none"
-                    style={{
-                      background:
-                        'radial-gradient(ellipse 65% 55% at 50% 35%, rgba(110,237,194,0.07), transparent 70%)',
-                    }}
-                  />
+                <div className="w-full h-[400px] lg:h-full rounded-[14px] bg-[#07080A] border border-white/[0.08] relative overflow-hidden flex flex-col items-center justify-center p-4 sm:p-5">
                   <Visual1NodeDiagram isReducedMotion={isReducedMotion} />
                 </div>
               </div>
@@ -128,15 +98,7 @@ export const GettingStarted: React.FC<GettingStartedProps> = ({ onSuccessDemo })
             <div className="w-full h-full grid grid-cols-1 lg:grid-cols-2">
               {/* Visual half: Left (Agent setup app window) */}
               <div className="p-3 h-full order-2 lg:order-1">
-                <div className="w-full h-[400px] lg:h-full rounded-[20px] bg-[#07080A] border border-white/[0.06] relative overflow-hidden p-4 sm:p-5">
-                  <NoiseOverlay />
-                  <div
-                    className="absolute inset-0 pointer-events-none"
-                    style={{
-                      background:
-                        'radial-gradient(ellipse 65% 55% at 45% 45%, rgba(110,237,194,0.07), transparent 70%)',
-                    }}
-                  />
+                <div className="w-full h-[400px] lg:h-full rounded-[14px] bg-[#07080A] border border-white/[0.08] relative overflow-hidden p-4 sm:p-5 flex items-start justify-start">
                   <Visual2AgentSetup isReducedMotion={isReducedMotion} />
                 </div>
               </div>
@@ -174,15 +136,7 @@ export const GettingStarted: React.FC<GettingStartedProps> = ({ onSuccessDemo })
 
               {/* Visual half: Right (Incoming call & toasts) */}
               <div className="p-3 h-full">
-                <div className="w-full h-[400px] lg:h-full rounded-[20px] bg-[#07080A] border border-white/[0.06] relative overflow-hidden flex items-center justify-center p-4 sm:p-5">
-                  <NoiseOverlay />
-                  <div
-                    className="absolute inset-0 pointer-events-none"
-                    style={{
-                      background:
-                        'radial-gradient(ellipse 65% 55% at 50% 50%, rgba(110,237,194,0.07), transparent 70%)',
-                    }}
-                  />
+                <div className="w-full h-[400px] lg:h-full rounded-[14px] bg-[#07080A] border border-white/[0.08] relative overflow-hidden flex items-center justify-center p-4 sm:p-5">
                   <Visual3IncomingCall isReducedMotion={isReducedMotion} />
                 </div>
               </div>
@@ -194,15 +148,7 @@ export const GettingStarted: React.FC<GettingStartedProps> = ({ onSuccessDemo })
             <div className="w-full h-full grid grid-cols-1 lg:grid-cols-2">
               {/* Visual half: Left (Phone frame) */}
               <div className="p-3 h-full order-2 lg:order-1">
-                <div className="w-full h-[400px] lg:h-full rounded-[20px] bg-[#07080A] border border-white/[0.06] relative overflow-hidden flex flex-col justify-between p-4 sm:p-5">
-                  <NoiseOverlay />
-                  <div
-                    className="absolute inset-0 pointer-events-none"
-                    style={{
-                      background:
-                        'radial-gradient(ellipse 65% 55% at 50% 40%, rgba(110,237,194,0.07), transparent 70%)',
-                    }}
-                  />
+                <div className="w-full h-[400px] lg:h-full rounded-[14px] bg-[#07080A] border border-white/[0.08] relative overflow-hidden flex flex-col justify-between items-center p-4 sm:p-5 pb-0">
                   <Visual4PhoneFrame formattedDate={formattedDate} isReducedMotion={isReducedMotion} />
                 </div>
               </div>
@@ -238,7 +184,6 @@ export const GettingStarted: React.FC<GettingStartedProps> = ({ onSuccessDemo })
                   '0 0 0 3px rgba(255,255,255,0.035), 0 24px 48px -12px rgba(0,0,0,0.6), 0 2px 6px rgba(0,0,0,0.4)',
               }}
             >
-              {/* Faint inner mint top glow */}
               <div
                 className="absolute inset-x-0 top-0 h-[100px] pointer-events-none"
                 style={{
@@ -281,7 +226,6 @@ export const GettingStarted: React.FC<GettingStartedProps> = ({ onSuccessDemo })
                   '0 0 0 3px rgba(255,255,255,0.035), 0 24px 48px -12px rgba(0,0,0,0.6), 0 2px 6px rgba(0,0,0,0.4)',
               }}
             >
-              {/* Faint inner mint top glow */}
               <div
                 className="absolute inset-x-0 top-0 h-[100px] pointer-events-none"
                 style={{
@@ -445,7 +389,6 @@ const StepCardWrapper: React.FC<StepCardWrapperProps> = ({
         opacity: isDesktop && !isReducedMotion ? opacity : 1,
       }}
     >
-      {/* 1px hairline border + ONE faint outer ring 3px away, identical on all sides */}
       <div
         className="w-full h-auto min-h-[550px] lg:h-[550px] rounded-[28px] border border-white/[0.09] relative overflow-hidden"
         style={{
@@ -461,249 +404,84 @@ const StepCardWrapper: React.FC<StepCardWrapperProps> = ({
 };
 
 // =========================================================================
-// VISUAL 1: NODE DIAGRAM (Discovery) - Rebuilt with Depth & Real Content
+// VISUAL 1 (Discovery): 6 elements, calm, filled, flat surfaces
 // =========================================================================
 const Visual1NodeDiagram: React.FC<{ isReducedMotion: boolean }> = ({ isReducedMotion }) => {
   return (
-    <div className="w-full h-full flex flex-col justify-between items-center relative z-10 py-1">
-      {/* Top Section: Center Node + 6 Connected Chips */}
-      <div className="w-full flex items-center justify-between relative mt-1 px-1">
-        {/* Left 3 Chips: Text on outer side (left), icon on side nearest center (right) */}
-        <div className="flex flex-col gap-3 z-20">
-          {[
-            { label: 'Services', icon: Wrench },
-            { label: 'Service area', icon: MapPin },
-            { label: 'Business hours', icon: Clock },
-          ].map((chip) => {
-            const Icon = chip.icon;
-            return (
-              <div
-                key={chip.label}
-                className="h-[36px] pl-3.5 pr-2.5 rounded-[10px] bg-white/[0.04] border border-white/[0.08] backdrop-blur-md flex items-center justify-between gap-3 text-[13px] text-white/90 shadow-[inset_0_1px_0_rgba(255,255,255,0.06),0_4px_14px_rgba(0,0,0,0.5)] hover:border-[#6EEDC2]/40 transition-colors"
-              >
-                <span className="font-sans font-medium">{chip.label}</span>
-                <div className="w-6 h-6 rounded-[6px] bg-[#6EEDC2]/15 flex items-center justify-center shrink-0">
-                  <Icon className="w-3.5 h-3.5 text-[#6EEDC2]" strokeWidth={1.75} />
-                </div>
-              </div>
-            );
-          })}
-        </div>
-
-        {/* Center 120px Glowing Circular Node */}
-        <div className="relative z-20 shrink-0 my-1 mx-2">
-          {/* Rotating Conic Ring */}
-          <motion.div
-            animate={isReducedMotion ? {} : { rotate: 360 }}
-            transition={{ duration: 8, repeat: Infinity, ease: 'linear' }}
-            className="absolute -inset-[3px] rounded-full pointer-events-none -z-10 opacity-75"
-            style={{
-              background: 'conic-gradient(from 0deg, #6EEDC2, transparent 65%, #6EEDC2)',
-            }}
-          />
-
-          {/* Blurred Mint Halo */}
-          <div
-            className="absolute inset-0 rounded-full blur-[24px] pointer-events-none -z-10"
-            style={{ backgroundColor: 'rgba(110,237,194,0.35)' }}
-          />
-
-          {/* Inner Glass Circle with 2px Mint Ring */}
-          <div
-            className="w-[120px] h-[120px] rounded-full bg-[#0D0F14]/90 border-2 border-[#6EEDC2] flex flex-col items-center justify-center text-center backdrop-blur-md shadow-[inset_0_1px_0_rgba(255,255,255,0.25),0_12px_32px_rgba(0,0,0,0.7),0_0_24px_rgba(110,237,194,0.25)]"
-          >
-            <div className="w-7 h-7 rounded-full bg-[#6EEDC2]/20 flex items-center justify-center mb-1">
-              <Sparkles className="w-4 h-4 text-[#6EEDC2]" />
+    <div className="w-full h-full max-w-[460px] flex flex-col justify-center items-center relative py-2">
+      {/* Upper Half: Center Node + Left/Right Pills + Curved Connecting Lines */}
+      <div className="w-full h-[230px] relative flex items-center justify-between px-2">
+        {/* Left Column: 3 Label Pills */}
+        <div className="flex flex-col gap-4 z-20">
+          {['Services', 'Service area', 'Business hours'].map((label) => (
+            <div
+              key={label}
+              className="h-[36px] px-4 rounded-[14px] bg-[#0D0E11] border border-white/[0.08] flex items-center justify-center text-[14px] font-medium text-white/[0.92] font-sans shadow-[0_12px_32px_-12px_rgba(0,0,0,0.6)]"
+            >
+              {label}
             </div>
-            <span className="text-[13px] font-sans font-medium text-white tracking-wide">
-              Appsian AI
-            </span>
-          </div>
+          ))}
         </div>
 
-        {/* Right 3 Chips: Icon on side nearest center (left), text on outer side (right) */}
-        <div className="flex flex-col gap-3 z-20">
-          {[
-            { label: 'Pricing rules', icon: Tag },
-            { label: 'Emergency rules', icon: Siren },
-            { label: 'FAQs', icon: MessageCircleQuestion },
-          ].map((chip) => {
-            const Icon = chip.icon;
-            return (
-              <div
-                key={chip.label}
-                className="h-[36px] pl-2.5 pr-3.5 rounded-[10px] bg-white/[0.04] border border-white/[0.08] backdrop-blur-md flex items-center gap-3 text-[13px] text-white/90 shadow-[inset_0_1px_0_rgba(255,255,255,0.06),0_4px_14px_rgba(0,0,0,0.5)] hover:border-[#6EEDC2]/40 transition-colors"
-              >
-                <div className="w-6 h-6 rounded-[6px] bg-[#6EEDC2]/15 flex items-center justify-center shrink-0">
-                  <Icon className="w-3.5 h-3.5 text-[#6EEDC2]" strokeWidth={1.75} />
-                </div>
-                <span className="font-sans font-medium">{chip.label}</span>
-              </div>
-            );
-          })}
+        {/* Center 112px Circular Node (only glow in section) */}
+        <div className="w-[112px] h-[112px] rounded-full bg-[#0D0E11] border border-[#6EEDC2] flex items-center justify-center text-center z-20 shadow-[0_0_20px_rgba(110,237,194,0.25)]">
+          <span className="text-[14px] font-semibold text-white/[0.92] font-sans">
+            Appsian AI
+          </span>
         </div>
 
-        {/* Smooth Curved SVG Bezier Paths with Travelling Mint Dots */}
+        {/* Right Column: 3 Label Pills */}
+        <div className="flex flex-col gap-4 z-20">
+          {['Pricing rules', 'Emergency rules', 'FAQs'].map((label) => (
+            <div
+              key={label}
+              className="h-[36px] px-4 rounded-[14px] bg-[#0D0E11] border border-white/[0.08] flex items-center justify-center text-[14px] font-medium text-white/[0.92] font-sans shadow-[0_12px_32px_-12px_rgba(0,0,0,0.6)]"
+            >
+              {label}
+            </div>
+          ))}
+        </div>
+
+        {/* Curved connecting 1px lines (white 14%) */}
         <svg
           className="absolute inset-0 w-full h-full pointer-events-none z-10"
-          viewBox="0 0 460 140"
+          viewBox="0 0 460 230"
           fill="none"
           preserveAspectRatio="none"
         >
-          {/* Left 3 paths */}
-          <path id="path-left-1" d="M 125 22 C 165 22, 175 60, 200 65" stroke="rgba(255,255,255,0.16)" strokeWidth="1" />
-          <path id="path-left-2" d="M 125 65 C 160 65, 170 65, 200 65" stroke="rgba(255,255,255,0.16)" strokeWidth="1" />
-          <path id="path-left-3" d="M 125 108 C 165 108, 175 75, 200 70" stroke="rgba(255,255,255,0.16)" strokeWidth="1" />
+          {/* Left 3 paths to center node */}
+          <path d="M 125 45 C 160 45, 165 95, 180 100" stroke="rgba(255,255,255,0.14)" strokeWidth="1" />
+          <path d="M 140 115 L 174 115" stroke="rgba(255,255,255,0.14)" strokeWidth="1" />
+          <path d="M 155 185 C 170 185, 170 135, 180 130" stroke="rgba(255,255,255,0.14)" strokeWidth="1" />
 
-          {/* Right 3 paths */}
-          <path id="path-right-1" d="M 335 22 C 295 22, 285 60, 260 65" stroke="rgba(255,255,255,0.16)" strokeWidth="1" />
-          <path id="path-right-2" d="M 335 65 C 300 65, 290 65, 260 65" stroke="rgba(255,255,255,0.16)" strokeWidth="1" />
-          <path id="path-right-3" d="M 335 108 C 295 108, 285 75, 260 70" stroke="rgba(255,255,255,0.16)" strokeWidth="1" />
-
-          {/* Small mint traveling dots along the paths */}
-          {!isReducedMotion && (
-            <>
-              <circle r="2.5" fill="#6EEDC2" filter="drop-shadow(0 0 4px #6EEDC2)">
-                <animateMotion dur="2.8s" repeatCount="indefinite" path="M 125 22 C 165 22, 175 60, 200 65" />
-              </circle>
-              <circle r="2.5" fill="#6EEDC2" filter="drop-shadow(0 0 4px #6EEDC2)">
-                <animateMotion dur="2.4s" begin="0.5s" repeatCount="indefinite" path="M 125 65 C 160 65, 170 65, 200 65" />
-              </circle>
-              <circle r="2.5" fill="#6EEDC2" filter="drop-shadow(0 0 4px #6EEDC2)">
-                <animateMotion dur="3.0s" begin="1s" repeatCount="indefinite" path="M 125 108 C 165 108, 175 75, 200 70" />
-              </circle>
-              <circle r="2.5" fill="#6EEDC2" filter="drop-shadow(0 0 4px #6EEDC2)">
-                <animateMotion dur="2.7s" begin="0.2s" repeatCount="indefinite" path="M 335 22 C 295 22, 285 60, 260 65" />
-              </circle>
-              <circle r="2.5" fill="#6EEDC2" filter="drop-shadow(0 0 4px #6EEDC2)">
-                <animateMotion dur="2.5s" begin="0.7s" repeatCount="indefinite" path="M 335 65 C 300 65, 290 65, 260 65" />
-              </circle>
-              <circle r="2.5" fill="#6EEDC2" filter="drop-shadow(0 0 4px #6EEDC2)">
-                <animateMotion dur="3.1s" begin="1.2s" repeatCount="indefinite" path="M 335 108 C 295 108, 285 75, 260 70" />
-              </circle>
-            </>
-          )}
+          {/* Right 3 paths to center node */}
+          <path d="M 335 45 C 300 45, 295 95, 280 100" stroke="rgba(255,255,255,0.14)" strokeWidth="1" />
+          <path d="M 320 115 L 286 115" stroke="rgba(255,255,255,0.14)" strokeWidth="1" />
+          <path d="M 305 185 C 290 185, 290 135, 280 130" stroke="rgba(255,255,255,0.14)" strokeWidth="1" />
         </svg>
       </div>
 
-      {/* Vertical Pulse Connector Line Down */}
-      <div className="w-[1.5px] h-5 bg-gradient-to-b from-[#6EEDC2] to-white/20 relative my-0.5">
+      {/* 1px Vertical Connecting Line with Traveling Mint Dot */}
+      <div className="w-[1px] h-9 bg-white/[0.14] relative my-1">
         <motion.div
-          animate={isReducedMotion ? {} : { y: [0, 20, 0] }}
-          transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' }}
-          className="w-1.5 h-1.5 rounded-full bg-[#6EEDC2] absolute -left-[2.25px] shadow-[0_0_8px_#6EEDC2]"
+          animate={isReducedMotion ? { y: 14 } : { y: [0, 28, 0] }}
+          transition={{ duration: 3.5, repeat: Infinity, ease: 'easeInOut' }}
+          className="w-2 h-2 rounded-full bg-[#6EEDC2] absolute -left-[3.5px]"
         />
       </div>
 
-      {/* Middle: Business Profile Tile (~360px wide, video-tile style with Glowing Rim) */}
-      <div
-        className="w-full max-w-[380px] rounded-[16px] bg-[#0A0D12]/90 border border-[#6EEDC2]/45 backdrop-blur-md p-4 shadow-[0_0_20px_-2px_rgba(110,237,194,0.2),inset_0_1px_0_rgba(255,255,255,0.12),0_14px_32px_rgba(0,0,0,0.6)]"
-      >
-        <div className="flex items-center gap-3 mb-2.5">
-          {/* Gradient Initials Logo Tile "NP" */}
-          <div className="w-10 h-10 rounded-[10px] bg-gradient-to-br from-[#1B382F] to-[#0A1A14] border border-[#6EEDC2]/50 flex items-center justify-center font-bold text-[#6EEDC2] text-[13.5px] shadow-[0_0_12px_rgba(110,237,194,0.25)] shrink-0">
-            NP
-          </div>
-          <div className="flex-1 min-w-0">
-            <h4 className="text-[14px] font-sans font-medium text-white truncate">
-              Northside Plumbing & HVAC
-            </h4>
-            <div className="flex items-center gap-1.5 mt-0.5">
-              <div className="flex items-center gap-0.5">
-                {[1, 2, 3, 4, 5].map((s) => (
-                  <Star key={s} className="w-2.5 h-2.5 fill-[#6EEDC2] text-[#6EEDC2]" />
-                ))}
-              </div>
-              <span className="text-[11.5px] font-sans font-medium text-[#6EEDC2] tabular-nums">
-                4.9
-              </span>
-            </div>
-          </div>
+      {/* Below Node: ONE Business Card (about 340px wide) */}
+      <div className="w-[340px] max-w-full rounded-[14px] bg-[#0D0E11] border border-white/[0.08] p-3.5 flex items-center gap-3.5 shadow-[0_12px_32px_-12px_rgba(0,0,0,0.6)] z-20">
+        <div className="w-[44px] h-[44px] rounded-[10px] bg-[#16181D] border border-white/[0.08] flex items-center justify-center shrink-0">
+          <span className="text-[14px] font-semibold text-white/[0.92] font-sans">NP</span>
         </div>
-
-        <div className="space-y-1.5 pt-2.5 border-t border-white/[0.08] text-[12.5px] text-white/75 font-sans">
-          <div className="flex items-center gap-2">
-            <MapPin className="w-3.5 h-3.5 text-[#6EEDC2] shrink-0" strokeWidth={1.75} />
-            <span>Serves Austin and 25 miles around</span>
-          </div>
-          <div className="flex items-center gap-2">
-            <Clock className="w-3.5 h-3.5 text-[#6EEDC2] shrink-0" strokeWidth={1.75} />
-            <span>Mon-Sat 7am-6pm · Emergency 24/7</span>
-          </div>
-        </div>
-      </div>
-
-      {/* Bottom: 3 Glowing-Rim Cards Side by Side */}
-      <div className="grid grid-cols-3 gap-3 w-full mt-2">
-        {/* Card 1: Services */}
-        <div className="rounded-[14px] bg-[#0A0D12]/90 border border-[#6EEDC2]/40 p-3 shadow-[0_0_16px_-2px_rgba(110,237,194,0.18),inset_0_1px_0_rgba(255,255,255,0.08),0_8px_20px_rgba(0,0,0,0.5)] flex flex-col">
-          <span className="text-[11px] font-sans font-semibold uppercase tracking-wider text-[#6EEDC2] mb-2">
-            Services
+        <div className="flex flex-col min-w-0">
+          <span className="text-[14px] font-semibold text-white/[0.92] font-sans leading-tight truncate">
+            Northside Plumbing & HVAC
           </span>
-          <div className="space-y-1.5 text-[12px] text-white/85">
-            {['Plumbing', 'HVAC', 'Water heaters', 'Drain cleaning'].map((item) => (
-              <div key={item} className="flex items-center gap-1.5">
-                <Check className="w-3.5 h-3.5 text-[#6EEDC2] stroke-[2.2] shrink-0" />
-                <span className="truncate">{item}</span>
-              </div>
-            ))}
-          </div>
-        </div>
-
-        {/* Card 2: Rules */}
-        <div className="rounded-[14px] bg-[#0A0D12]/90 border border-[#6EEDC2]/40 p-3 shadow-[0_0_16px_-2px_rgba(110,237,194,0.18),inset_0_1px_0_rgba(255,255,255,0.08),0_8px_20px_rgba(0,0,0,0.5)] flex flex-col">
-          <span className="text-[11px] font-sans font-semibold uppercase tracking-wider text-[#6EEDC2] mb-2">
-            Rules
+          <span className="text-[12px] font-normal text-white/[0.55] font-sans mt-0.5">
+            Serves Austin + 25 miles
           </span>
-          <div className="space-y-2 text-[11.5px] text-white/80">
-            {[
-              { label: 'Emergency → ring owner' },
-              { label: 'After hours → take message' },
-              { label: 'New quote → book estimate' },
-            ].map((rule) => (
-              <div key={rule.label} className="flex items-center justify-between gap-1">
-                <span className="truncate text-[11px] leading-tight">{rule.label}</span>
-                <div className="w-6 h-3.5 rounded-full bg-[#6EEDC2] flex items-center justify-end px-0.5 shrink-0 shadow-[0_0_8px_rgba(110,237,194,0.4)]">
-                  <div className="w-2.5 h-2.5 rounded-full bg-[#040506]" />
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-
-        {/* Card 3: Calendar */}
-        <div className="rounded-[14px] bg-[#0A0D12]/90 border border-[#6EEDC2]/40 p-3 shadow-[0_0_16px_-2px_rgba(110,237,194,0.18),inset_0_1px_0_rgba(255,255,255,0.08),0_8px_20px_rgba(0,0,0,0.5)] flex flex-col">
-          <span className="text-[11px] font-sans font-semibold uppercase tracking-wider text-[#6EEDC2] mb-1.5">
-            Calendar
-          </span>
-          <div className="grid grid-cols-7 gap-1 text-center text-[10px] text-white/40 mb-1">
-            <span>S</span>
-            <span>M</span>
-            <span>T</span>
-            <span>W</span>
-            <span>T</span>
-            <span>F</span>
-            <span>S</span>
-          </div>
-          <div className="grid grid-cols-7 gap-1 text-center text-[10.5px] tabular-nums text-white/75">
-            {[
-              1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21,
-            ].map((d) => {
-              const isMint = d === 8 || d === 14 || d === 20;
-              return (
-                <div
-                  key={d}
-                  className={`h-4.5 rounded-full flex items-center justify-center ${
-                    isMint
-                      ? 'bg-[#6EEDC2] text-[#040506] font-semibold shadow-[0_0_8px_rgba(110,237,194,0.7)]'
-                      : ''
-                  }`}
-                >
-                  {d}
-                </div>
-              );
-            })}
-          </div>
         </div>
       </div>
     </div>
@@ -711,149 +489,96 @@ const Visual1NodeDiagram: React.FC<{ isReducedMotion: boolean }> = ({ isReducedM
 };
 
 // =========================================================================
-// VISUAL 2: AGENT SETUP WINDOW (Setup) - Rebuilt with Realistic Depth
+// VISUAL 2 (Setup): 5 elements, window flush top-left and cropped
 // =========================================================================
 const Visual2AgentSetup: React.FC<{ isReducedMotion: boolean }> = ({ isReducedMotion }) => {
   return (
-    <div
-      className="w-full h-full rounded-[18px] bg-[#0A0D12]/95 border border-[#6EEDC2]/35 shadow-[0_0_24px_-4px_rgba(110,237,194,0.18),inset_0_1px_0_rgba(255,255,255,0.14),0_16px_36px_rgba(0,0,0,0.6)] p-4 flex flex-col justify-between relative z-10"
-    >
-      {/* App Window Top Bar */}
+    <div className="w-[480px] max-w-none rounded-[14px] bg-[#0D0E11] border border-white/[0.08] p-5 flex flex-col gap-5 shadow-[0_12px_32px_-12px_rgba(0,0,0,0.6)] relative overflow-hidden -mt-2 -ml-2 sm:-mt-3 sm:-ml-3">
+      {/* Element 1: Top Row (Title + Tabs) */}
       <div className="flex items-center justify-between pb-3 border-b border-white/[0.08]">
-        <div className="flex items-center gap-2.5">
-          {/* Appsian Mint Logo Mark */}
-          <div className="w-6 h-6 rounded-[6px] bg-[#6EEDC2] flex items-center justify-center text-[#040506] shadow-[0_0_10px_rgba(110,237,194,0.4)]">
-            <Sparkles className="w-3.5 h-3.5" />
-          </div>
-          <span className="text-[13px] font-sans font-medium text-white/90">Agent setup</span>
-          <span className="px-2 py-0.5 rounded-full bg-amber-400/10 border border-amber-400/25 text-amber-300 text-[11px] font-sans font-medium flex items-center gap-1">
-            <span className="w-1.5 h-1.5 rounded-full bg-amber-400 animate-pulse" />
-            Draft
+        <span className="text-[14px] font-semibold text-white/[0.92] font-sans">
+          Agent setup
+        </span>
+        <div className="flex items-center gap-5 text-[14px] font-medium font-sans">
+          <span className="text-white/[0.92] border-b-2 border-[#6EEDC2] pb-1 cursor-default">
+            Greeting
           </span>
-        </div>
-
-        {/* Avatar JD */}
-        <div className="w-7 h-7 rounded-full bg-gradient-to-tr from-emerald-600 to-teal-400 border border-white/20 flex items-center justify-center text-[11px] font-sans font-semibold text-white shadow-xs">
-          JD
+          <span className="text-white/[0.55] pb-1 cursor-default">Call flow</span>
+          <span className="text-white/[0.55] pb-1 cursor-default">Booking</span>
+          <span className="text-white/[0.55] pb-1 cursor-default">Test</span>
         </div>
       </div>
 
-      {/* Tabs */}
-      <div className="flex items-center gap-6 pt-2 pb-2 border-b border-white/[0.06] text-[13px] font-sans">
-        <span className="text-[#6EEDC2] font-medium border-b-2 border-[#6EEDC2] pb-1.5 shadow-[0_2px_8px_rgba(110,237,194,0.3)]">
+      {/* Element 2: Greeting Card */}
+      <div className="rounded-[14px] bg-[#16181D] border border-white/[0.08] p-4 flex flex-col gap-1.5">
+        <span className="text-[12px] font-normal text-white/[0.55] font-sans">
           Greeting
         </span>
-        <span className="text-white/45 pb-1.5 cursor-pointer hover:text-white/70 transition-colors">
-          Call flow
-        </span>
-        <span className="text-white/45 pb-1.5 cursor-pointer hover:text-white/70 transition-colors">
-          Booking
-        </span>
-        <span className="text-white/45 pb-1.5 cursor-pointer hover:text-white/70 transition-colors">
-          Test
-        </span>
-      </div>
-
-      {/* Greeting Block with subtle glowing rim */}
-      <div className="rounded-[14px] bg-white/[0.04] border border-[#6EEDC2]/25 p-3.5 shadow-[inset_0_1px_0_rgba(255,255,255,0.08),0_8px_20px_rgba(0,0,0,0.4)] relative">
-        <div className="text-[11px] font-sans font-semibold uppercase tracking-wider text-white/50 mb-1.5">
-          Greeting
-        </div>
-        <p className="text-[13.5px] leading-relaxed text-white/95 font-sans mb-3">
-          &ldquo;Thanks for calling Northside Plumbing. How can I help you today?&rdquo;
-          <span className="inline-block w-1.5 h-3.5 bg-[#6EEDC2] ml-1 align-middle animate-pulse" />
+        <p className="text-[20px] font-medium text-white/[0.92] font-sans leading-snug">
+          Thanks for calling Northside Plumbing. How can I help you today?
+          <span className="inline-block w-0.5 h-5 bg-[#6EEDC2] ml-1.5 align-middle animate-pulse" />
         </p>
+      </div>
 
-        <div className="flex items-center justify-between pt-2 border-t border-white/[0.06]">
-          {/* Voice selector chip */}
-          <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-[8px] bg-white/[0.05] border border-white/[0.09] text-[12px] text-white/85 shadow-xs">
-            <Volume2 className="w-3.5 h-3.5 text-[#6EEDC2]" strokeWidth={1.75} />
-            <span>Voice: Warm, friendly</span>
-          </div>
-
-          {/* Play button with animated waveform */}
-          <div className="flex items-center gap-2 px-2.5 py-1 rounded-[8px] bg-[#6EEDC2]/15 border border-[#6EEDC2]/30 text-[#6EEDC2] text-[12px] font-medium shadow-[0_0_10px_rgba(110,237,194,0.2)]">
-            <Play className="w-3 h-3 fill-current" />
-            <div className="flex items-center gap-0.5 h-3">
-              {[4, 10, 6, 12, 8, 11, 5].map((h, i) => (
-                <div
-                  key={i}
-                  className="w-0.5 rounded-full bg-[#6EEDC2]"
-                  style={{ height: `${h}px` }}
-                />
-              ))}
-            </div>
-          </div>
+      {/* Element 3: Flow Row (Answer -> Qualify -> Book) */}
+      <div className="flex items-center gap-3">
+        <div className="flex-1 py-2.5 px-3 rounded-[10px] bg-[#16181D] border border-white/[0.08] text-center text-[14px] font-medium text-white/[0.92] font-sans">
+          Answer
+        </div>
+        <ArrowRight className="w-4 h-4 text-white/[0.55] shrink-0" strokeWidth={1.5} />
+        <div className="flex-1 py-2.5 px-3 rounded-[10px] bg-[#16181D] border border-white/[0.08] text-center text-[14px] font-medium text-white/[0.92] font-sans">
+          Qualify
+        </div>
+        <ArrowRight className="w-4 h-4 text-white/[0.55] shrink-0" strokeWidth={1.5} />
+        <div className="flex-1 py-2.5 px-3 rounded-[10px] bg-[#16181D] border border-[#6EEDC2] text-center text-[14px] font-medium text-white/[0.92] font-sans">
+          Book
         </div>
       </div>
 
-      {/* Call Flow Nodes: Answer -> Qualify -> Book */}
-      <div className="flex items-center justify-between gap-2">
-        {[
-          { label: 'Answer', icon: PhoneIncoming },
-          { label: 'Qualify', icon: ListChecks },
-          { label: 'Book', icon: CalendarCheck },
-        ].map((node, idx) => {
-          const Icon = node.icon;
-          return (
-            <React.Fragment key={node.label}>
-              <div className="flex-1 rounded-[10px] bg-white/[0.04] border border-[#6EEDC2]/25 p-2.5 flex items-center justify-center gap-2 text-[12.5px] text-white/90 shadow-[inset_0_1px_0_rgba(255,255,255,0.06),0_4px_12px_rgba(0,0,0,0.3)]">
-                <Icon className="w-3.5 h-3.5 text-[#6EEDC2]" strokeWidth={1.75} />
-                <span className="font-sans font-medium">{node.label}</span>
-              </div>
-              {idx < 2 && <span className="text-[#6EEDC2]/80 font-bold text-xs">→</span>}
-            </React.Fragment>
-          );
-        })}
-      </div>
-
-      {/* Calendar Full Month Grid with Real Appointment Chips */}
-      <div className="rounded-[14px] bg-white/[0.03] border border-white/[0.06] p-3 flex-1 flex flex-col justify-between shadow-[inset_0_1px_0_rgba(255,255,255,0.06)] mt-2.5">
-        <div className="grid grid-cols-7 gap-1 text-center text-[11px] text-white/45 mb-1 font-sans font-medium">
-          <span>SUN</span>
-          <span>MON</span>
-          <span>TUE</span>
-          <span>WED</span>
-          <span>THU</span>
-          <span>FRI</span>
-          <span>SAT</span>
+      {/* Element 4: One-Week Strip (Mon to Sun) */}
+      <div className="rounded-[14px] bg-[#16181D] border border-white/[0.08] p-3 flex flex-col gap-2">
+        <div className="grid grid-cols-7 gap-2 text-center text-[12px] font-normal text-white/[0.55] font-sans">
+          {['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'].map((day) => (
+            <span key={day}>{day}</span>
+          ))}
         </div>
-        <div className="grid grid-cols-7 gap-1.5 flex-1">
-          {Array.from({ length: 14 }).map((_, i) => {
-            const dayNum = i + 1;
-            const hasEstimate = dayNum === 8;
-            const hasRepair = dayNum === 11;
-            return (
+        <div className="grid grid-cols-7 gap-2 text-center text-[14px] font-medium font-sans tabular-nums">
+          {[
+            { day: 12, isToday: false, hasDot: false },
+            { day: 13, isToday: false, hasDot: false },
+            { day: 14, isToday: true, hasDot: false },
+            { day: 15, isToday: false, hasDot: true },
+            { day: 16, isToday: false, hasDot: false },
+            { day: 17, isToday: false, hasDot: true },
+            { day: 18, isToday: false, hasDot: false },
+          ].map((item) => (
+            <div key={item.day} className="flex flex-col items-center justify-center">
               <div
-                key={i}
-                className="rounded-[8px] bg-white/[0.02] border border-white/[0.04] p-1 flex flex-col justify-between min-h-[46px]"
+                className={`w-8 h-8 rounded-[8px] flex items-center justify-center ${
+                  item.isToday
+                    ? 'bg-white text-black font-semibold'
+                    : 'text-white/[0.92]'
+                }`}
               >
-                <span className="text-[13px] font-sans font-medium text-white/70 tabular-nums leading-none">
-                  {dayNum}
-                </span>
-                {hasEstimate && (
-                  <span className="mt-1 px-1 py-0.5 rounded-[4px] bg-[#6EEDC2]/15 border border-[#6EEDC2]/35 text-[#6EEDC2] text-[11px] font-sans font-medium truncate leading-tight shadow-[0_0_8px_rgba(110,237,194,0.25)]">
-                    Estimate 9:00
-                  </span>
-                )}
-                {hasRepair && (
-                  <span className="mt-1 px-1 py-0.5 rounded-[4px] bg-[#6EEDC2]/15 border border-[#6EEDC2]/35 text-[#6EEDC2] text-[11px] font-sans font-medium truncate leading-tight shadow-[0_0_8px_rgba(110,237,194,0.25)]">
-                    Repair 1:30
-                  </span>
-                )}
+                {item.day}
               </div>
-            );
-          })}
+              {item.hasDot ? (
+                <span className="w-1.5 h-1.5 rounded-full bg-[#6EEDC2] mt-1" />
+              ) : (
+                <span className="w-1.5 h-1.5 mt-1 opacity-0" />
+              )}
+            </div>
+          ))}
         </div>
       </div>
 
-      {/* Floating Collaborator Cursors with Pointer Arrows */}
+      {/* Element 5: Two Cursor Pills (drift slowly ±6px) */}
       <motion.div
         animate={isReducedMotion ? {} : { x: [-3, 3, -3], y: [-3, 3, -3] }}
         transition={{ duration: 5, repeat: Infinity, ease: 'easeInOut' }}
-        className="absolute top-28 right-6 z-30 px-2.5 py-1 rounded-full bg-[#6EEDC2] text-[#040506] font-sans font-medium text-[11px] shadow-[0_4px_16px_rgba(110,237,194,0.4)] flex items-center gap-1.5"
+        className="absolute top-24 right-5 z-20 px-2.5 py-1 rounded-full bg-[#6EEDC2] text-[#062B20] text-[12px] font-medium font-sans shadow-md flex items-center gap-1.5 pointer-events-none"
       >
-        <svg className="w-2.5 h-2.5 fill-current" viewBox="0 0 16 16">
+        <svg className="w-3 h-3 fill-current" viewBox="0 0 16 16">
           <path d="M1 1l5.5 14 2.5-6 6-2.5L1 1z" />
         </svg>
         <span>Appsian team</span>
@@ -861,10 +586,10 @@ const Visual2AgentSetup: React.FC<{ isReducedMotion: boolean }> = ({ isReducedMo
 
       <motion.div
         animate={isReducedMotion ? {} : { x: [3, -3, 3], y: [3, -3, 3] }}
-        transition={{ duration: 5.5, repeat: Infinity, ease: 'easeInOut' }}
-        className="absolute bottom-16 left-14 z-30 px-2.5 py-1 rounded-full bg-white text-[#040506] font-sans font-medium text-[11px] shadow-[0_4px_16px_rgba(255,255,255,0.3)] flex items-center gap-1.5"
+        transition={{ duration: 6, repeat: Infinity, ease: 'easeInOut' }}
+        className="absolute bottom-6 left-12 z-20 px-2.5 py-1 rounded-full bg-white text-black text-[12px] font-medium font-sans shadow-md flex items-center gap-1.5 pointer-events-none"
       >
-        <svg className="w-2.5 h-2.5 fill-current" viewBox="0 0 16 16">
+        <svg className="w-3 h-3 fill-current" viewBox="0 0 16 16">
           <path d="M1 1l5.5 14 2.5-6 6-2.5L1 1z" />
         </svg>
         <span>You</span>
@@ -874,333 +599,217 @@ const Visual2AgentSetup: React.FC<{ isReducedMotion: boolean }> = ({ isReducedMo
 };
 
 // =========================================================================
-// VISUAL 3: INCOMING CALL & TRANSCRIPT (Go Live) - Dense & Layered Realism
+// VISUAL 3 (Go live): 4 elements, clean centered call card + 2 toasts
 // =========================================================================
+const WAVE_BARS = [6, 14, 10, 18, 22, 16, 8, 12, 20, 15, 7, 13, 19, 24, 17, 9, 14, 21, 12, 18, 15, 8, 11, 5];
+
 const Visual3IncomingCall: React.FC<{ isReducedMotion: boolean }> = ({ isReducedMotion }) => {
-  const [seconds, setSeconds] = useState(42);
-
-  useEffect(() => {
-    if (isReducedMotion) return;
-    const timer = setInterval(() => {
-      setSeconds((prev) => (prev >= 59 ? 42 : prev + 1));
-    }, 1000);
-    return () => clearInterval(timer);
-  }, [isReducedMotion]);
-
   return (
-    <div className="w-full h-full relative z-10 flex items-center justify-center p-2 overflow-hidden">
-      {/* Dark Satin Silk Wallpaper Folds with Faint Mint Reflection */}
-      <svg
-        className="absolute inset-0 w-full h-full pointer-events-none opacity-45 z-0"
-        viewBox="0 0 500 500"
-        fill="none"
-        preserveAspectRatio="none"
-      >
-        <path
-          d="M -50 100 Q 150 280 320 160 T 550 380"
-          stroke="rgba(255,255,255,0.07)"
-          strokeWidth="90"
-          filter="blur(28px)"
-        />
-        <path
-          d="M 50 420 Q 240 280 420 480"
-          stroke="rgba(110,237,194,0.07)"
-          strokeWidth="70"
-          filter="blur(32px)"
-        />
-      </svg>
-
-      {/* Main Card (about 420px wide, fills the panel, with Glowing Rim) */}
-      <div
-        className="w-full max-w-[420px] rounded-[20px] bg-[#0A0D12]/92 border border-[#6EEDC2]/45 backdrop-blur-md p-4 sm:p-5 shadow-[0_0_24px_-4px_rgba(110,237,194,0.22),inset_0_1px_0_rgba(255,255,255,0.12),0_24px_48px_-12px_rgba(0,0,0,0.7)] relative z-10"
-      >
-        {/* Header with Pulsing Mint Dot & Live Timer */}
-        <div className="flex items-center justify-between pb-3 border-b border-white/[0.08] mb-3">
+    <div className="w-full h-full flex items-center justify-center relative p-6">
+      {/* Centered Call Card (about 380px wide) */}
+      <div className="w-full max-w-[380px] rounded-[14px] bg-[#0D0E11] border border-white/[0.08] p-5 flex flex-col gap-4 relative shadow-[0_12px_32px_-12px_rgba(0,0,0,0.6)]">
+        {/* Element 1: Header Row */}
+        <div className="flex items-center justify-between pb-3 border-b border-white/[0.08]">
           <div className="flex items-center gap-2">
-            <span className="relative flex h-2.5 w-2.5">
-              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#6EEDC2] opacity-75" />
-              <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-[#6EEDC2]" />
-            </span>
-            <span className="text-[13px] font-sans font-medium text-white/95">Incoming call</span>
-          </div>
-          <div className="flex items-center gap-2">
-            <span className="px-2 py-0.5 rounded-full bg-emerald-500/20 border border-emerald-500/40 text-emerald-400 text-[11px] font-sans font-medium">
-              Live
-            </span>
-            <span className="text-[12.5px] font-sans font-medium text-[#6EEDC2] tabular-nums">
-              00:{seconds < 10 ? `0${seconds}` : seconds}
+            <span className="w-2 h-2 rounded-full bg-[#6EEDC2]" />
+            <span className="text-[14px] font-semibold text-white/[0.92] font-sans">
+              Incoming call
             </span>
           </div>
-        </div>
-
-        {/* Caller Row */}
-        <div className="flex items-center gap-3 p-2.5 rounded-[12px] bg-white/[0.03] border border-white/[0.06] mb-3.5 shadow-xs">
-          <div className="w-9 h-9 rounded-full bg-gradient-to-tr from-cyan-600 to-emerald-500 border border-white/20 flex items-center justify-center text-[12px] font-sans font-bold text-white shadow-xs shrink-0">
-            MR
-          </div>
-          <div className="flex-1 min-w-0">
-            <div className="text-[13.5px] font-sans font-medium text-white">Mike R.</div>
-            <div className="text-[12px] font-sans text-white/50 tabular-nums">
-              (512) 555-0142
-            </div>
-          </div>
-        </div>
-
-        {/* Live Transcript with Real Chat Bubbles (13px) */}
-        <div className="space-y-2.5 mb-4 text-[13px] font-sans leading-relaxed">
-          {/* Bubble 1: Caller */}
-          <div className="flex flex-col items-start">
-            <span className="text-[10.5px] text-white/40 mb-0.5 ml-1">Mike R.</span>
-            <div className="max-w-[85%] rounded-[12px] rounded-tl-[4px] bg-white/[0.06] border border-white/[0.08] p-2.5 text-white/90 shadow-xs">
-              Hi, my water heater is leaking in the basement.
-            </div>
-          </div>
-
-          {/* Bubble 2: Appsian */}
-          <div className="flex flex-col items-end">
-            <span className="text-[10.5px] text-[#6EEDC2]/80 mb-0.5 mr-1 font-medium">Appsian AI</span>
-            <div className="max-w-[85%] rounded-[12px] rounded-tr-[4px] bg-[#6EEDC2]/15 border border-[#6EEDC2]/35 p-2.5 text-white shadow-xs">
-              I&apos;m sorry to hear that. Is the water still actively leaking?
-            </div>
-          </div>
-
-          {/* Bubble 3: Caller */}
-          <div className="flex flex-col items-start">
-            <span className="text-[10.5px] text-white/40 mb-0.5 ml-1">Mike R.</span>
-            <div className="max-w-[85%] rounded-[12px] rounded-tl-[4px] bg-white/[0.06] border border-white/[0.08] p-2.5 text-white/90 shadow-xs">
-              Yes, it&apos;s pretty bad.
-            </div>
-          </div>
-
-          {/* Bubble 4: Appsian typing out */}
-          <div className="flex flex-col items-end">
-            <span className="text-[10.5px] text-[#6EEDC2]/80 mb-0.5 mr-1 font-medium">Appsian AI</span>
-            <div className="max-w-[85%] rounded-[12px] rounded-tr-[4px] bg-[#6EEDC2]/15 border border-[#6EEDC2]/35 p-2.5 text-white shadow-xs flex items-center gap-1.5">
-              <span>Understood, I&apos;ll flag this as urgent. Can I get your address?</span>
-              <span className="flex items-center gap-0.5 shrink-0 ml-1">
-                <span className="w-1 h-1 rounded-full bg-[#6EEDC2] animate-bounce" />
-                <span className="w-1 h-1 rounded-full bg-[#6EEDC2] animate-bounce [animation-delay:0.2s]" />
-              </span>
-            </div>
-          </div>
-        </div>
-
-        {/* Summary Strip */}
-        <div className="flex items-center flex-wrap gap-1.5 pt-3 border-t border-white/[0.08]">
-          <span className="px-2 py-0.5 rounded-[6px] bg-rose-500/15 border border-rose-500/30 text-rose-300 text-[11px] font-sans font-medium">
-            Urgent
-          </span>
-          <span className="px-2 py-0.5 rounded-[6px] bg-white/[0.05] border border-white/[0.08] text-white/80 text-[11px] font-sans">
-            Water heater leak
-          </span>
-          <span className="px-2 py-0.5 rounded-[6px] bg-[#6EEDC2]/15 border border-[#6EEDC2]/30 text-[#6EEDC2] text-[11px] font-sans font-medium flex items-center gap-1">
-            <CalendarCheck className="w-3 h-3" />
-            Estimate booked · Tue 10:30 AM
+          <span className="text-[12px] font-normal text-white/[0.55] font-sans tabular-nums">
+            Live 00:42
           </span>
         </div>
+
+        {/* Element 2: Two Transcript Lines */}
+        <div className="flex flex-col gap-3">
+          <div className="rounded-[14px] bg-[#16181D] border border-white/[0.08] p-3 text-[14px] font-normal text-white/[0.92] font-sans leading-relaxed">
+            Hi, my water heater is leaking in the basement.
+          </div>
+          <div className="rounded-[14px] bg-[#6EEDC2]/10 border border-[#6EEDC2]/25 p-3 text-[14px] font-normal text-white/[0.92] font-sans leading-relaxed">
+            I&apos;m sorry to hear that. Is the water still actively leaking?
+          </div>
+        </div>
+
+        {/* Element 3: Thin Mint Audio Waveform (24 bars, 2px wide) */}
+        <div className="flex items-center justify-between h-7 px-1 pt-1">
+          {WAVE_BARS.map((baseH, i) => (
+            <motion.div
+              key={i}
+              animate={
+                isReducedMotion
+                  ? { height: baseH }
+                  : { height: [baseH, Math.max(4, (baseH * 1.5) % 24), baseH] }
+              }
+              transition={{
+                duration: 1.2,
+                repeat: Infinity,
+                delay: (i * 0.05) % 0.6,
+                ease: 'easeInOut',
+              }}
+              className="w-[2px] rounded-full bg-[#6EEDC2]"
+              style={{ height: `${baseH}px` }}
+            />
+          ))}
+        </div>
+
+        {/* Element 4: TWO Toast Chips (overlapping right and bottom-left edges) */}
+        <motion.div
+          initial={isReducedMotion ? {} : { opacity: 0, x: 20 }}
+          whileInView={{ opacity: 1, x: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.6, delay: 0.2 }}
+          className="absolute -right-6 top-1/4 z-20 px-3.5 py-2.5 rounded-[14px] bg-[#0D0E11] border border-white/[0.08] text-[12px] font-medium text-white/[0.92] font-sans shadow-[0_12px_32px_-12px_rgba(0,0,0,0.6)] flex items-center gap-2 whitespace-nowrap"
+        >
+          <Calendar className="w-4 h-4 text-white/70" strokeWidth={1.5} />
+          <span>Estimate booked · Tue 10:30 AM</span>
+        </motion.div>
+
+        <motion.div
+          initial={isReducedMotion ? {} : { opacity: 0, x: -20 }}
+          whileInView={{ opacity: 1, x: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.6, delay: 0.35 }}
+          className="absolute -left-6 -bottom-4 z-20 px-3.5 py-2.5 rounded-[14px] bg-[#0D0E11] border border-white/[0.08] text-[12px] font-medium text-white/[0.92] font-sans shadow-[0_12px_32px_-12px_rgba(0,0,0,0.6)] flex items-center gap-2 whitespace-nowrap"
+        >
+          <Check className="w-4 h-4 text-white/70" strokeWidth={1.5} />
+          <span>Lead captured · Water heater leak</span>
+        </motion.div>
       </div>
-
-      {/* Floating Toast 1: Top-left Overhanging with Glowing Rim */}
-      <motion.div
-        animate={isReducedMotion ? {} : { y: [-3, 3, -3] }}
-        transition={{ duration: 5, repeat: Infinity, ease: 'easeInOut' }}
-        className="absolute top-4 left-3 z-20 px-3.5 py-2.5 rounded-[14px] bg-[#0E1015]/95 border border-[#6EEDC2]/45 shadow-[0_0_20px_-2px_rgba(110,237,194,0.25),0_12px_32px_rgba(0,0,0,0.7)] backdrop-blur-md flex items-center gap-3"
-      >
-        <div className="w-7 h-7 rounded-[8px] bg-[#6EEDC2]/20 flex items-center justify-center text-[#6EEDC2] shrink-0">
-          <CalendarCheck className="w-4 h-4" />
-        </div>
-        <div className="text-left font-sans">
-          <div className="text-[12.5px] font-medium text-white">Estimate booked</div>
-          <div className="text-[11px] text-white/55 tabular-nums">Tue 10:30 AM</div>
-        </div>
-      </motion.div>
-
-      {/* Floating Toast 2: Right Overhanging with Glowing Rim */}
-      <motion.div
-        animate={isReducedMotion ? {} : { y: [3, -3, 3] }}
-        transition={{ duration: 5.5, repeat: Infinity, ease: 'easeInOut' }}
-        className="absolute top-1/2 right-2 -translate-y-1/2 z-20 px-3.5 py-2.5 rounded-[14px] bg-[#0E1015]/95 border border-[#6EEDC2]/45 shadow-[0_0_20px_-2px_rgba(110,237,194,0.25),0_12px_32px_rgba(0,0,0,0.7)] backdrop-blur-md flex items-center gap-3"
-      >
-        <div className="w-7 h-7 rounded-[8px] bg-rose-500/20 flex items-center justify-center text-rose-300 shrink-0">
-          <Siren className="w-4 h-4" />
-        </div>
-        <div className="text-left font-sans">
-          <div className="text-[12.5px] font-medium text-white">Lead captured</div>
-          <div className="text-[11px] text-white/55">Water heater leak, urgent</div>
-        </div>
-      </motion.div>
-
-      {/* Floating Toast 3: Bottom-left Overhanging with Glowing Rim */}
-      <motion.div
-        animate={isReducedMotion ? {} : { y: [-2, 2, -2] }}
-        transition={{ duration: 4.8, repeat: Infinity, ease: 'easeInOut' }}
-        className="absolute bottom-4 left-6 z-20 px-3.5 py-2.5 rounded-[14px] bg-[#0E1015]/95 border border-[#6EEDC2]/45 shadow-[0_0_20px_-2px_rgba(110,237,194,0.25),0_12px_32px_rgba(0,0,0,0.7)] backdrop-blur-md flex items-center gap-3"
-      >
-        <div className="w-7 h-7 rounded-[8px] bg-[#6EEDC2]/20 flex items-center justify-center text-[#6EEDC2] shrink-0">
-          <CheckCircle2 className="w-4 h-4" />
-        </div>
-        <div className="text-left font-sans">
-          <div className="text-[12.5px] font-medium text-white">Team notified</div>
-          <div className="text-[11px] text-white/55">Summary sent</div>
-        </div>
-      </motion.div>
     </div>
   );
 };
 
 // =========================================================================
-// VISUAL 4: PHONE FRAME & STAT TILES (Ongoing) - Rebuilt with Titanium Depth
+// VISUAL 4 (Ongoing): 5 elements, phone cropped at bottom + stat tiles
 // =========================================================================
 const Visual4PhoneFrame: React.FC<{ formattedDate: string; isReducedMotion: boolean }> = ({
   formattedDate,
   isReducedMotion,
 }) => {
-  const [counts, setCounts] = useState({ answered: 42, booked: 18, leads: 24 });
+  const [counts, setCounts] = useState({
+    answered: isReducedMotion ? 148 : 0,
+    booked: isReducedMotion ? 42 : 0,
+    leads: isReducedMotion ? 64 : 0,
+  });
   const ref = useRef<HTMLDivElement>(null);
   const isInView = useInView(ref, { once: true, amount: 0.3 });
 
   useEffect(() => {
-    if (isInView && !isReducedMotion) {
-      setCounts({ answered: 148, booked: 42, leads: 64 });
-    }
+    if (!isInView || isReducedMotion) return;
+    const duration = 1200;
+    const startTime = performance.now();
+    const step = (now: number) => {
+      const progress = Math.min((now - startTime) / duration, 1);
+      const ease = 1 - Math.pow(1 - progress, 3);
+      setCounts({
+        answered: Math.round(148 * ease),
+        booked: Math.round(42 * ease),
+        leads: Math.round(64 * ease),
+      });
+      if (progress < 1) requestAnimationFrame(step);
+    };
+    requestAnimationFrame(step);
   }, [isInView, isReducedMotion]);
 
   return (
-    <div ref={ref} className="w-full h-full relative z-10 flex flex-col justify-between items-center overflow-hidden pt-1">
-      {/* Titanium-Style Phone Frame (270px wide, flush to bottom, cropped) */}
-      <div
-        className="w-[270px] h-[370px] rounded-t-[44px] p-[1.5px] relative shadow-[0_24px_50px_rgba(0,0,0,0.9)] overflow-hidden"
-        style={{
-          background: 'linear-gradient(180deg, rgba(255,255,255,0.22) 0%, rgba(255,255,255,0.06) 100%)',
-        }}
-      >
-        {/* Inner 8px Black Bezel */}
-        <div className="w-full h-full rounded-t-[43px] p-[8px] pb-0 bg-[#0C0D10] flex flex-col justify-start relative">
-          {/* Lock Screen Interior with Dark Satin Silk Wallpaper */}
-          <div
-            className="w-full h-full rounded-t-[35px] relative overflow-hidden p-3.5 pb-0 flex flex-col items-center"
-            style={{
-              background: 'radial-gradient(ellipse 90% 60% at 50% 20%, #151821 0%, #060709 100%)',
-            }}
-          >
-            {/* SVG Folds of Satin Silk with Faint Mint Reflection */}
-            <svg
-              className="absolute inset-0 w-full h-full pointer-events-none opacity-45"
-              viewBox="0 0 250 350"
-              fill="none"
-              preserveAspectRatio="none"
-            >
-              <path
-                d="M -20 50 Q 80 140 180 80 T 280 200"
-                stroke="rgba(255,255,255,0.08)"
-                strokeWidth="48"
-                filter="blur(16px)"
-              />
-              <path
-                d="M 30 220 Q 140 160 220 280"
-                stroke="rgba(110,237,194,0.08)"
-                strokeWidth="40"
-                filter="blur(20px)"
-              />
-            </svg>
+    <div
+      ref={ref}
+      className="w-full h-full relative z-10 flex flex-col justify-between items-center overflow-hidden"
+    >
+      {/* Element 1: 260px Phone Frame */}
+      <div className="w-[260px] rounded-t-[40px] border border-white/[0.18] p-2 pb-0 bg-[#0A0B0D] shadow-[0_12px_32px_-12px_rgba(0,0,0,0.6)] mt-2">
+        <div
+          className="w-full rounded-t-[32px] p-3 pb-3 flex flex-col items-center relative overflow-hidden"
+          style={{
+            background:
+              'linear-gradient(135deg, rgba(255,255,255,0.06) 0%, transparent 55%), #0B0C10',
+          }}
+        >
+          {/* Small island pill */}
+          <div className="w-16 h-3.5 rounded-full bg-black mx-auto mb-2" />
 
-            {/* Dynamic Island Pill */}
-            <div className="w-20 h-4 rounded-full bg-black mx-auto mb-1.5 shadow-sm relative z-20" />
+          {/* Element 2: Date & Clock */}
+          <div className="text-[14px] font-medium text-white/70 font-sans text-center">
+            {formattedDate}
+          </div>
+          <div className="text-[72px] font-[200] text-white/[0.92] font-sans text-center leading-none tracking-tight my-1 tabular-nums">
+            2:31
+          </div>
 
-            {/* Status Bar */}
-            <div className="w-full flex items-center justify-between text-[11.5px] font-sans font-semibold text-white/80 px-1 mb-1 relative z-20">
-              <span className="tabular-nums">2:31</span>
-              {/* Signal, WiFi, Battery SVGs */}
-              <div className="flex items-center gap-1.5">
-                <svg className="w-3 h-3 fill-current" viewBox="0 0 16 16">
-                  <path d="M1 12h2v3H1v-3zm4-3h2v6H5V9zm4-4h2v10H9V5zm4-4h2v14h-2V1z" />
-                </svg>
-                <svg className="w-3.5 h-3.5 fill-current" viewBox="0 0 16 16">
-                  <path d="M8 12a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3zm-4.24-2.83a6 6 0 0 1 8.48 0l-1.06 1.06a4.5 4.5 0 0 0-6.36 0L3.76 9.17zm-2.83-2.83a10 10 0 0 1 14.14 0l-1.06 1.06a8.5 8.5 0 0 0-12.02 0L.93 6.34z" />
-                </svg>
-                <div className="w-4 h-2 rounded-[3px] border border-current p-0.5 flex items-center">
-                  <div className="w-full h-full bg-current rounded-[1px]" />
+          {/* Element 3: Three Notification Cards */}
+          <div className="w-full space-y-2 mt-2">
+            {[
+              {
+                title: 'Estimate booked',
+                sub: 'Tue 10:30 AM, 123 Oak St',
+                time: 'now',
+              },
+              {
+                title: 'Emergency lead captured',
+                sub: 'Water heater leak',
+                time: '3m ago',
+              },
+              {
+                title: 'Call summary ready',
+                sub: '4 calls handled overnight',
+                time: '12m ago',
+              },
+            ].map((item) => (
+              <div
+                key={item.title}
+                className="w-full rounded-[14px] bg-[#0D0E11] border border-white/[0.08] p-2.5 flex items-start gap-2.5 text-left"
+              >
+                <div className="w-7 h-7 rounded-[8px] bg-[#6EEDC2]/15 border border-[#6EEDC2]/30 flex items-center justify-center shrink-0 mt-0.5">
+                  <Phone className="w-4 h-4 text-[#6EEDC2]" strokeWidth={1.5} />
+                </div>
+                <div className="flex-1 min-w-0">
+                  <div className="flex items-center justify-between">
+                    <span className="text-[14px] font-semibold text-white/[0.92] font-sans truncate">
+                      {item.title}
+                    </span>
+                    <span className="text-[12px] font-normal text-white/[0.55] font-sans ml-2 shrink-0">
+                      {item.time}
+                    </span>
+                  </div>
+                  <div className="text-[12px] font-normal text-white/[0.55] font-sans truncate mt-0.5">
+                    {item.sub}
+                  </div>
                 </div>
               </div>
-            </div>
-
-            {/* Date & Big 76px Clock */}
-            <div className="text-[12.5px] font-sans font-medium text-white/70 mt-1 relative z-20">
-              {formattedDate}
-            </div>
-            <div className="text-[76px] font-display font-light text-white tracking-tight leading-none my-1 tabular-nums relative z-20">
-              2:31
-            </div>
-
-            {/* Three Notification Cards with Heavy Glass */}
-            <div className="w-full space-y-2 relative z-20 mt-1">
-              {[
-                {
-                  title: 'Estimate booked',
-                  sub: 'Tue 10:30 AM, 123 Oak St',
-                  time: 'now',
-                },
-                {
-                  title: 'Emergency lead captured',
-                  sub: 'Water heater leak, callback needed',
-                  time: '3m ago',
-                },
-                {
-                  title: 'Call summary ready',
-                  sub: '4 calls handled overnight',
-                  time: '12m ago',
-                },
-              ].map((notif) => (
-                <div
-                  key={notif.title}
-                  className="rounded-[16px] bg-white/[0.08] border border-white/[0.1] backdrop-blur-[20px] p-2.5 shadow-md flex items-center gap-2.5"
-                >
-                  <div className="w-7 h-7 rounded-[8px] bg-[#6EEDC2] flex items-center justify-center text-[#040506] shrink-0 shadow-xs">
-                    <Sparkles className="w-3.5 h-3.5" />
-                  </div>
-                  <div className="flex-1 min-w-0">
-                    <div className="flex items-center justify-between">
-                      <span className="text-[12.5px] font-sans font-semibold text-white truncate">
-                        {notif.title}
-                      </span>
-                      <span className="text-[10.5px] font-sans text-white/45 tabular-nums">
-                        {notif.time}
-                      </span>
-                    </div>
-                    <div className="text-[11.5px] font-sans text-white/60 truncate">
-                      {notif.sub}
-                    </div>
-                  </div>
-                </div>
-              ))}
-            </div>
+            ))}
           </div>
         </div>
       </div>
 
-      {/* Three Stat Tiles (Glass, 16px radius, equal width) with Glowing Mint Rim */}
-      <div className="w-full grid grid-cols-3 gap-2.5 pt-3 border-t border-white/[0.06] relative z-20">
-        <div className="rounded-[16px] bg-[#0A0D12]/90 border border-[#6EEDC2]/40 backdrop-blur-md p-3 text-center shadow-[0_0_16px_-2px_rgba(110,237,194,0.18),inset_0_1px_0_rgba(255,255,255,0.08),0_6px_20px_rgba(0,0,0,0.5)]">
-          <div className="text-[26px] font-display font-medium text-[#6EEDC2] tabular-nums leading-tight">
+      {/* Element 4: Three Stat Tiles at Bottom (16px padding, no overlap) */}
+      <div className="w-full grid grid-cols-3 gap-3 p-4 pt-2 z-20">
+        <div className="rounded-[14px] bg-[#0D0E11] border border-white/[0.08] p-3 text-center">
+          <div className="text-[20px] font-semibold text-white/[0.92] font-sans tabular-nums leading-tight">
             {counts.answered}
           </div>
-          <div className="text-[12px] font-sans text-white/65 mt-0.5">Calls answered</div>
+          <div className="text-[12px] font-normal text-white/[0.55] font-sans mt-0.5">
+            Calls answered
+          </div>
         </div>
-
-        <div className="rounded-[16px] bg-[#0A0D12]/90 border border-[#6EEDC2]/40 backdrop-blur-md p-3 text-center shadow-[0_0_16px_-2px_rgba(110,237,194,0.18),inset_0_1px_0_rgba(255,255,255,0.08),0_6px_20px_rgba(0,0,0,0.5)]">
-          <div className="text-[26px] font-display font-medium text-[#6EEDC2] tabular-nums leading-tight">
+        <div className="rounded-[14px] bg-[#0D0E11] border border-white/[0.08] p-3 text-center">
+          <div className="text-[20px] font-semibold text-white/[0.92] font-sans tabular-nums leading-tight">
             {counts.booked}
           </div>
-          <div className="text-[12px] font-sans text-white/65 mt-0.5">Jobs booked</div>
+          <div className="text-[12px] font-normal text-white/[0.55] font-sans mt-0.5">
+            Jobs booked
+          </div>
         </div>
-
-        <div className="rounded-[16px] bg-[#0A0D12]/90 border border-[#6EEDC2]/40 backdrop-blur-md p-3 text-center shadow-[0_0_16px_-2px_rgba(110,237,194,0.18),inset_0_1px_0_rgba(255,255,255,0.08),0_6px_20px_rgba(0,0,0,0.5)]">
-          <div className="text-[26px] font-display font-medium text-[#6EEDC2] tabular-nums leading-tight">
+        <div className="rounded-[14px] bg-[#0D0E11] border border-white/[0.08] p-3 text-center">
+          <div className="text-[20px] font-semibold text-white/[0.92] font-sans tabular-nums leading-tight">
             {counts.leads}
           </div>
-          <div className="text-[12px] font-sans text-white/65 mt-0.5">Leads captured</div>
+          <div className="text-[12px] font-normal text-white/[0.55] font-sans mt-0.5">
+            Leads captured
+          </div>
         </div>
       </div>
     </div>
   );
 };
+

@@ -92,7 +92,9 @@ export const CurtainBackground: React.FC<CurtainBackgroundProps> = ({
       elapsed += dt;
 
       let speed = 40;
-      if (variant === 'hero' || variant === 'getting-started') {
+      if (variant === 'violet') {
+        speed = 35; // drifting slowly to the right at about 35px/s
+      } else if (variant === 'hero' || variant === 'getting-started') {
         speed = 45;
         // Hero / Getting Started has initial speed easing: 90px/s -> 45px/s over first 1.5s
         if (elapsed < 1.5) {
