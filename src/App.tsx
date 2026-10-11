@@ -14,6 +14,7 @@ import { HowItWorks } from './components/HowItWorks';
 import { DarkBand1 } from './components/DarkBand1';
 import { TrustRow } from './components/TrustRow';
 import { WhyAppsian } from './components/WhyAppsian';
+import { GettingStarted } from './components/GettingStarted';
 import { PricingSection } from './components/PricingSection';
 import { TestimonialsSection } from './components/TestimonialsSection';
 import { FaqSection } from './components/FaqSection';
@@ -92,6 +93,9 @@ export default function App() {
 
       {/* Why Appsian comparison table */}
       <WhyAppsian />
+
+      {/* Getting Started (4-step timeline) */}
+      <GettingStarted onSuccessDemo={handleOpenDemoModal} />
 
       {/* 6. Pricing (1187px wide) */}
       <PricingSection onPlanSelect={handlePlanSelect} />

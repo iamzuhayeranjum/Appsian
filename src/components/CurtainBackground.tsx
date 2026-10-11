@@ -1,11 +1,12 @@
 import React, { useRef, useState, useEffect, useId } from 'react';
 
-export type CurtainVariant = 'hero' | 'blue' | 'violet';
+export type CurtainVariant = 'hero' | 'blue' | 'violet' | 'getting-started';
 
 export interface CurtainBackgroundProps {
   variant?: CurtainVariant;
   offset?: number;
   className?: string;
+  baseGradient?: string;
   children?: React.ReactNode;
 }
 
@@ -16,6 +17,7 @@ export const CurtainBackground: React.FC<CurtainBackgroundProps> = ({
   variant = 'hero',
   offset = 0,
   className = '',
+  baseGradient,
   children,
 }) => {
   const containerRef = useRef<HTMLDivElement>(null);
@@ -90,9 +92,9 @@ export const CurtainBackground: React.FC<CurtainBackgroundProps> = ({
       elapsed += dt;
 
       let speed = 40;
-      if (variant === 'hero') {
+      if (variant === 'hero' || variant === 'getting-started') {
         speed = 45;
-        // Hero has initial speed easing: 90px/s -> 45px/s over first 1.5s
+        // Hero / Getting Started has initial speed easing: 90px/s -> 45px/s over first 1.5s
         if (elapsed < 1.5) {
           const t = elapsed / 1.5;
           const easeOut = 1 - Math.pow(1 - t, 2);
@@ -121,11 +123,14 @@ export const CurtainBackground: React.FC<CurtainBackgroundProps> = ({
 
   // Styling tokens per variant
   const getBaseGradient = () => {
+    if (baseGradient) return baseGradient;
     switch (variant) {
       case 'blue':
         return 'linear-gradient(180deg, #04060F 0%, #070B2A 14%, #14246E 30%, #2F55B0 50%, #5E9BE6 68%, #A5D9F8 86%, #D6F3FF 100%)';
       case 'violet':
         return 'linear-gradient(180deg, #08070D 0%, #1B1850 30%, #4B47B0 55%, #7C7DBE 75%, #9199D7 100%)';
+      case 'getting-started':
+        return 'linear-gradient(180deg, #050507 0px, #050507 160px, #0D0D2E 340px, #1C1966 540px, #363098 860px, #4B47B0 1200px, #6467CE 1560px, #7A7BE6 1900px, #98A9FB 2180px, #A9C8FB 2400px, #CDEAFF 2600px, #EAF7FF 100%)';
       case 'hero':
       default:
         return 'linear-gradient(180deg, #050507 0%, #050507 14%, #1C1966 26%, #4B47B0 38%, #7A7BE6 56%, #98A9FB 68%, #A9C8FB 82%, #CDEAFF 94%, #EAF7FF 100%)';
@@ -138,6 +143,7 @@ export const CurtainBackground: React.FC<CurtainBackgroundProps> = ({
         return 'rgba(18, 28, 120, 0.7)';
       case 'violet':
         return 'rgba(36, 30, 150, 0.7)';
+      case 'getting-started':
       case 'hero':
       default:
         return 'rgba(36, 30, 150, 0.85)';
@@ -145,7 +151,7 @@ export const CurtainBackground: React.FC<CurtainBackgroundProps> = ({
   };
 
   const getBandBlur = () => {
-    return variant === 'hero' ? 'blur(12px)' : 'blur(16px)';
+    return variant === 'hero' || variant === 'getting-started' ? 'blur(12px)' : 'blur(16px)';
   };
 
   const getHairlineGradient = () => {
@@ -154,6 +160,7 @@ export const CurtainBackground: React.FC<CurtainBackgroundProps> = ({
         return 'linear-gradient(180deg, rgba(255,255,255,0) 0%, rgba(255,255,255,0.20) 40%, rgba(255,255,255,0.06) 100%)';
       case 'violet':
         return 'linear-gradient(180deg, rgba(255,255,255,0) 0%, rgba(255,255,255,0.18) 40%, rgba(255,255,255,0.06) 100%)';
+      case 'getting-started':
       case 'hero':
       default:
         return 'linear-gradient(180deg, rgba(255,255,255,0) 0%, rgba(255,255,255,0.28) 40%, rgba(255,255,255,0.12) 100%)';
@@ -240,7 +247,7 @@ export const CurtainBackground: React.FC<CurtainBackgroundProps> = ({
       </div>
 
       {/* 3) BLACK TOP WITH AN ORGANIC LOWER EDGE */}
-      {variant === 'hero' ? (
+      {variant === 'hero' || variant === 'getting-started' ? (
         <div className="absolute inset-x-0 top-0 pointer-events-none overflow-hidden h-[450px]">
           <div className="w-full h-full animate-organic-breathe origin-top">
             <svg
@@ -290,7 +297,7 @@ export const CurtainBackground: React.FC<CurtainBackgroundProps> = ({
       )}
 
       {/* 4) BOTTOM GLOW (stays cleanly inside container bounds) */}
-      {variant === 'hero' ? (
+      {variant === 'hero' || variant === 'getting-started' ? (
         <>
           <div
             className="absolute inset-x-0 bottom-0 pointer-events-none"
