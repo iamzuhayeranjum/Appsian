@@ -3,6 +3,7 @@ import { content } from '../content';
 import { Calendar, UserCheck, FileAudio, Check } from 'lucide-react';
 import { SectionHeader, EyebrowPill, Reveal } from './design-system';
 import { CurtainBackground } from './CurtainBackground';
+import { SectionFade } from './SectionFade';
 
 export const DarkBand1: React.FC = () => {
   const { darkBand1 } = content;
@@ -33,15 +34,7 @@ export const DarkBand1: React.FC = () => {
         </div>
 
         {/* FADE OVERLAY: smooth ease-in gradient to EXACTLY var(--page-gray) at 100% (height: 150px; z-index: 1) */}
-        <div
-          className="absolute left-0 right-0 bottom-0 pointer-events-none"
-          style={{
-            height: '150px',
-            zIndex: 1,
-            background:
-              'linear-gradient(to bottom, rgba(245,246,248,0) 0%, rgba(245,246,248,0.06) 12%, rgba(245,246,248,0.16) 25%, rgba(245,246,248,0.32) 40%, rgba(245,246,248,0.55) 58%, rgba(245,246,248,0.78) 75%, rgba(245,246,248,0.93) 90%, rgba(245,246,248,1) 100%)',
-          }}
-        />
+        <SectionFade fadeTo="var(--page-gray, #F5F6F8)" height={150} zIndex={1} />
 
         {/* (c) Content layer holding eyebrow, headline, cards (position: relative; z-index: 2) */}
         <div className="relative max-w-[1187px] mx-auto" style={{ zIndex: 2 }}>

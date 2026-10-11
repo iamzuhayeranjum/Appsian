@@ -4,6 +4,7 @@ import { content } from '../content';
 import { Mail, Check, CheckCircle2 } from 'lucide-react';
 import { Headline, Button, Reveal } from './design-system';
 import { CurtainBackground } from './CurtainBackground';
+import { SectionFade } from './SectionFade';
 
 interface FinalCtaBandProps {
   onSuccessDemo?: () => void;
@@ -29,9 +30,24 @@ export const FinalCtaBand: React.FC<FinalCtaBandProps> = ({ onSuccessDemo }) => 
 
   return (
     <section className="w-full pb-[120px] bg-[#F5F6F7] flex justify-center px-4 sm:px-6">
-      {/* 56px radius dark container with violet moving curtain background */}
-      <div className="w-full max-w-[1248px] min-h-[440px] rounded-[56px] relative overflow-clip shadow-2 flex flex-col items-center justify-center py-16 px-6 text-center">
-        <CurtainBackground variant="violet" offset={420} />
+      {/* 56px radius dark container with open dissolving bottom edge and violet moving curtain background */}
+      <div
+        className="w-full max-w-[1248px] min-h-[440px] rounded-t-[56px] rounded-b-none border-t border-x border-b-0 border-[rgba(255,255,255,0.08)] relative overflow-clip flex flex-col items-center justify-center pt-16 sm:pt-20 pb-[120px] px-6 text-center"
+        style={{
+          borderRadius: '56px 56px 0 0',
+          background: 'transparent',
+        }}
+      >
+        {/* Violet curtain background layer (z-0) */}
+        <div
+          className="absolute inset-0 pointer-events-none overflow-hidden"
+          style={{ zIndex: 0, borderRadius: '56px 56px 0 0' }}
+        >
+          <CurtainBackground variant="violet" offset={420} />
+        </div>
+
+        {/* FADE OVERLAY: smooth ease-in gradient dissolving to #F5F6F7 (height: 150px; z-index: 1) */}
+        <SectionFade fadeTo="#F5F6F7" height={150} zIndex={1} />
 
         <div className="relative z-10 w-full flex flex-col items-center">
           {/* Mixed-weight signature headline */}

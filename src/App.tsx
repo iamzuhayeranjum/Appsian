@@ -21,6 +21,7 @@ import { FaqSection } from './components/FaqSection';
 import { FinalCtaBand } from './components/FinalCtaBand';
 import { Footer } from './components/Footer';
 import { VoiceDemoModal } from './components/VoiceDemoModal';
+import { Analytics } from '@vercel/analytics/react';
 
 export default function App() {
   const [isDemoModalOpen, setIsDemoModalOpen] = useState(false);
@@ -117,6 +118,8 @@ export default function App() {
         isOpen={isDemoModalOpen}
         onClose={handleCloseDemoModal}
       />
+
+      <Analytics />
     </div>
   );
 }

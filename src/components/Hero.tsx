@@ -5,6 +5,7 @@ import { Navbar } from './Navbar';
 import { DashboardMockup } from './DashboardMockup';
 import { DemoBar } from './DemoBar';
 import { content } from '../content';
+import { SectionFade } from './SectionFade';
 
 interface HeroProps {
   onBookDemoClick: () => void;
@@ -15,7 +16,7 @@ export const Hero: React.FC<HeroProps> = ({ onBookDemoClick, onPlayClick }) => {
   const { hero } = content;
 
   return (
-    <section className="relative w-full h-[1095px] overflow-hidden bg-white">
+    <section className="relative w-full h-[1095px] overflow-hidden bg-[#F5F6F7]">
       {/* Hero Background replacement layer: hard-edged panels with tapering bands, hairlines, organic dark top, bottom glow */}
       <CurtainBackground variant="hero" />
 
@@ -57,6 +58,9 @@ export const Hero: React.FC<HeroProps> = ({ onBookDemoClick, onPlayClick }) => {
       >
         <DashboardMockup onPlayClick={onPlayClick} />
       </motion.div>
+
+      {/* Soft blurry dissolve into next section (#F5F6F7) */}
+      <SectionFade fadeTo="#F5F6F7" height={200} zIndex={30} />
     </section>
   );
 };

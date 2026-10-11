@@ -4,6 +4,7 @@ import { content } from '../content';
 import { Star } from 'lucide-react';
 import { SectionHeader, EyebrowPill } from './design-system';
 import { CurtainBackground } from './CurtainBackground';
+import { SectionFade } from './SectionFade';
 
 export const TestimonialsSection: React.FC = () => {
   const { testimonials } = content;
@@ -33,11 +34,27 @@ export const TestimonialsSection: React.FC = () => {
 
   return (
     <section className="w-full pb-[120px] bg-[#F5F6F7] flex justify-center px-4 sm:px-6">
-      {/* 56px-radius dark container inset 24px from viewport edges with blue curtain background */}
-      <div className="w-full max-w-[1248px] rounded-[56px] border border-[rgba(255,255,255,0.08)] py-16 md:py-20 px-6 sm:px-10 relative overflow-clip text-[#F4F5F7]">
-        <CurtainBackground variant="blue" offset={280} />
+      {/* Dark container with 56px rounded top, open bottom edge dissolving into page, blue curtain background */}
+      <div
+        className="w-full max-w-[1248px] rounded-t-[56px] rounded-b-none border-t border-x border-b-0 border-[rgba(255,255,255,0.08)] pt-16 md:pt-20 pb-[130px] px-6 sm:px-10 relative overflow-clip text-[#F4F5F7]"
+        style={{
+          borderRadius: '56px 56px 0 0',
+          background: 'transparent',
+        }}
+      >
+        {/* Background curtain layer (z-0) */}
+        <div
+          className="absolute inset-0 pointer-events-none overflow-hidden"
+          style={{ zIndex: 0, borderRadius: '56px 56px 0 0' }}
+        >
+          <CurtainBackground variant="blue" offset={280} />
+        </div>
 
-        <div className="relative z-10 max-w-[1187px] mx-auto">
+        {/* FADE OVERLAY: smooth ease-in gradient dissolving to #F5F6F7 (height: 150px; z-index: 1) */}
+        <SectionFade fadeTo="#F5F6F7" height={150} zIndex={1} />
+
+        {/* Content layer (z-2) */}
+        <div className="relative max-w-[1187px] mx-auto" style={{ zIndex: 2 }}>
           {/* Headline */}
           <SectionHeader
             theme="dark"
