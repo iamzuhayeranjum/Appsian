@@ -6,6 +6,7 @@
 
 import React, { useEffect, useState } from 'react';
 import Lenis from 'lenis';
+import { Analytics } from '@vercel/analytics/react';
 import { Hero } from './components/Hero';
 import { IntegrationsStrip } from './components/IntegrationsStrip';
 import { MissedCallCalculator } from './components/MissedCallCalculator';
@@ -67,6 +68,7 @@ export default function App() {
 
   return (
     <div className="w-full min-h-screen bg-white text-[#2D283C] flex flex-col items-center">
+      <Analytics />
       {/* 1. Hero (full viewport height, curtain gradient, flush to top) */}
       <Hero
         onBookDemoClick={handleOpenDemoModal}
