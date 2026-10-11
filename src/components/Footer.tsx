@@ -63,11 +63,11 @@ export const Footer: React.FC = () => {
                 />
               </g>
 
-              {/* Text: Appsian with tight letter-spacing in Hanken Grotesk */}
+              {/* Text: Appsian with tight letter-spacing in Instrument Sans */}
               <text
                 x="220"
                 y="172"
-                fontFamily="Hanken Grotesk, sans-serif"
+                fontFamily="'Instrument Sans', Inter, 'Helvetica Neue', Arial, sans-serif"
                 fontSize="205"
                 fontWeight="500"
                 letterSpacing="-0.04em"

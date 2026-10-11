@@ -214,7 +214,7 @@ export const DashboardMockup: React.FC<DashboardMockupProps> = ({ onPlayClick })
                     Calls answered
                   </div>
                   <div className="flex items-baseline justify-between mt-1">
-                    <span className="text-lg font-bold text-slate-900 font-display tabular-nums">
+                    <span className="text-lg font-bold text-slate-900 font-sans tabular-nums">
                       {callsAnswered}
                     </span>
                     <span className="text-[10px] font-semibold text-emerald-700 bg-emerald-50 px-1.5 py-0.5 rounded-md flex items-center">
@@ -229,7 +229,7 @@ export const DashboardMockup: React.FC<DashboardMockupProps> = ({ onPlayClick })
                     Jobs booked
                   </div>
                   <div className="flex items-baseline justify-between mt-1">
-                    <span className="text-lg font-bold text-slate-900 font-display tabular-nums">
+                    <span className="text-lg font-bold text-slate-900 font-sans tabular-nums">
                       {jobsBooked}
                     </span>
                     <span className="text-[10px] font-semibold text-emerald-700 bg-emerald-50 px-1.5 py-0.5 rounded-md flex items-center">
@@ -244,7 +244,7 @@ export const DashboardMockup: React.FC<DashboardMockupProps> = ({ onPlayClick })
                     After-hours
                   </div>
                   <div className="flex items-baseline justify-between mt-1">
-                    <span className="text-lg font-bold text-slate-900 font-display tabular-nums">
+                    <span className="text-lg font-bold text-slate-900 font-sans tabular-nums">
                       {afterHours}
                     </span>
                     <span className="text-[10px] font-semibold text-emerald-700 bg-emerald-50 px-1.5 py-0.5 rounded-md flex items-center">
@@ -259,7 +259,7 @@ export const DashboardMockup: React.FC<DashboardMockupProps> = ({ onPlayClick })
                     Missed calls
                   </div>
                   <div className="flex items-baseline justify-between mt-1">
-                    <span className="text-lg font-bold text-slate-900 font-display tabular-nums">
+                    <span className="text-lg font-bold text-slate-900 font-sans tabular-nums">
                       0
                     </span>
                     <span className="text-[10px] font-semibold text-emerald-700 bg-emerald-50 px-1.5 py-0.5 rounded-md">
@@ -411,7 +411,7 @@ export const DashboardMockup: React.FC<DashboardMockupProps> = ({ onPlayClick })
                     </svg>
 
                     <div className="absolute inset-0 flex flex-col items-center justify-center">
-                      <span className="text-xl font-bold text-slate-900 font-display tabular-nums">
+                      <span className="text-xl font-bold text-slate-900 font-sans tabular-nums">
                         {currentRate}%
                       </span>
                       <span className="text-[9px] text-emerald-600 font-medium">
@@ -434,11 +434,11 @@ export const DashboardMockup: React.FC<DashboardMockupProps> = ({ onPlayClick })
               <div className="grid grid-cols-2 gap-2 text-xs">
                 <div className="p-2 bg-slate-50 rounded-lg flex items-center justify-between">
                   <span className="text-slate-600 text-[11px]">Direct Deposit</span>
-                  <span className="font-semibold text-slate-900 font-display">$6,045.00</span>
+                  <span className="font-semibold text-slate-900 font-sans tabular-nums">$6,045.00</span>
                 </div>
                 <div className="p-2 bg-slate-50 rounded-lg flex items-center justify-between">
                   <span className="text-slate-600 text-[11px]">Completed Jobs</span>
-                  <span className="font-semibold text-slate-900 font-display">$14,820.00</span>
+                  <span className="font-semibold text-slate-900 font-sans tabular-nums">$14,820.00</span>
                 </div>
               </div>
             </div>

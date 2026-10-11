@@ -1,13 +1,20 @@
 @import "tailwindcss";
 
+@theme {
+  --default-font-family: 'Inter', 'Helvetica Neue', Arial, sans-serif;
+  --font-sans: 'Inter', 'Helvetica Neue', Arial, sans-serif;
+  --font-display: 'Instrument Sans', 'Inter', 'Helvetica Neue', Arial, sans-serif;
+}
+
 @layer base {
   :root {
-    --font-display: 'Instrument Sans', sans-serif;
-    --font-body: 'Inter', sans-serif;
+    --font-display: 'Instrument Sans', 'Inter', 'Helvetica Neue', Arial, sans-serif;
+    --font-body: 'Inter', 'Helvetica Neue', Arial, sans-serif;
   }
 
+  html,
   body {
-    font-family: var(--font-body);
+    font-family: 'Inter', 'Helvetica Neue', Arial, sans-serif;
     color: #2D283C;
     background-color: #FFFFFF;
     overflow-x: clip;
@@ -16,6 +23,13 @@
   h1, h2, h3, .font-display {
     font-family: var(--font-display);
     letter-spacing: -0.03em;
+  }
+
+  button, input, select, textarea, optgroup {
+    font-family: inherit;
+    font-size: inherit;
+    font-weight: inherit;
+    letter-spacing: inherit;
   }
 }
 

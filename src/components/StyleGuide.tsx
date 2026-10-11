@@ -109,11 +109,11 @@ export const StyleGuide: React.FC = () => {
           {/* Typography Scale */}
           <div className="mb-14">
             <h3 className="text-[13px] font-semibold uppercase tracking-[0.06em] text-[#5B5F68] mb-4">
-              Typography Scale (Hanken Grotesk &amp; Inter)
+              Typography Scale (Instrument Sans &amp; Inter)
             </h3>
             <div className="bg-white rounded-[20px] p-6 border border-[rgba(11,11,15,0.08)] shadow-1 space-y-5">
               <div>
-                <span className="text-[11px] font-mono text-[#9A9EA8]">H1 (48px / 1.08) · Mixed Weight</span>
+                <span className="text-[11px] font-sans text-[#9A9EA8]">H1 (48px / 1.08) · Mixed Weight</span>
                 <Headline
                   as="h1"
                   segments={[
@@ -124,7 +124,7 @@ export const StyleGuide: React.FC = () => {
               </div>
 
               <div>
-                <span className="text-[11px] font-mono text-[#9A9EA8]">H2 (40px / 1.1)</span>
+                <span className="text-[11px] font-sans text-[#9A9EA8]">H2 (40px / 1.1)</span>
                 <Headline
                   as="h2"
                   segments={[
@@ -135,14 +135,14 @@ export const StyleGuide: React.FC = () => {
               </div>
 
               <div>
-                <span className="text-[11px] font-mono text-[#9A9EA8]">H3 (22px / 1.25)</span>
+                <span className="text-[11px] font-sans text-[#9A9EA8]">H3 (22px / 1.25)</span>
                 <h3 className="text-[22px] leading-[1.25] font-display font-[500] text-[#0B0B0F]">
                   Reclaim Your Time With Automated Voice Intelligence
                 </h3>
               </div>
 
               <div>
-                <span className="text-[11px] font-mono text-[#9A9EA8]">Body (15px / 24px) &amp; Eyebrow (10.5px)</span>
+                <span className="text-[11px] font-sans text-[#9A9EA8]">Body (15px / 24px) &amp; Eyebrow (10.5px)</span>
                 <div className="mt-1 flex items-center gap-3">
                   <EyebrowPill>Operational Status</EyebrowPill>
                   <p className="text-[15px] leading-[24px] text-[#5B5F68]">

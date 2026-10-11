@@ -306,7 +306,7 @@ export const MissedCallCalculator: React.FC = () => {
                         const val = Math.max(1, Math.min(50, Number(e.target.value) || 1));
                         setCallsPerWeek(val);
                       }}
-                      className="w-10 text-center font-display font-medium text-sm text-[#2D283C] focus:outline-none"
+                      className="w-10 text-center font-sans tabular-nums font-medium text-sm text-[#2D283C] focus:outline-none"
                     />
                     <span className="text-[11px] text-slate-400 font-sans">calls/wk</span>
                   </div>
@@ -416,7 +416,7 @@ export const MissedCallCalculator: React.FC = () => {
                         const val = Math.max(100, Math.min(10000, Number(e.target.value) || 100));
                         setJobValue(val);
                       }}
-                      className="w-14 text-center font-display font-medium text-sm text-[#2D283C] focus:outline-none"
+                      className="w-14 text-center font-sans tabular-nums font-medium text-sm text-[#2D283C] focus:outline-none"
                     />
                   </div>
                 </div>
@@ -447,7 +447,7 @@ export const MissedCallCalculator: React.FC = () => {
 
                     <div className="flex items-baseline justify-between pt-3">
                       <span className="text-[11px] text-slate-500 font-sans">Invoice target value</span>
-                      <span className="font-display font-medium text-lg text-slate-900 tabular-nums">
+                      <span className="font-sans font-medium text-lg text-slate-900 tabular-nums">
                         {formatMoney(jobValue)}
                       </span>
                     </div>
@@ -519,7 +519,7 @@ export const MissedCallCalculator: React.FC = () => {
                         const val = Math.max(5, Math.min(80, Number(e.target.value) || 5));
                         setCloseRate(val);
                       }}
-                      className="w-9 text-center font-display font-medium text-sm text-[#2D283C] focus:outline-none"
+                      className="w-9 text-center font-sans tabular-nums font-medium text-sm text-[#2D283C] focus:outline-none"
                     />
                     <span className="text-xs text-slate-400 font-sans">%</span>
                   </div>
