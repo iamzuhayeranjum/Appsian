@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { ArrowRight, ChevronUp } from 'lucide-react';
 import { useHeroPast } from './useHeroPast';
+import { MorePanel } from './MorePanel';
 
 interface BottomNavProps {
   onCtaClick?: () => void;
@@ -23,6 +24,8 @@ export const BottomNav: React.FC<BottomNavProps> = ({ onCtaClick, pastHero: prop
   const [isHoveredCta, setIsHoveredCta] = useState(false);
   const [isDockVisible, setIsDockVisible] = useState(pastHero);
   const moreRef = useRef<HTMLDivElement>(null);
+  const panelRef = useRef<HTMLDivElement>(null);
+  const hoverTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
   // Check prefers-reduced-motion
   const [isReducedMotion, setIsReducedMotion] = useState(false);
@@ -40,8 +43,54 @@ export const BottomNav: React.FC<BottomNavProps> = ({ onCtaClick, pastHero: prop
       setIsDockVisible(true);
     } else {
       setIsMoreOpen(false);
+      if (hoverTimeoutRef.current) {
+        clearTimeout(hoverTimeoutRef.current);
+      }
     }
   }, [pastHero]);
+
+  // Clean up hover timeout on unmount
+  useEffect(() => {
+    return () => {
+      if (hoverTimeoutRef.current) {
+        clearTimeout(hoverTimeoutRef.current);
+      }
+    };
+  }, []);
+
+  // Hover handlers for smooth bridge between More button and Mega Panel
+  const handleMoreMouseEnter = () => {
+    if (hoverTimeoutRef.current) {
+      clearTimeout(hoverTimeoutRef.current);
+      hoverTimeoutRef.current = null;
+    }
+    setIsMoreOpen(true);
+  };
+
+  const handleMoreMouseLeave = () => {
+    if (hoverTimeoutRef.current) {
+      clearTimeout(hoverTimeoutRef.current);
+    }
+    hoverTimeoutRef.current = setTimeout(() => {
+      setIsMoreOpen(false);
+    }, 220);
+  };
+
+  const handlePanelMouseEnter = () => {
+    if (hoverTimeoutRef.current) {
+      clearTimeout(hoverTimeoutRef.current);
+      hoverTimeoutRef.current = null;
+    }
+  };
+
+  const handlePanelMouseLeave = () => {
+    if (hoverTimeoutRef.current) {
+      clearTimeout(hoverTimeoutRef.current);
+    }
+    hoverTimeoutRef.current = setTimeout(() => {
+      setIsMoreOpen(false);
+    }, 220);
+  };
 
   // Handle animation complete to toggle visibility: hidden only AFTER exit animation finishes
   const handleAnimationComplete = (definition: string | { opacity?: number }) => {
@@ -105,7 +154,10 @@ export const BottomNav: React.FC<BottomNavProps> = ({ onCtaClick, pastHero: prop
   // Close "More" popover on click outside or escape
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
-      if (moreRef.current && !moreRef.current.contains(event.target as Node)) {
+      const target = event.target as Node;
+      const isInsideMore = moreRef.current?.contains(target);
+      const isInsidePanel = panelRef.current?.contains(target);
+      if (!isInsideMore && !isInsidePanel) {
         setIsMoreOpen(false);
       }
     };
@@ -128,8 +180,7 @@ export const BottomNav: React.FC<BottomNavProps> = ({ onCtaClick, pastHero: prop
   }, [isMoreOpen]);
 
   // Smooth scroll handler with offset for section header clearance
-  const handleScrollTo = (e: React.MouseEvent, href: string) => {
-    e.preventDefault();
+  const handleScrollToHref = (href: string) => {
     setIsMoreOpen(false);
     const target = document.querySelector(href);
     if (target) {
@@ -137,6 +188,11 @@ export const BottomNav: React.FC<BottomNavProps> = ({ onCtaClick, pastHero: prop
       const y = target.getBoundingClientRect().top + window.pageYOffset + yOffset;
       window.scrollTo({ top: y, behavior: 'smooth' });
     }
+  };
+
+  const handleScrollTo = (e: React.MouseEvent, href: string) => {
+    e.preventDefault();
+    handleScrollToHref(href);
   };
 
   // Center CTA button click handler
@@ -246,157 +302,141 @@ export const BottomNav: React.FC<BottomNavProps> = ({ onCtaClick, pastHero: prop
         visibility: isDockVisible ? 'visible' : 'hidden',
       }}
     >
-      <motion.nav
-        initial={false}
-        animate={pastHero ? 'shown' : 'hidden'}
-        variants={dockVariants}
-        onAnimationComplete={handleAnimationComplete}
-        aria-label="Floating Navigation"
-        aria-hidden={!pastHero}
-        inert={!pastHero ? true : undefined}
-        className={`relative w-[calc(100vw-24px)] max-w-[440px] md:w-[712px] md:max-w-[712px] h-[64px] md:h-[72px] p-2 md:p-[10px] rounded-[18px] bg-[#0A0A0A] flex items-center justify-between ${
-          pastHero ? 'pointer-events-auto' : 'pointer-events-none'
-        }`}
-        style={{
-          border: '1px solid rgba(110, 237, 194, 0.35)',
-          boxShadow:
-            '0 0 0 1px rgba(110, 237, 194, 0.08), 0 0 24px -6px rgba(110, 237, 194, 0.18), 0 24px 48px -12px rgba(0, 0, 0, 0.45), inset 0 1px 0 rgba(255, 255, 255, 0.06)',
-          willChange: 'transform, opacity',
-        }}
-      >
-        {/* Slot 0: Product */}
-        <motion.div
-          className="flex-1 h-full flex items-center justify-center"
-          variants={slotVariants}
-          custom={0}
-        >
-          {renderItemSlot(leftSlots[0])}
-        </motion.div>
+      <div className="relative flex justify-center w-auto">
+        {/* Mega-panel sibling above motion.nav */}
+        <AnimatePresence>
+          {isMoreOpen && (
+            <MorePanel
+              ref={panelRef}
+              isOpen={isMoreOpen}
+              onClose={() => setIsMoreOpen(false)}
+              onMouseEnter={handlePanelMouseEnter}
+              onMouseLeave={handlePanelMouseLeave}
+              onNavigate={handleScrollToHref}
+              activeSection={activeSection}
+            />
+          )}
+        </AnimatePresence>
 
-        {/* Slot 1: How it works */}
-        <motion.div
-          className="flex-1 h-full flex items-center justify-center"
-          variants={slotVariants}
-          custom={1}
+        <motion.nav
+          initial={false}
+          animate={pastHero ? 'shown' : 'hidden'}
+          variants={dockVariants}
+          onAnimationComplete={handleAnimationComplete}
+          aria-label="Floating Navigation"
+          aria-hidden={!pastHero}
+          inert={!pastHero ? true : undefined}
+          className={`relative w-[calc(100vw-24px)] max-w-[440px] md:w-[712px] md:max-w-[712px] h-[64px] md:h-[72px] p-2 md:p-[10px] rounded-[18px] bg-[#0A0A0A] flex items-center justify-between ${
+            pastHero ? 'pointer-events-auto' : 'pointer-events-none'
+          }`}
+          style={{
+            border: '1px solid rgba(110, 237, 194, 0.35)',
+            boxShadow:
+              '0 0 0 1px rgba(110, 237, 194, 0.08), 0 0 24px -6px rgba(110, 237, 194, 0.18), 0 24px 48px -12px rgba(0, 0, 0, 0.45), inset 0 1px 0 rgba(255, 255, 255, 0.06)',
+            willChange: 'transform, opacity',
+          }}
         >
-          {renderItemSlot(leftSlots[1])}
-        </motion.div>
-
-        {/* Slot 2 (CENTER): Primary CTA Button */}
-        <motion.div
-          className="flex-none flex items-center justify-center px-1"
-          variants={slotVariants}
-          custom={2}
-        >
-          <button
-            type="button"
-            onClick={handleCtaClick}
-            onMouseEnter={() => setIsHoveredCta(true)}
-            onMouseLeave={() => setIsHoveredCta(false)}
-            className="group relative w-[132px] md:w-[164px] h-[46px] md:h-[54px] rounded-[10px] flex items-center justify-center gap-1.5 md:gap-2 text-[#062B20] font-sans font-[600] text-[13px] md:text-[15px] cursor-pointer transition-all duration-200 overflow-hidden select-none hover:-translate-y-[1px] active:translate-y-0"
-            style={{
-              background: 'linear-gradient(135deg, #7CF2CD 0%, #4DDDAE 100%)',
-              border: '1px solid rgba(255, 255, 255, 0.45)',
-              boxShadow: isHoveredCta
-                ? '0 10px 24px -4px rgba(110, 237, 194, 0.65)'
-                : '0 8px 20px -6px rgba(110, 237, 194, 0.45)',
-            }}
+          {/* Slot 0: Product */}
+          <motion.div
+            className="flex-1 h-full flex items-center justify-center"
+            variants={slotVariants}
+            custom={0}
           >
-            {/* Subtle top-right sheen */}
-            <div
-              className="absolute inset-0 pointer-events-none transition-opacity duration-300"
+            {renderItemSlot(leftSlots[0])}
+          </motion.div>
+
+          {/* Slot 1: How it works */}
+          <motion.div
+            className="flex-1 h-full flex items-center justify-center"
+            variants={slotVariants}
+            custom={1}
+          >
+            {renderItemSlot(leftSlots[1])}
+          </motion.div>
+
+          {/* Slot 2 (CENTER): Primary CTA Button */}
+          <motion.div
+            className="flex-none flex items-center justify-center px-1"
+            variants={slotVariants}
+            custom={2}
+          >
+            <button
+              type="button"
+              onClick={handleCtaClick}
+              onMouseEnter={() => setIsHoveredCta(true)}
+              onMouseLeave={() => setIsHoveredCta(false)}
+              className="group relative w-[132px] md:w-[164px] h-[46px] md:h-[54px] rounded-[10px] flex items-center justify-center gap-1.5 md:gap-2 text-[#062B20] font-sans font-[600] text-[13px] md:text-[15px] cursor-pointer transition-all duration-200 overflow-hidden select-none hover:-translate-y-[1px] active:translate-y-0"
               style={{
-                background:
-                  'radial-gradient(circle at top right, rgba(255, 255, 255, 0.65) 0%, rgba(255, 255, 255, 0) 65%)',
-                opacity: isHoveredCta ? 0.45 : 0.25,
+                background: 'linear-gradient(135deg, #7CF2CD 0%, #4DDDAE 100%)',
+                border: '1px solid rgba(255, 255, 255, 0.45)',
+                boxShadow: isHoveredCta
+                  ? '0 10px 24px -4px rgba(110, 237, 194, 0.65)'
+                  : '0 8px 20px -6px rgba(110, 237, 194, 0.45)',
               }}
-            />
+            >
+              {/* Subtle top-right sheen */}
+              <div
+                className="absolute inset-0 pointer-events-none transition-opacity duration-300"
+                style={{
+                  background:
+                    'radial-gradient(circle at top right, rgba(255, 255, 255, 0.65) 0%, rgba(255, 255, 255, 0) 65%)',
+                  opacity: isHoveredCta ? 0.45 : 0.25,
+                }}
+              />
 
-            <span className="relative z-10 whitespace-nowrap">Get Free Demo</span>
-            <ArrowRight
-              className="relative z-10 w-4 h-4 md:w-[18px] md:h-[18px] stroke-[2.4] transition-transform duration-200 group-hover:translate-x-[3px]"
-            />
-          </button>
-        </motion.div>
+              <span className="relative z-10 whitespace-nowrap">Get Free Demo</span>
+              <ArrowRight
+                className="relative z-10 w-4 h-4 md:w-[18px] md:h-[18px] stroke-[2.4] transition-transform duration-200 group-hover:translate-x-[3px]"
+              />
+            </button>
+          </motion.div>
 
-        {/* Slot 3: Pricing */}
-        <motion.div
-          className="flex-1 h-full flex items-center justify-center"
-          variants={slotVariants}
-          custom={3}
-        >
-          {renderItemSlot(rightSlots[0])}
-        </motion.div>
-
-        {/* Slot 4: More (with Popover) */}
-        <motion.div
-          ref={moreRef}
-          className="relative flex-1 h-full flex items-center justify-center"
-          variants={slotVariants}
-          custom={4}
-        >
-          <button
-            type="button"
-            onClick={() => setIsMoreOpen((prev) => !prev)}
-            aria-expanded={isMoreOpen}
-            className={`group relative w-full h-full flex flex-col items-center justify-center text-white hover:text-white transition-colors duration-180 select-none px-2 rounded-[12px] hover:bg-white/[0.06] ${
-              isMoreOpen ? 'bg-white/[0.08]' : ''
-            }`}
+          {/* Slot 3: Pricing */}
+          <motion.div
+            className="flex-1 h-full flex items-center justify-center"
+            variants={slotVariants}
+            custom={3}
           >
-            <div className="flex items-center gap-1">
-              <span className="text-[13px] md:text-[15px] font-sans font-[500] tracking-tight whitespace-nowrap">
-                More
-              </span>
-              <ChevronUp
-                className={`w-3.5 h-3.5 opacity-60 transition-transform duration-200 ${
-                  isMoreOpen ? 'rotate-180' : ''
+            {renderItemSlot(rightSlots[0])}
+          </motion.div>
+
+          {/* Slot 4: More (opens Mega Panel on hover & click) */}
+          <motion.div
+            ref={moreRef}
+            className="relative flex-1 h-full flex items-center justify-center"
+            variants={slotVariants}
+            custom={4}
+            onMouseEnter={handleMoreMouseEnter}
+            onMouseLeave={handleMoreMouseLeave}
+          >
+            <button
+              type="button"
+              onClick={() => setIsMoreOpen((prev) => !prev)}
+              aria-expanded={isMoreOpen}
+              className={`group relative w-full h-full flex flex-col items-center justify-center text-white hover:text-white transition-colors duration-180 select-none px-2 rounded-[12px] hover:bg-white/[0.06] ${
+                isMoreOpen ? 'bg-white/[0.08]' : ''
+              }`}
+            >
+              <div className="flex items-center gap-1">
+                <span className="text-[13px] md:text-[15px] font-sans font-[500] tracking-tight whitespace-nowrap">
+                  More
+                </span>
+                <ChevronUp
+                  className={`w-3.5 h-3.5 opacity-60 transition-transform duration-200 ${
+                    isMoreOpen ? 'rotate-180' : ''
+                  }`}
+                />
+              </div>
+              {/* 4px mint dot if any "more" section is active */}
+              <span
+                className={`absolute bottom-1 w-1 h-1 rounded-full bg-[#6EEDC2] transition-opacity duration-200 ${
+                  isMoreActive ? 'opacity-100 scale-100' : 'opacity-0 scale-75'
                 }`}
               />
-            </div>
-            {/* 4px mint dot if any "more" section is active */}
-            <span
-              className={`absolute bottom-1 w-1 h-1 rounded-full bg-[#6EEDC2] transition-opacity duration-200 ${
-                isMoreActive ? 'opacity-100 scale-100' : 'opacity-0 scale-75'
-              }`}
-            />
-          </button>
-
-          {/* Popover above dock */}
-          <AnimatePresence>
-            {isMoreOpen && (
-              <motion.div
-                initial={{ opacity: 0, y: 8, scale: 0.96 }}
-                animate={{ opacity: 1, y: 0, scale: 1 }}
-                exit={{ opacity: 0, y: 8, scale: 0.96 }}
-                transition={{ duration: 0.18, ease: 'easeOut' }}
-                className="absolute bottom-[calc(100%+12px)] right-0 w-[170px] p-1.5 rounded-[10px] bg-[#0A0A0A] shadow-[0_16px_36px_rgba(0,0,0,0.6)] z-50 flex flex-col gap-0.5"
-                style={{
-                  border: '1px solid rgba(110, 237, 194, 0.28)',
-                  boxShadow:
-                    '0 0 0 1px rgba(110, 237, 194, 0.08), 0 16px 36px -8px rgba(0, 0, 0, 0.65)',
-                }}
-              >
-                {moreLinks.map((link) => {
-                  const isCurrent = activeSection === link.id;
-                  return (
-                    <a
-                      key={link.id}
-                      href={link.href}
-                      onClick={(e) => handleScrollTo(e, link.href)}
-                      className="flex items-center justify-between px-3 py-2 rounded-[6px] text-[13.5px] font-sans font-[500] text-white/80 hover:text-white hover:bg-white/[0.08] transition-colors"
-                    >
-                      <span>{link.label}</span>
-                      {isCurrent && (
-                        <span className="w-1.5 h-1.5 rounded-full bg-[#6EEDC2]" />
-                      )}
-                    </a>
-                  );
-                })}
-              </motion.div>
-            )}
-          </AnimatePresence>
-        </motion.div>
-      </motion.nav>
+            </button>
+          </motion.div>
+        </motion.nav>
+      </div>
     </div>
   );
 };
