@@ -1,12 +1,14 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { ArrowRight, Check } from 'lucide-react';
+import { useAppReady } from './Preloader';
 
 interface DemoBarProps {
   onSuccess?: () => void;
 }
 
 export const DemoBar: React.FC<DemoBarProps> = ({ onSuccess }) => {
+  const appReady = useAppReady();
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [nameFocused, setNameFocused] = useState(false);
@@ -62,7 +64,11 @@ export const DemoBar: React.FC<DemoBarProps> = ({ onSuccess }) => {
   return (
     <motion.div
       initial={{ opacity: 0, filter: 'blur(10px)', y: 14 }}
-      animate={{ opacity: 1, filter: 'blur(0px)', y: 0 }}
+      animate={
+        appReady
+          ? { opacity: 1, filter: 'blur(0px)', y: 0 }
+          : { opacity: 0, filter: 'blur(10px)', y: 14 }
+      }
       transition={{ duration: 0.8, delay: 0.6, ease: [0.16, 1, 0.3, 1] }}
       className="w-full max-w-[652px] px-4 sm:px-0 mt-8 z-30 relative flex flex-col items-center"
     >

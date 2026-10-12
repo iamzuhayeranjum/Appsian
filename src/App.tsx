@@ -24,13 +24,24 @@ import { VoiceDemoModal } from './components/VoiceDemoModal';
 import { Navbar } from './components/Navbar';
 import { BottomNav } from './components/BottomNav';
 import { useHeroPast } from './hooks/useHeroPast';
+import { Preloader, useAppReady, setGlobalAppReady, restorePageScroll } from './components/Preloader';
 import { Analytics } from '@vercel/analytics/react';
 
 export default function App() {
   const [isDemoModalOpen, setIsDemoModalOpen] = useState(false);
   const pastHero = useHeroPast();
+  const appReady = useAppReady();
 
-  // Initialize Lenis smooth scroll
+  // Top-level failsafe: if appReady has not become true after 6.5s, force it true as a last resort
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setGlobalAppReady(true);
+      restorePageScroll();
+    }, 6500);
+    return () => clearTimeout(timer);
+  }, []);
+
+  // Initialize Lenis smooth scroll - control with app readiness
   useEffect(() => {
     const isReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     if (isReducedMotion) return;
@@ -45,6 +56,12 @@ export default function App() {
       touchMultiplier: 1.5,
     });
 
+    if (!appReady) {
+      lenis.stop();
+    } else {
+      lenis.start();
+    }
+
     function raf(time: number) {
       lenis.raf(time);
       requestAnimationFrame(raf);
@@ -56,7 +73,7 @@ export default function App() {
       cancelAnimationFrame(rafId);
       lenis.destroy();
     };
-  }, []);
+  }, [appReady]);
 
   const handleOpenDemoModal = () => {
     setIsDemoModalOpen(true);
@@ -71,9 +88,16 @@ export default function App() {
   };
 
   return (
-    <div className="w-full min-h-screen bg-white text-[#2D283C] flex flex-col items-center">
-      {/* Top Header Navigation (active while hero is in view) */}
-      <Navbar onBookDemoClick={handleOpenDemoModal} pastHero={pastHero} />
+    <>
+      {/* 0. Fullscreen Preloader overlay (z-index 1000) */}
+      <Preloader />
+
+      <div
+        className="w-full min-h-screen bg-white text-[#2D283C] flex flex-col items-center"
+        inert={!appReady ? true : undefined}
+      >
+        {/* Top Header Navigation (active while hero is in view) */}
+        <Navbar onBookDemoClick={handleOpenDemoModal} pastHero={pastHero} />
 
       {/* 1. Hero (full viewport height, curtain gradient, flush to top) */}
       <Hero
@@ -130,6 +154,7 @@ export default function App() {
       <BottomNav onCtaClick={handleOpenDemoModal} pastHero={pastHero} />
 
       <Analytics />
-    </div>
+      </div>
+    </>
   );
 }

@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from 'motion/react';
 import { Menu, X } from 'lucide-react';
 import { content } from '../content';
 import { useHeroPast } from './useHeroPast';
+import { useAppReady } from './Preloader';
 
 interface NavbarProps {
   onBookDemoClick?: () => void;
@@ -15,10 +16,11 @@ export const Navbar: React.FC<NavbarProps> = ({
 }) => {
   const hookPastHero = useHeroPast();
   const pastHero = propPastHero !== undefined ? propPastHero : hookPastHero;
+  const appReady = useAppReady();
 
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [isReducedMotion, setIsReducedMotion] = useState(false);
-  const [isHeaderVisible, setIsHeaderVisible] = useState(!pastHero);
+  const [isHeaderVisible, setIsHeaderVisible] = useState(appReady && !pastHero);
 
   useEffect(() => {
     const mediaQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
@@ -28,21 +30,21 @@ export const Navbar: React.FC<NavbarProps> = ({
     return () => mediaQuery.removeEventListener('change', handler);
   }, []);
 
-  // When returning to hero, make visible immediately so entrance animation is visible
+  // When app is ready and at hero, make visible immediately so entrance animation is visible
   useEffect(() => {
-    if (!pastHero) {
+    if (appReady && !pastHero) {
       setIsHeaderVisible(true);
-    } else {
+    } else if (pastHero) {
       setMobileMenuOpen(false);
     }
-  }, [pastHero]);
+  }, [appReady, pastHero]);
 
   // Handle animation complete to toggle visibility: hidden only AFTER exit animation finishes
   const handleAnimationComplete = (definition: string | { opacity?: number }) => {
     const isHiddenDef =
       definition === 'hidden' ||
       (typeof definition === 'object' && definition.opacity === 0);
-    if (isHiddenDef && pastHero) {
+    if (isHiddenDef && (!appReady || pastHero)) {
       setIsHeaderVisible(false);
     }
   };
@@ -104,17 +106,19 @@ export const Navbar: React.FC<NavbarProps> = ({
     },
   };
 
+  const isHeaderActive = appReady && !pastHero;
+
   return (
     <motion.header
       initial={false}
-      animate={pastHero ? 'hidden' : 'shown'}
+      animate={isHeaderActive ? 'shown' : 'hidden'}
       variants={headerVariants}
       onAnimationComplete={handleAnimationComplete}
       aria-label="Top Navigation"
-      aria-hidden={pastHero}
-      inert={pastHero ? true : undefined}
+      aria-hidden={!isHeaderActive}
+      inert={!isHeaderActive ? true : undefined}
       className={`fixed top-0 left-0 right-0 z-50 h-[83px] ${
-        pastHero ? 'pointer-events-none' : 'pointer-events-auto'
+        isHeaderActive ? 'pointer-events-auto' : 'pointer-events-none'
       }`}
       style={{
         visibility: isHeaderVisible ? 'visible' : 'hidden',

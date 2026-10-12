@@ -43,9 +43,7 @@ interface GettingStartedProps {
 }
 
 interface StepCardData {
-  step: string;
   title: string;
-  description: string;
   icons: React.ComponentType<{ className?: string }>[];
   tags: string[];
 }
@@ -123,33 +121,25 @@ export const GettingStarted: React.FC<GettingStartedProps> = ({ onSuccessDemo })
     { Icon: Voicemail, isMint: false },
   ], []);
 
-  // Four Step Cards Data
+  // Four Step Cards Data (Compact, matched to Image 2)
   const cards: StepCardData[] = [
     {
-      step: '01',
       title: 'Discovery',
-      description: 'We learn how your business runs: services, areas, hours and emergency rules.',
       icons: [Wrench, MapPin, Clock],
       tags: ['Service list', 'Service area', 'Emergency rules', 'Business hours'],
     },
     {
-      step: '02',
       title: 'Setup',
-      description: 'We build your agent, connect your calendar and test calls with you.',
       icons: [Mic, Workflow, CalendarCheck, PhoneCall],
       tags: ['Custom greeting', 'Call flow', 'Booking rules', 'Test calls'],
     },
     {
-      step: '03',
       title: 'Go live',
-      description: 'Point your number to Appsian. Every call is answered and qualified.',
       icons: [PhoneForwarded, Moon, ShieldCheck],
       tags: ['Calls answered', 'After-hours cover', 'Callers qualified'],
     },
     {
-      step: '04',
       title: 'Ongoing',
-      description: 'Every call ends in a booked estimate or a captured lead, summarized for your team.',
       icons: [CalendarCheck, FileText, BellRing, BarChart3],
       tags: ['Booked estimates', 'Call transcripts', 'AI summaries', 'Team alerts'],
     },
@@ -327,17 +317,17 @@ export const GettingStarted: React.FC<GettingStartedProps> = ({ onSuccessDemo })
         {/* ========================================================= */}
         {/* 4) CONNECTORS (Bracket branching line down to 4 cards)    */}
         {/* ========================================================= */}
-        {/* Desktop / Large screen bracket SVG connector */}
-        <div className="hidden lg:flex justify-center w-full max-w-[1000px] h-[76px] relative pointer-events-none -mt-1 mb-2">
+        {/* Desktop / Large screen bracket SVG connector (max-w-[800px] aligned to cards) */}
+        <div className="hidden lg:flex justify-center w-full max-w-[800px] h-[52px] relative pointer-events-none mb-0">
           <svg
-            viewBox="0 0 1000 76"
+            viewBox="0 0 800 52"
             className="w-full h-full overflow-visible"
             fill="none"
-            preserveAspectRatio="xMidYMid meet"
+            preserveAspectRatio="none"
           >
             <defs>
               <filter id="mintGlow" x="-50%" y="-50%" width="200%" height="200%">
-                <feGaussianBlur stdDeviation="3.5" result="blur" />
+                <feGaussianBlur stdDeviation="2.5" result="blur" />
                 <feMerge>
                   <feMergeNode in="blur" />
                   <feMergeNode in="SourceGraphic" />
@@ -345,55 +335,46 @@ export const GettingStarted: React.FC<GettingStartedProps> = ({ onSuccessDemo })
               </filter>
             </defs>
 
-            {/* 4 Distinct branch paths for the bracket branching system */}
-            {/* Center stem: (500,0) down to (500,38) then branches to card centers */}
+            {/* 4 Distinct branch paths directly into card top edge (no terminal dots, exactly like Image 2) */}
+            {/* Center stem: (400,0) down to (400,26), horizontal bus, then vertical drops at 94, 298, 502, 706 */}
             <path
               id="branch-0"
-              d="M 500,0 L 500,38 L 132.25,38 Q 118.25,38 118.25,52 L 118.25,76"
-              stroke="rgba(110, 237, 194, 0.85)"
-              strokeWidth="2"
+              d="M 400,0 L 400,26 L 102,26 Q 94,26 94,34 L 94,52"
+              stroke="rgba(110, 237, 194, 0.75)"
+              strokeWidth="1.5"
               strokeLinecap="round"
               strokeLinejoin="round"
             />
             <path
               id="branch-1"
-              d="M 500,0 L 500,38 L 386.75,38 Q 372.75,38 372.75,52 L 372.75,76"
-              stroke="rgba(110, 237, 194, 0.85)"
-              strokeWidth="2"
+              d="M 400,0 L 400,26 L 306,26 Q 298,26 298,34 L 298,52"
+              stroke="rgba(110, 237, 194, 0.75)"
+              strokeWidth="1.5"
               strokeLinecap="round"
               strokeLinejoin="round"
             />
             <path
               id="branch-2"
-              d="M 500,0 L 500,38 L 613.25,38 Q 627.25,38 627.25,52 L 627.25,76"
-              stroke="rgba(110, 237, 194, 0.85)"
-              strokeWidth="2"
+              d="M 400,0 L 400,26 L 494,26 Q 502,26 502,34 L 502,52"
+              stroke="rgba(110, 237, 194, 0.75)"
+              strokeWidth="1.5"
               strokeLinecap="round"
               strokeLinejoin="round"
             />
             <path
               id="branch-3"
-              d="M 500,0 L 500,38 L 867.75,38 Q 881.75,38 881.75,52 L 881.75,76"
-              stroke="rgba(110, 237, 194, 0.85)"
-              strokeWidth="2"
+              d="M 400,0 L 400,26 L 698,26 Q 706,26 706,34 L 706,52"
+              stroke="rgba(110, 237, 194, 0.75)"
+              strokeWidth="1.5"
               strokeLinecap="round"
               strokeLinejoin="round"
             />
 
-            {/* Terminal node dots at top center of each card */}
-            <circle cx="118.25" cy="76" r="3.5" fill="#6EEDC2" filter="url(#mintGlow)" />
-            <circle cx="372.75" cy="76" r="3.5" fill="#6EEDC2" filter="url(#mintGlow)" />
-            <circle cx="627.25" cy="76" r="3.5" fill="#6EEDC2" filter="url(#mintGlow)" />
-            <circle cx="881.75" cy="76" r="3.5" fill="#6EEDC2" filter="url(#mintGlow)" />
-
-            {/* Hub stem junction dot */}
-            <circle cx="500" cy="0" r="3.5" fill="#6EEDC2" filter="url(#mintGlow)" />
-
-            {/* Traveling bright mint pulse animations (4s loop, each card receives pulse in turn) */}
+            {/* Traveling bright pulse animations along branch paths */}
             {!isReducedMotion && isInView && (
               <>
-                {/* Pulse 0: (0s - 1s) */}
-                <circle r="4.5" fill="#FFFFFF" filter="url(#mintGlow)">
+                {/* Pulse 0 */}
+                <circle r="3" fill="#FFFFFF" filter="url(#mintGlow)">
                   <animateMotion
                     dur="4s"
                     repeatCount="indefinite"
@@ -411,8 +392,8 @@ export const GettingStarted: React.FC<GettingStartedProps> = ({ onSuccessDemo })
                   />
                 </circle>
 
-                {/* Pulse 1: (1s - 2s) */}
-                <circle r="4.5" fill="#FFFFFF" filter="url(#mintGlow)">
+                {/* Pulse 1 */}
+                <circle r="3" fill="#FFFFFF" filter="url(#mintGlow)">
                   <animateMotion
                     dur="4s"
                     repeatCount="indefinite"
@@ -430,8 +411,8 @@ export const GettingStarted: React.FC<GettingStartedProps> = ({ onSuccessDemo })
                   />
                 </circle>
 
-                {/* Pulse 2: (2s - 3s) */}
-                <circle r="4.5" fill="#FFFFFF" filter="url(#mintGlow)">
+                {/* Pulse 2 */}
+                <circle r="3" fill="#FFFFFF" filter="url(#mintGlow)">
                   <animateMotion
                     dur="4s"
                     repeatCount="indefinite"
@@ -449,8 +430,8 @@ export const GettingStarted: React.FC<GettingStartedProps> = ({ onSuccessDemo })
                   />
                 </circle>
 
-                {/* Pulse 3: (3s - 4s) */}
-                <circle r="4.5" fill="#FFFFFF" filter="url(#mintGlow)">
+                {/* Pulse 3 */}
+                <circle r="3" fill="#FFFFFF" filter="url(#mintGlow)">
                   <animateMotion
                     dur="4s"
                     repeatCount="indefinite"
@@ -473,87 +454,79 @@ export const GettingStarted: React.FC<GettingStartedProps> = ({ onSuccessDemo })
         </div>
 
         {/* Mobile / Tablet vertical connector drop */}
-        <div className="flex lg:hidden flex-col items-center w-full py-4 pointer-events-none">
-          <div className="w-[2px] h-[36px] bg-gradient-to-b from-[#6EEDC2] to-[#6EEDC2]/40" />
-          <div className="w-2 h-2 rounded-full bg-[#6EEDC2] shadow-[0_0_10px_#6EEDC2]" />
+        <div className="flex lg:hidden flex-col items-center w-full py-3 pointer-events-none">
+          <div className="w-[1.5px] h-[28px] bg-gradient-to-b from-[#6EEDC2] to-[#6EEDC2]/40" />
         </div>
 
         {/* ========================================================= */}
-        {/* 5) FOUR CARDS (like the reference)                        */}
+        {/* 5) FOUR CARDS (rebuilt to match reference Image 2)        */}
         {/* ========================================================= */}
-        <div className="w-full max-w-[1000px] grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-[18px] items-stretch">
+        <div className="w-full max-w-[800px] grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 items-stretch">
           {cards.map((card, index) => {
             const isPulsed = activeCardPulse === index;
 
             return (
               <motion.div
-                key={card.step}
+                key={card.title}
                 initial={
                   isReducedMotion
                     ? false
-                    : { opacity: 0, y: 14, filter: 'blur(10px)' }
+                    : { opacity: 0, y: 12, filter: 'blur(8px)' }
                 }
                 whileInView={{ opacity: 1, y: 0, filter: 'blur(0px)' }}
                 viewport={{ once: true, margin: '-40px' }}
                 transition={{
-                  duration: 0.8,
-                  delay: isReducedMotion ? 0 : index * 0.1,
+                  duration: 0.7,
+                  delay: isReducedMotion ? 0 : index * 0.08,
                   ease: [0.16, 1, 0.3, 1],
                 }}
-                className={`group relative rounded-[18px] p-[18px] flex flex-col justify-between transition-all duration-200 select-none ${
+                className={`group relative rounded-[14px] p-[14px] pb-4 flex flex-col justify-between transition-all duration-200 select-none overflow-hidden ${
                   isPulsed
-                    ? 'border-[#6EEDC2] shadow-[0_0_24px_-4px_rgba(110,237,194,0.45)] -translate-y-1'
-                    : 'border-[#6EEDC2]/[0.16] hover:border-[#6EEDC2]/40 hover:-translate-y-1 shadow-[0_20px_40px_-20px_rgba(0,0,0,0.6)] hover:shadow-[0_24px_48px_-16px_rgba(110,237,194,0.2)]'
+                    ? 'border-[#6EEDC2] shadow-[0_0_20px_-3px_rgba(110,237,194,0.45),0_12px_28px_-10px_rgba(0,0,0,0.7)] -translate-y-[2px]'
+                    : 'border-[#6EEDC2]/[0.14] hover:border-[#6EEDC2]/35 hover:-translate-y-[2px] shadow-[0_12px_28px_-10px_rgba(0,0,0,0.65)] hover:shadow-[0_16px_32px_-8px_rgba(110,237,194,0.18)]'
                 }`}
                 style={{
-                  minHeight: '215px',
-                  background: 'linear-gradient(180deg, #0C1218 0%, #070A0F 100%)',
+                  minHeight: '175px',
+                  background:
+                    'radial-gradient(circle at 15% 15%, rgba(110,237,194,0.05) 0%, transparent 60%), linear-gradient(180deg, #0B1523 0%, #070C14 100%)',
                   borderWidth: '1px',
                   borderStyle: 'solid',
                   boxShadow: isPulsed
-                    ? '0 0 24px -4px rgba(110,237,194,0.45), inset 0 1px 0 rgba(255,255,255,0.18)'
-                    : '0 20px 40px -20px rgba(0,0,0,0.6), inset 0 1px 0 rgba(255,255,255,0.12)',
+                    ? '0 0 20px -3px rgba(110,237,194,0.45), inset 0 1px 0 rgba(255,255,255,0.14)'
+                    : '0 12px 28px -10px rgba(0,0,0,0.65), inset 0 1px 0 rgba(255,255,255,0.07)',
                 }}
               >
                 <div>
-                  {/* Title row with Step number */}
-                  <div className="flex items-center justify-between mb-3">
-                    <h3 className="font-sans font-semibold text-[18px] leading-[1.2] text-white">
+                  {/* Title only (no step number) */}
+                  <div className="mb-2.5">
+                    <h3 className="font-sans font-semibold text-[15px] leading-[1.25] text-white tracking-tight">
                       {card.title}
                     </h3>
-                    <span className="font-sans text-[12px] text-white/40 font-normal tracking-wider">
-                      {card.step}
-                    </span>
                   </div>
 
-                  {/* Row of icon tiles (36px x 36px, radius 10px, 18px icons, white 80%) */}
-                  <div className="flex items-center gap-2 mb-3">
+                  {/* Icon tiles row (28px x 28px, radius 8px, 14px icons, white 75%) */}
+                  <div className="flex items-center gap-1.5 mb-3.5">
                     {card.icons.map((IconComp, iIdx) => (
                       <div
                         key={iIdx}
-                        className="w-9 h-9 rounded-[10px] bg-white/[0.08] border border-white/10 shadow-[inset_0_1px_0_rgba(255,255,255,0.15)] flex items-center justify-center group-hover:border-white/20 transition-colors"
+                        className="w-7 h-7 rounded-[8px] bg-white/[0.07] border border-white/10 shadow-[inset_0_1px_0_rgba(255,255,255,0.14)] flex items-center justify-center group-hover:border-white/20 transition-colors flex-shrink-0"
                       >
-                        <IconComp className="w-[18px] h-[18px] text-white/80 stroke-[1.6]" />
+                        <IconComp className="w-3.5 h-3.5 text-white/75 stroke-[1.6]" />
                       </div>
                     ))}
                   </div>
-
-                  {/* One-line / concise description */}
-                  <p className="text-[12.5px] leading-[1.5] text-white/65 font-sans mb-3 line-clamp-3">
-                    {card.description}
-                  </p>
                 </div>
 
-                {/* "YOU GET:" label and wrapped tags */}
-                <div className="pt-2 border-t border-white/[0.06]">
-                  <div className="text-[11px] font-sans font-semibold uppercase tracking-[0.08em] text-white/45 mb-2">
+                {/* "YOU GET:" label and wrapped tags (aligned horizontally across all cards) */}
+                <div className="pt-2 border-t border-white/[0.07]">
+                  <div className="text-[10px] font-sans font-semibold uppercase tracking-[0.08em] text-white/40 mb-1.5">
                     YOU GET:
                   </div>
-                  <div className="flex flex-wrap gap-1.5">
+                  <div className="flex flex-wrap gap-1">
                     {card.tags.map((tag) => (
                       <span
                         key={tag}
-                        className="text-[11.5px] font-sans font-medium text-white/85 bg-white/[0.08] border border-white/[0.04] rounded-[6px] px-[9px] py-[4px]"
+                        className="text-[10.5px] font-sans font-medium text-white/80 bg-white/[0.06] border border-white/[0.04] rounded-[5px] px-2 py-[2.5px] leading-tight"
                       >
                         {tag}
                       </span>
