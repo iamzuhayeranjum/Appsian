@@ -1,160 +1,155 @@
-/**
- * Appsian Marketing Website
- * Pixel-for-pixel recreation of UI, UX and animation matching the reference video.
- * @license Apache-2.0
- */
-
-import React, { useEffect, useState } from 'react';
-import Lenis from 'lenis';
+import React, { useState, useEffect, useRef } from 'react';
+import { TopHeader } from './components/TopHeader';
 import { Hero } from './components/Hero';
-import { IntegrationsStrip } from './components/IntegrationsStrip';
-import { MissedCallCalculator } from './components/MissedCallCalculator';
-import { FeaturesSection } from './components/FeaturesSection';
-import { HowItWorks } from './components/HowItWorks';
-import { DarkBand1 } from './components/DarkBand1';
-import { TrustRow } from './components/TrustRow';
-import { WhyAppsian } from './components/WhyAppsian';
-import { GettingStarted } from './components/GettingStarted';
-import { PricingSection } from './components/PricingSection';
-import { TestimonialsSection } from './components/TestimonialsSection';
-import { FaqSection } from './components/FaqSection';
-import { FinalCtaBand } from './components/FinalCtaBand';
+import { ServicesSection } from './components/ServicesSection';
+import { WorkflowsSection } from './components/WorkflowsSection';
+import { ToolverseSection } from './components/ToolverseSection';
+import { CustomersSection } from './components/CustomersSection';
+import { ResourcesSection } from './components/ResourcesSection';
+import { BottomDock } from './components/BottomDock';
 import { Footer } from './components/Footer';
-import { VoiceDemoModal } from './components/VoiceDemoModal';
-import { Navbar } from './components/Navbar';
-import { BottomNav } from './components/BottomNav';
-import { useHeroPast } from './hooks/useHeroPast';
-import { Preloader, useAppReady, setGlobalAppReady, restorePageScroll } from './components/Preloader';
-import { Analytics } from '@vercel/analytics/react';
+import { CallSimulatorModal } from './components/CallSimulatorModal';
 
 export default function App() {
-  const [isDemoModalOpen, setIsDemoModalOpen] = useState(false);
-  const pastHero = useHeroPast();
-  const appReady = useAppReady();
+  const [pastHero, setPastHero] = useState(false);
+  const [activeSection, setActiveSection] = useState('services');
+  const [simulatorOpen, setSimulatorOpen] = useState(false);
+  const [callerInfo, setCallerInfo] = useState({
+    name: 'Marcus Vance',
+    trade: 'Plumbing & Drainage',
+    phone: '(555) 019-2834',
+  });
 
-  // Top-level failsafe: if appReady has not become true after 6.5s, force it true as a last resort
+  const heroRef = useRef<HTMLDivElement>(null);
+  const nameInputRef = useRef<HTMLInputElement>(null);
+
+  // Scroll detection for pastHero and Scroll-spy
   useEffect(() => {
-    const timer = setTimeout(() => {
-      setGlobalAppReady(true);
-      restorePageScroll();
-    }, 6500);
-    return () => clearTimeout(timer);
+    const handleScroll = () => {
+      // 1. Detect if scrolled past hero
+      if (heroRef.current) {
+        const heroBottom = heroRef.current.getBoundingClientRect().bottom;
+        // Trigger switch when hero bottom scrolls past the top 120px
+        const isPast = heroBottom < 120;
+        setPastHero(isPast);
+      }
+
+      // 2. Scroll-spy for navigation sections
+      const sections = ['services', 'workflows', 'toolverse', 'customers', 'resources'];
+      const scrollPos = window.scrollY + 250;
+
+      for (const sectionId of sections) {
+        const el = document.getElementById(sectionId);
+        if (el) {
+          const top = el.offsetTop;
+          const height = el.offsetHeight;
+          if (scrollPos >= top && scrollPos < top + height) {
+            setActiveSection(sectionId);
+            break;
+          }
+        }
+      }
+    };
+
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    handleScroll();
+    return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  // Initialize Lenis smooth scroll - control with app readiness
-  useEffect(() => {
-    const isReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    if (isReducedMotion) return;
-
-    const lenis = new Lenis({
-      duration: 1.2,
-      easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
-      orientation: 'vertical',
-      gestureOrientation: 'vertical',
-      smoothWheel: true,
-      wheelMultiplier: 1.0,
-      touchMultiplier: 1.5,
-    });
-
-    if (!appReady) {
-      lenis.stop();
+  // CTA Click handler: smooth-scroll to the hero demo bar and focus its Name field
+  const handleCtaClick = () => {
+    const demoBar = document.getElementById('hero-demo-bar');
+    if (demoBar) {
+      demoBar.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      // Focus Name field after smooth scroll begins
+      setTimeout(() => {
+        nameInputRef.current?.focus();
+      }, 450);
     } else {
-      lenis.start();
+      window.scrollTo({ top: 0, behavior: 'smooth' });
     }
-
-    function raf(time: number) {
-      lenis.raf(time);
-      requestAnimationFrame(raf);
-    }
-
-    const rafId = requestAnimationFrame(raf);
-
-    return () => {
-      cancelAnimationFrame(rafId);
-      lenis.destroy();
-    };
-  }, [appReady]);
-
-  const handleOpenDemoModal = () => {
-    setIsDemoModalOpen(true);
   };
 
-  const handleCloseDemoModal = () => {
-    setIsDemoModalOpen(false);
+  const handleNavigate = (sectionId: string) => {
+    const el = document.getElementById(sectionId);
+    if (el) {
+      el.scrollIntoView({ behavior: 'smooth' });
+    }
   };
 
-  const handlePlanSelect = (planName: string) => {
-    setIsDemoModalOpen(true);
+  const handleOpenCallSimulator = (name?: string, trade?: string, phone?: string) => {
+    setCallerInfo({
+      name: name || 'Marcus Vance',
+      trade: trade || 'Plumbing & Drainage',
+      phone: phone || '(555) 019-2834',
+    });
+    setSimulatorOpen(true);
   };
 
   return (
-    <>
-      {/* 0. Fullscreen Preloader overlay (z-index 1000) */}
-      <Preloader />
-
-      <div
-        className="w-full min-h-screen bg-white text-[#2D283C] flex flex-col items-center"
-        inert={!appReady ? true : undefined}
-      >
-        {/* Top Header Navigation (active while hero is in view) */}
-        <Navbar onBookDemoClick={handleOpenDemoModal} pastHero={pastHero} />
-
-      {/* 1. Hero (full viewport height, curtain gradient, flush to top) */}
-      <Hero
-        onBookDemoClick={handleOpenDemoModal}
-        onPlayClick={handleOpenDemoModal}
+    <div className="min-h-screen bg-[#07090e] text-[#f1f3f7] relative selection:bg-[#6EEDC2]/30 selection:text-[#6EEDC2]">
+      {/* 
+        Top Header: Fixed at top 16px, frosted glass over dark hero curtain.
+        Slides away and fades when scrolled past hero, returns when scrolling back up.
+      */}
+      <TopHeader
+        pastHero={pastHero}
+        activeSection={activeSection}
+        onNavigate={handleNavigate}
+        onCtaClick={handleCtaClick}
       />
 
-      {/* 2. Integrations Strip */}
-      <IntegrationsStrip />
+      {/* Main Page Content */}
+      <main>
+        {/* Hero Section with dark curtain background and demo bar */}
+        <Hero
+          ref={heroRef}
+          nameInputRef={nameInputRef}
+          onOpenCallSimulator={handleOpenCallSimulator}
+        />
 
-      {/* Missed-call calculator: The cost of a missed call */}
-      <MissedCallCalculator />
+        {/* Section 1: Services */}
+        <ServicesSection />
 
-      {/* 3. Features (white section with 987px big card & two 485px cards) */}
-      <FeaturesSection />
+        {/* Section 2: Workflows */}
+        <WorkflowsSection />
 
-      {/* How it works: problem + animated call flow */}
-      <HowItWorks />
+        {/* Section 3: Toolverse */}
+        <ToolverseSection />
 
-      {/* 4. Dark Band 1 (sky-blue curtain variant, 1187px wide) */}
-      <DarkBand1 />
+        {/* Section 4: Customers */}
+        <CustomersSection />
 
-      {/* 5. Three-Column Trust Row (1187px wide) */}
-      <TrustRow />
+        {/* Section 5: Resources (Interactive ROI Calculator) */}
+        <ResourcesSection onCtaClick={handleCtaClick} />
+      </main>
 
-      {/* Why Appsian comparison table */}
-      <WhyAppsian />
-
-      {/* Getting Started (4-step timeline) */}
-      <GettingStarted onSuccessDemo={handleOpenDemoModal} />
-
-      {/* 6. Pricing (1187px wide) */}
-      <PricingSection onPlanSelect={handlePlanSelect} />
-
-      {/* 7. Testimonials (dark band 2, 1187px wide) */}
-      <TestimonialsSection />
-
-      {/* 8. FAQ (two columns, 28px radius rows) */}
-      <FaqSection />
-
-      {/* 9. Final CTA Band (curtain gradient, 1187px wide, 440px tall) */}
-      <FinalCtaBand onSuccessDemo={handleOpenDemoModal} />
-
-      {/* 10. Footer (tagline, back-to-top, giant gradient wordmark, legal pill) */}
-      <Footer />
-
-      {/* Voice Demo Modal: "Live voice demo goes here" */}
-      <VoiceDemoModal
-        isOpen={isDemoModalOpen}
-        onClose={handleCloseDemoModal}
+      {/* Footer */}
+      <Footer
+        onScrollToTop={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+        onNavigate={handleNavigate}
       />
 
-      {/* Floating Bottom Navigation Dock (active when scrolled past hero) */}
-      <BottomNav onCtaClick={handleOpenDemoModal} pastHero={pastHero} />
+      {/* 
+        Bottom Dock: Slides up smoothly when scrolled past hero.
+        Slides away when scrolling back into hero view.
+      */}
+      <BottomDock
+        visible={pastHero}
+        onScrollToTop={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+        onBookDemo={handleCtaClick}
+        onOpenCallSimulator={() => handleOpenCallSimulator()}
+        onScrollToRoi={() => handleNavigate('resources')}
+      />
 
-      <Analytics />
-      </div>
-    </>
+      {/* Live AI Receptionist Call Simulation Modal */}
+      <CallSimulatorModal
+        isOpen={simulatorOpen}
+        onClose={() => setSimulatorOpen(false)}
+        callerName={callerInfo.name}
+        callerTrade={callerInfo.trade}
+        callerPhone={callerInfo.phone}
+      />
+    </div>
   );
 }

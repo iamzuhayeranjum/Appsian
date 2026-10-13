@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from 'motion/react';
 import { ArrowRight, ChevronUp } from 'lucide-react';
 import { useHeroPast } from './useHeroPast';
 import { MorePanel } from './MorePanel';
+import ProgressiveBlur from './ProgressiveBlur';
 
 interface BottomNavProps {
   onCtaClick?: () => void;
@@ -295,9 +296,11 @@ export const BottomNav: React.FC<BottomNavProps> = ({ onCtaClick, pastHero: prop
   };
 
   return (
-    /* Non-animated fixed centering wrapper (no translateX(-50%) on animated element) */
-    <div
-      className="fixed left-0 right-0 z-[100] flex justify-center pointer-events-none bottom-[calc(12px+env(safe-area-inset-bottom,0px))] md:bottom-[calc(24px+env(safe-area-inset-bottom,0px))]"
+    <>
+      <ProgressiveBlur visible={pastHero} />
+      {/* Non-animated fixed centering wrapper (no translateX(-50%) on animated element) */}
+      <div
+        className="fixed left-0 right-0 z-[100] flex justify-center pointer-events-none bottom-[calc(12px+env(safe-area-inset-bottom,0px))] md:bottom-[calc(24px+env(safe-area-inset-bottom,0px))]"
       style={{
         visibility: isDockVisible ? 'visible' : 'hidden',
       }}
@@ -438,5 +441,6 @@ export const BottomNav: React.FC<BottomNavProps> = ({ onCtaClick, pastHero: prop
         </motion.nav>
       </div>
     </div>
+  </>
   );
 };

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { Menu, X } from 'lucide-react';
+import { Menu, X, ArrowUpRight } from 'lucide-react';
 import { content } from '../content';
 import { useHeroPast } from './useHeroPast';
 import { useAppReady } from './Preloader';
@@ -108,6 +108,17 @@ export const Navbar: React.FC<NavbarProps> = ({
 
   const isHeaderActive = appReady && !pastHero;
 
+  const glassStyle: React.CSSProperties = {
+    background:
+      'linear-gradient(180deg, rgba(255,255,255,0.14), rgba(255,255,255,0.06))',
+    backdropFilter: 'blur(22px) saturate(160%)',
+    WebkitBackdropFilter: 'blur(22px) saturate(160%)',
+    border: '1px solid rgba(255,255,255,0.16)',
+    boxShadow:
+      'inset 0 1px 0 rgba(255,255,255,0.25), 0 8px 30px rgba(0,0,0,0.25)',
+    fontFamily: "'Inter', sans-serif",
+  };
+
   return (
     <motion.header
       initial={false}
@@ -117,26 +128,22 @@ export const Navbar: React.FC<NavbarProps> = ({
       aria-label="Top Navigation"
       aria-hidden={!isHeaderActive}
       inert={!isHeaderActive ? true : undefined}
-      className={`fixed top-0 left-0 right-0 z-50 h-[83px] ${
-        isHeaderActive ? 'pointer-events-auto' : 'pointer-events-none'
-      }`}
+      className="fixed top-0 left-0 right-0 z-50 pt-[15.5px] px-4 pointer-events-none"
       style={{
         visibility: isHeaderVisible ? 'visible' : 'hidden',
         willChange: 'transform, opacity',
       }}
     >
-      {/* Frosted translucent background */}
-      <div className="absolute inset-0 bg-[#0A0B0E]/70 backdrop-blur-md border-b border-white/[0.06] pointer-events-none" />
-
-      <div className="relative max-w-[1187px] h-full mx-auto px-4 sm:px-6 md:px-8 flex items-center justify-between">
-        {/* Logo */}
+      <div className="max-w-[1180px] w-full mx-auto flex items-center justify-between gap-[12px]">
+        {/* Left: 52x52 rounded glass tile with existing Appsian logo */}
         <a
           href="#"
           onClick={(e) => {
             e.preventDefault();
             window.scrollTo({ top: 0, behavior: 'smooth' });
           }}
-          className="flex items-center gap-2.5 group select-none"
+          style={glassStyle}
+          className="w-[52px] h-[52px] rounded-[16px] flex items-center justify-center shrink-0 cursor-pointer pointer-events-auto transition-transform duration-150 hover:scale-[1.03] active:scale-[0.97]"
           aria-label="Appsian Home"
         >
           <div className="w-6 h-6 rounded-[6px] bg-gradient-to-tr from-[#6EEDC2] to-[#4A7FF0] p-[1.5px] flex items-center justify-center">
@@ -144,94 +151,83 @@ export const Navbar: React.FC<NavbarProps> = ({
               <div className="w-2 h-2 rotate-45 border-2 border-[#6EEDC2] rounded-xs" />
             </div>
           </div>
-          <span className="text-white font-[500] text-[15px] tracking-tight font-display">
-            {nav.brand}
-          </span>
         </a>
 
-        {/* Desktop Nav Links */}
-        <nav className="hidden md:flex items-center gap-1">
+        {/* Middle: glass pill with existing nav links, white Inter 15px/500 text */}
+        <nav
+          style={glassStyle}
+          className="hidden md:flex flex-1 h-[52px] rounded-full items-center justify-center gap-7 lg:gap-9 px-6 pointer-events-auto"
+        >
           {nav.links.map((link) => (
             <a
               key={link.href}
               href={link.href}
               onClick={(e) => handleScrollTo(e, link.href)}
-              className="text-white/80 hover:text-white transition-colors duration-150 text-[14px] font-sans font-[500] px-3.5 py-1.5 rounded-[8px] hover:bg-white/[0.06]"
+              className="text-white hover:text-white/80 transition-colors duration-150 text-[15px] font-[500] whitespace-nowrap"
             >
               {link.label}
             </a>
           ))}
         </nav>
 
-        {/* Desktop Right CTAs */}
-        <div className="hidden md:flex items-center gap-3">
-          <a
-            href="#pricing"
-            onClick={(e) => handleScrollTo(e, '#pricing')}
-            className="text-white/80 hover:text-white transition-colors text-[14px] font-sans font-[500] px-3 py-1.5 rounded-[8px] hover:bg-white/[0.04]"
-          >
-            {nav.loginLabel}
-          </a>
+        {/* Right: glass pill with underlined 'Get Free Demo' label + 40x40 rounded mint square button */}
+        <button
+          type="button"
+          onClick={handleCtaClick}
+          style={glassStyle}
+          className="hidden md:flex h-[52px] rounded-full pl-6 pr-1.5 items-center gap-3.5 shrink-0 cursor-pointer pointer-events-auto group transition-all duration-150 hover:border-white/30"
+        >
+          <span className="text-white font-[500] text-[15px] underline underline-offset-4 tracking-tight">
+            Get Free Demo
+          </span>
+          <div className="w-[40px] h-[40px] rounded-[12px] bg-[#6EEDC2] group-hover:bg-[#85f3ce] text-[#062B20] flex items-center justify-center transition-transform duration-150 group-hover:scale-105 active:scale-95 shrink-0 shadow-xs">
+            <ArrowUpRight className="w-5 h-5 text-[#062B20] stroke-[2.2]" />
+          </div>
+        </button>
 
-          <button
-            type="button"
-            onClick={handleCtaClick}
-            className="relative px-4 py-2 rounded-[10px] bg-[#6EEDC2] hover:bg-[#85f3ce] text-[#050507] font-sans font-[600] text-[14px] shadow-sm hover:shadow-md transition-all duration-200 hover:-translate-y-[1px] active:translate-y-0 cursor-pointer"
-          >
-            {nav.ctaLabel}
-          </button>
-        </div>
-
-        {/* Mobile Hamburger Button */}
-        <div className="flex md:hidden items-center">
-          <button
-            type="button"
-            onClick={() => setMobileMenuOpen((prev) => !prev)}
-            aria-label="Toggle navigation menu"
-            aria-expanded={mobileMenuOpen}
-            className="p-2 rounded-lg text-white/80 hover:text-white hover:bg-white/[0.08] transition-colors"
-          >
-            {mobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
-          </button>
-        </div>
+        {/* Mobile menu button (<768px): glass button opening dropdown */}
+        <button
+          type="button"
+          onClick={() => setMobileMenuOpen((prev) => !prev)}
+          aria-label="Toggle navigation menu"
+          aria-expanded={mobileMenuOpen}
+          style={glassStyle}
+          className="flex md:hidden w-[52px] h-[52px] rounded-[16px] items-center justify-center shrink-0 text-white cursor-pointer pointer-events-auto transition-transform duration-150 hover:scale-[1.03] active:scale-[0.97]"
+        >
+          {mobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
+        </button>
       </div>
 
-      {/* Mobile Drawer */}
+      {/* Mobile Glass Dropdown */}
       <AnimatePresence>
         {mobileMenuOpen && !pastHero && (
           <motion.div
-            initial={{ opacity: 0, y: -10 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -10 }}
+            initial={{ opacity: 0, y: -8, scale: 0.98 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            exit={{ opacity: 0, y: -8, scale: 0.98 }}
             transition={{ duration: 0.18, ease: 'easeOut' }}
-            className="md:hidden absolute top-[83px] left-0 right-0 bg-[#0A0B0E]/95 backdrop-blur-xl border-b border-white/[0.1] px-5 py-5 flex flex-col gap-3 shadow-2xl"
+            style={glassStyle}
+            className="md:hidden mt-3 max-w-[1180px] mx-auto rounded-2xl p-4 flex flex-col gap-2 pointer-events-auto shadow-2xl"
           >
             {nav.links.map((link) => (
               <a
                 key={link.href}
                 href={link.href}
                 onClick={(e) => handleScrollTo(e, link.href)}
-                className="text-white/90 hover:text-white text-[15px] font-sans font-[500] py-2 px-3 rounded-lg hover:bg-white/[0.06] transition-colors"
+                className="text-white hover:text-white/80 text-[15px] font-[500] py-2 px-3 rounded-lg hover:bg-white/[0.08] transition-colors"
               >
                 {link.label}
               </a>
             ))}
 
-            <div className="pt-2 border-t border-white/[0.08] flex flex-col gap-2.5">
-              <a
-                href="#pricing"
-                onClick={(e) => handleScrollTo(e, '#pricing')}
-                className="text-white/80 hover:text-white text-[15px] font-sans font-[500] py-2 px-3 rounded-lg hover:bg-white/[0.06] transition-colors"
-              >
-                {nav.loginLabel}
-              </a>
-
+            <div className="pt-2 border-t border-white/[0.12] flex items-center justify-between mt-1">
               <button
                 type="button"
                 onClick={handleCtaClick}
-                className="w-full py-2.5 rounded-[10px] bg-[#6EEDC2] hover:bg-[#85f3ce] text-[#050507] font-sans font-[600] text-[15px] shadow-sm text-center transition-all cursor-pointer"
+                className="w-full flex items-center justify-between px-4 py-2.5 rounded-xl bg-[#6EEDC2] hover:bg-[#85f3ce] text-[#062B20] font-[600] text-[15px] transition-all cursor-pointer"
               >
-                {nav.ctaLabel}
+                <span>Get Free Demo</span>
+                <ArrowUpRight className="w-4 h-4 text-[#062B20] stroke-[2.2]" />
               </button>
             </div>
           </motion.div>
