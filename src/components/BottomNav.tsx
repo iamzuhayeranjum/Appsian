@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { ArrowRight, ChevronUp } from 'lucide-react';
 import { useHeroPast } from './useHeroPast';
@@ -27,6 +27,67 @@ export const BottomNav: React.FC<BottomNavProps> = ({ onCtaClick, pastHero: prop
   const moreRef = useRef<HTMLDivElement>(null);
   const panelRef = useRef<HTMLDivElement>(null);
   const hoverTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const wrapperRef = useRef<HTMLDivElement>(null);
+  const dockNavRef = useRef<HTMLElement>(null);
+
+  // Exact distance from viewport bottom to the resting top edge of the dock
+  const [dockTopFromBottom, setDockTopFromBottom] = useState<number>(() => {
+    if (typeof window !== 'undefined') {
+      return window.innerWidth >= 768 ? 96 : 76;
+    }
+    return 96;
+  });
+
+  const updateDockMeasurement = useCallback(() => {
+    if (typeof window === 'undefined') return;
+    const isMd = window.innerWidth >= 768;
+    const defaultOffset = isMd ? 24 : 12;
+    const defaultHeight = isMd ? 72 : 64;
+
+    let bottomOffset = defaultOffset;
+    if (wrapperRef.current) {
+      const computed = window.getComputedStyle(wrapperRef.current);
+      const parsed = parseFloat(computed.bottom);
+      if (!isNaN(parsed) && parsed > 0) {
+        bottomOffset = parsed;
+      }
+    }
+
+    let dockHeight = defaultHeight;
+    if (dockNavRef.current && dockNavRef.current.offsetHeight > 0) {
+      dockHeight = dockNavRef.current.offsetHeight;
+    }
+
+    setDockTopFromBottom(bottomOffset + dockHeight);
+  }, []);
+
+  useEffect(() => {
+    updateDockMeasurement();
+
+    window.addEventListener('resize', updateDockMeasurement);
+    window.addEventListener('orientationchange', updateDockMeasurement);
+
+    let resizeObserver: ResizeObserver | null = null;
+    if (typeof ResizeObserver !== 'undefined') {
+      resizeObserver = new ResizeObserver(() => {
+        updateDockMeasurement();
+      });
+      if (dockNavRef.current) {
+        resizeObserver.observe(dockNavRef.current);
+      }
+      if (wrapperRef.current) {
+        resizeObserver.observe(wrapperRef.current);
+      }
+    }
+
+    return () => {
+      window.removeEventListener('resize', updateDockMeasurement);
+      window.removeEventListener('orientationchange', updateDockMeasurement);
+      if (resizeObserver) {
+        resizeObserver.disconnect();
+      }
+    };
+  }, [updateDockMeasurement]);
 
   // Check prefers-reduced-motion
   const [isReducedMotion, setIsReducedMotion] = useState(false);
@@ -101,6 +162,7 @@ export const BottomNav: React.FC<BottomNavProps> = ({ onCtaClick, pastHero: prop
     if (isHiddenDef && !pastHero) {
       setIsDockVisible(false);
     }
+    updateDockMeasurement();
   };
 
   // Primary navigation slots around the center CTA
@@ -297,9 +359,10 @@ export const BottomNav: React.FC<BottomNavProps> = ({ onCtaClick, pastHero: prop
 
   return (
     <>
-      <ProgressiveBlur visible={pastHero} />
+      <ProgressiveBlur visible={pastHero} dockTopFromBottom={dockTopFromBottom} />
       {/* Non-animated fixed centering wrapper (no translateX(-50%) on animated element) */}
       <div
+        ref={wrapperRef}
         className="fixed left-0 right-0 z-[100] flex justify-center pointer-events-none bottom-[calc(12px+env(safe-area-inset-bottom,0px))] md:bottom-[calc(24px+env(safe-area-inset-bottom,0px))]"
       style={{
         visibility: isDockVisible ? 'visible' : 'hidden',
@@ -322,6 +385,7 @@ export const BottomNav: React.FC<BottomNavProps> = ({ onCtaClick, pastHero: prop
         </AnimatePresence>
 
         <motion.nav
+          ref={dockNavRef}
           initial={false}
           animate={pastHero ? 'shown' : 'hidden'}
           variants={dockVariants}

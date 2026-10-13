@@ -1,6 +1,8 @@
 import { useEffect, useState } from 'react';
 import { createPortal } from 'react-dom';
 
+export const BLUR_EXTRA_PX = 0;
+
 type Layer = { blur: number; a: number; b: number; c: number; d: number };
 
 // Bands measured from the BOTTOM edge of the strip (gradient goes "to top").
@@ -17,7 +19,13 @@ const LAYERS: Layer[] = [
 const mask = (l: Layer) =>
   `linear-gradient(to top, transparent ${l.a}%, #000 ${l.b}%, #000 ${l.c}%, transparent ${l.d}%)`;
 
-export default function ProgressiveBlur({ visible }: { visible: boolean }) {
+export default function ProgressiveBlur({
+  visible,
+  dockTopFromBottom,
+}: {
+  visible: boolean;
+  dockTopFromBottom: number;
+}) {
   const [mounted, setMounted] = useState(false);
   const [debug, setDebug] = useState(false);
 
@@ -31,6 +39,7 @@ export default function ProgressiveBlur({ visible }: { visible: boolean }) {
   if (!mounted || typeof document === 'undefined') return null;
 
   const boost = debug ? 3 : 1; // ?pbdebug=1 makes the blur 3x stronger and outlines the strip
+  const totalHeight = Math.max(0, dockTopFromBottom + BLUR_EXTRA_PX);
 
   return createPortal(
     <div
@@ -41,7 +50,7 @@ export default function ProgressiveBlur({ visible }: { visible: boolean }) {
         left: 0,
         right: 0,
         bottom: 0,
-        height: 'clamp(100px, 15vh, 140px)',
+        height: `${totalHeight}px`,
         pointerEvents: 'none',
         zIndex: 90, // above page content, below the dock (dock is z-100)
         transform: visible ? 'translateY(0)' : 'translateY(100%)',
