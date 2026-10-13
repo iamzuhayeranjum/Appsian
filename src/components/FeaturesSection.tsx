@@ -55,7 +55,7 @@ export const FeaturesSection: React.FC = () => {
   useEffect(() => {
     if (!isSectionVisible) return;
 
-    let timeout: NodeJS.Timeout;
+    let timeout: ReturnType<typeof setTimeout>;
     if (!isDeleting && displayText.length < summaryText.length) {
       timeout = setTimeout(() => {
         setDisplayText(summaryText.slice(0, displayText.length + 1));

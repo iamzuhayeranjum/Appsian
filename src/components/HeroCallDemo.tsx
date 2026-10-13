@@ -40,8 +40,8 @@ export const HeroCallDemo: React.FC = () => {
   const audioRef = useRef<HTMLAudioElement>(null);
   const bdRef = useRef<HTMLDivElement>(null);
   const rafRef = useRef<number | null>(null);
-  const backTimerRef = useRef<NodeJS.Timeout | null>(null);
-  const declineTimerRef = useRef<NodeJS.Timeout | null>(null);
+  const backTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const declineTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   // Prefers reduced motion
   const [isReducedMotion, setIsReducedMotion] = useState(false);

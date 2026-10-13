@@ -76,9 +76,9 @@ const PreloaderInner: React.FC<PreloaderProps> = ({ onComplete }) => {
   const isFinishedRef = useRef(false);
 
   const rAFRef = useRef<number | null>(null);
-  const failsafe1Ref = useRef<NodeJS.Timeout | null>(null);
-  const failsafe2Ref = useRef<NodeJS.Timeout | null>(null);
-  const exitTimerRef = useRef<NodeJS.Timeout | null>(null);
+  const failsafe1Ref = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const failsafe2Ref = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const exitTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   useEffect(() => {
     const mq = window.matchMedia('(prefers-reduced-motion: reduce)');

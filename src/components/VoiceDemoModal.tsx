@@ -12,7 +12,7 @@ export const VoiceDemoModal: React.FC<VoiceDemoModalProps> = ({ isOpen, onClose 
   const [seconds, setSeconds] = useState(14);
 
   useEffect(() => {
-    let interval: NodeJS.Timeout;
+    let interval: ReturnType<typeof setTimeout>;
     if (isOpen && isPlaying) {
       interval = setInterval(() => {
         setSeconds((prev) => (prev >= 48 ? 0 : prev + 1));
