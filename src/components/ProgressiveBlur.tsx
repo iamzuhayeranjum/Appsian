@@ -1,18 +1,23 @@
 import { useEffect, useState } from 'react';
 import { createPortal } from 'react-dom';
 
+// Push the blur higher or lower with one number. Positive extends the strip above the dock top.
 export const BLUR_EXTRA_PX = 0;
+
+// Overall strength multiplier for every layer. 1 = soft, 2 = strong (default), 3 = very strong.
+export const BLUR_STRENGTH = 2;
 
 type Layer = { blur: number; a: number; b: number; c: number; d: number };
 
-// Bands measured from the BOTTOM edge of the strip (gradient goes "to top").
-// Strongest blur lives at the very bottom, weakest blur fades out at the top.
+// Bands are measured from the BOTTOM edge of the strip (gradient goes "to top").
+// The strongest blur sits at the very bottom and every layer fades out so that the
+// blur reaches zero exactly at the top edge of the strip (= the top edge of the dock).
 const LAYERS: Layer[] = [
-  { blur: 16,  a: 0,  b: 0,  c: 10, d: 30 },
-  { blur: 8,   a: 0,  b: 0,  c: 20, d: 45 },
-  { blur: 4,   a: 0,  b: 10, c: 35, d: 60 },
-  { blur: 2,   a: 10, b: 25, c: 50, d: 75 },
-  { blur: 1,   a: 25, b: 40, c: 65, d: 90 },
+  { blur: 16, a: 0,  b: 0,  c: 18, d: 45 },
+  { blur: 8,  a: 0,  b: 0,  c: 30, d: 58 },
+  { blur: 4,  a: 0,  b: 10, c: 42, d: 70 },
+  { blur: 2,  a: 10, b: 25, c: 55, d: 82 },
+  { blur: 1,  a: 25, b: 40, c: 68, d: 92 },
   { blur: 0.5, a: 40, b: 55, c: 80, d: 100 },
 ];
 
@@ -33,12 +38,14 @@ export default function ProgressiveBlur({
     setMounted(true);
     try {
       setDebug(new URLSearchParams(window.location.search).has('pbdebug'));
-    } catch {}
+    } catch {
+      // ignore
+    }
   }, []);
 
   if (!mounted || typeof document === 'undefined') return null;
 
-  const boost = debug ? 3 : 1; // ?pbdebug=1 makes the blur 3x stronger and outlines the strip
+  const boost = (debug ? 3 : 1) * BLUR_STRENGTH; // ?pbdebug=1 makes the blur 3x stronger and outlines the strip
   const totalHeight = Math.max(0, dockTopFromBottom + BLUR_EXTRA_PX);
 
   return createPortal(
