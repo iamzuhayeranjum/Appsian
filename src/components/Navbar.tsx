@@ -170,7 +170,7 @@ export const Navbar: React.FC<NavbarProps> = ({
       aria-label="Top Navigation"
       aria-hidden={!isHeaderActive}
       inert={!isHeaderActive ? true : undefined}
-      className="fixed top-4 left-0 right-0 mx-auto w-[calc(100%-32px)] max-w-[1100px] h-[52px] z-50 pointer-events-none"
+      className="fixed top-[24px] md:top-[30px] left-0 right-0 mx-auto w-[calc(100%-32px)] max-w-[1100px] h-[52px] z-50 pointer-events-none"
       style={{ visibility: isHeaderVisible ? 'visible' : 'hidden' }}
     >
       <div className="w-full h-full flex items-center gap-2">

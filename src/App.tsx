@@ -93,7 +93,7 @@ export default function App() {
       <Preloader />
 
       <div
-        className="w-full min-h-screen bg-white text-[#2D283C] flex flex-col items-center"
+        className="w-full min-h-screen bg-[#F5F6F8] text-[#2D283C] flex flex-col items-center"
         inert={!appReady ? true : undefined}
       >
         {/* Top Header Navigation (active while hero is in view) */}
