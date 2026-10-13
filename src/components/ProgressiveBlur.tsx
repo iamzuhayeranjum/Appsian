@@ -1,28 +1,29 @@
 import { useEffect, useState } from 'react';
 import { createPortal } from 'react-dom';
 
-// Push the blur higher or lower with one number. Positive extends the strip above the dock top.
+// Nudge the top edge of the blur: positive = higher, negative = lower (in px).
 export const BLUR_EXTRA_PX = 0;
 
-// Overall strength multiplier for every layer. 1 = soft, 2 = strong (default), 3 = very strong.
-export const BLUR_STRENGTH = 2;
+// Overall strength multiplier for every layer. 1 = default, 1.5 = stronger, 0.75 = softer.
+export const BLUR_STRENGTH = 1;
 
 type Layer = { blur: number; a: number; b: number; c: number; d: number };
 
 // Bands are measured from the BOTTOM edge of the strip (gradient goes "to top").
-// The strongest blur sits at the very bottom and every layer fades out so that the
-// blur reaches zero exactly at the top edge of the strip (= the top edge of the dock).
+// The strong blur stays clearly visible almost all the way up and then ends in the last
+// ~10% of the strip, so the visible top edge of the blur lines up with the top edge of the dock.
 const LAYERS: Layer[] = [
-  { blur: 16, a: 0,  b: 0,  c: 18, d: 45 },
-  { blur: 8,  a: 0,  b: 0,  c: 30, d: 58 },
-  { blur: 4,  a: 0,  b: 10, c: 42, d: 70 },
-  { blur: 2,  a: 10, b: 25, c: 55, d: 82 },
-  { blur: 1,  a: 25, b: 40, c: 68, d: 92 },
-  { blur: 0.5, a: 40, b: 55, c: 80, d: 100 },
+  { blur: 20,   a: 0, b: 0, c: 22, d: 50 },
+  { blur: 10,   a: 0, b: 0, c: 40, d: 68 },
+  { blur: 5,    a: 0, b: 0, c: 60, d: 82 },
+  { blur: 2.5,  a: 0, b: 0, c: 78, d: 92 },
+  { blur: 1.25, a: 0, b: 0, c: 90, d: 100 },
 ];
 
 const mask = (l: Layer) =>
   `linear-gradient(to top, transparent ${l.a}%, #000 ${l.b}%, #000 ${l.c}%, transparent ${l.d}%)`;
+
+const DOCK_SELECTOR = 'nav[aria-label="Floating Navigation"]';
 
 export default function ProgressiveBlur({
   visible,
@@ -33,6 +34,9 @@ export default function ProgressiveBlur({
 }) {
   const [mounted, setMounted] = useState(false);
   const [debug, setDebug] = useState(false);
+  // Real distance from the viewport bottom to the dock's top edge, measured from the DOM
+  // once the dock is at rest. It overrides the prop if the two ever disagree.
+  const [measured, setMeasured] = useState<number | null>(null);
 
   useEffect(() => {
     setMounted(true);
@@ -43,10 +47,40 @@ export default function ProgressiveBlur({
     }
   }, []);
 
+  useEffect(() => {
+    if (!visible) return;
+    const measure = () => {
+      const nav = document.querySelector(DOCK_SELECTOR) as HTMLElement | null;
+      if (!nav) return;
+      const rect = nav.getBoundingClientRect();
+      if (rect.height <= 0) return;
+      const actual = Math.round(window.innerHeight - rect.top);
+      if (actual > 0) setMeasured(actual);
+    };
+    // Wait until the dock's slide-in animation has finished so the measurement is the resting position.
+    const timer = window.setTimeout(measure, 900);
+    window.addEventListener('resize', measure);
+    window.addEventListener('orientationchange', measure);
+    return () => {
+      window.clearTimeout(timer);
+      window.removeEventListener('resize', measure);
+      window.removeEventListener('orientationchange', measure);
+    };
+  }, [visible, dockTopFromBottom]);
+
+  const base = measured !== null ? measured : dockTopFromBottom;
+  const totalHeight = Math.max(0, base + BLUR_EXTRA_PX);
+
+  useEffect(() => {
+    if (debug && visible) {
+      // eslint-disable-next-line no-console
+      console.info('[ProgressiveBlur]', { prop: dockTopFromBottom, measured, using: totalHeight });
+    }
+  }, [debug, visible, dockTopFromBottom, measured, totalHeight]);
+
   if (!mounted || typeof document === 'undefined') return null;
 
-  const boost = (debug ? 3 : 1) * BLUR_STRENGTH; // ?pbdebug=1 makes the blur 3x stronger and outlines the strip
-  const totalHeight = Math.max(0, dockTopFromBottom + BLUR_EXTRA_PX);
+  const boost = (debug ? 2 : 1) * BLUR_STRENGTH; // ?pbdebug=1 doubles the blur and outlines the strip
 
   return createPortal(
     <div
