@@ -20,6 +20,7 @@ export const Hero: React.FC<HeroProps> = ({ onBookDemoClick, onPlayClick }) => {
     <section className="w-full bg-[#F5F6F8] p-[8px_8px_0_8px] md:p-[14px_14px_0_14px]">
       {/* The Hero Inset Box: rounded top corners, clipped background, dissolving bottom */}
       <div
+        id="hero-box"
         className="relative w-full h-[1095px] rounded-t-[28px] md:rounded-t-[48px] overflow-clip"
         style={{
           boxShadow:
