@@ -3,18 +3,18 @@ import { motion, AnimatePresence } from 'motion/react';
 import type { Variants } from 'motion/react';
 import { ArrowUpRight, Menu, X } from 'lucide-react';
 import { content } from '../content';
-import { useHeroPast } from './useHeroPast';
 import { useAppReady } from './Preloader';
 
 interface NavbarProps {
   onBookDemoClick?: () => void;
+  // Kept so App.tsx can keep passing it. The header no longer reacts to it:
+  // it sits at the top of the page and simply scrolls away with the hero.
   pastHero?: boolean;
 }
 
-// Frosted-glass look shared by every pill. These are inline styles on purpose.
-// IMPORTANT: no ancestor of a glass pill may have opacity < 1, filter, mask or
-// clip-path, otherwise backdrop-filter has nothing to blur. The header wrapper
-// therefore animates ONLY a transform (y). Opacity is animated on each pill itself.
+// Frosted-glass look shared by every pill (inline on purpose).
+// No ancestor of a glass pill may have opacity < 1, filter, mask or clip-path,
+// otherwise backdrop-filter has nothing to blur. Only the pills themselves animate.
 const GLASS: React.CSSProperties = {
   background:
     'linear-gradient(180deg, rgba(255,255,255,0.14) 0%, rgba(255,255,255,0.06) 100%)',
@@ -27,19 +27,12 @@ const GLASS: React.CSSProperties = {
 
 const TEXT_SHADOW = '0 1px 8px rgba(0,0,0,0.28)';
 const EASE_OUT: [number, number, number, number] = [0.22, 1, 0.36, 1];
-const EASE_IN: [number, number, number, number] = [0.4, 0, 1, 1];
 
-export const Navbar: React.FC<NavbarProps> = ({
-  onBookDemoClick,
-  pastHero: propPastHero,
-}) => {
-  const hookPastHero = useHeroPast();
-  const pastHero = propPastHero !== undefined ? propPastHero : hookPastHero;
+export const Navbar: React.FC<NavbarProps> = ({ onBookDemoClick }) => {
   const appReady = useAppReady();
 
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [isReducedMotion, setIsReducedMotion] = useState(false);
-  const [isHeaderVisible, setIsHeaderVisible] = useState(appReady && !pastHero);
   const mobileMenuRef = useRef<HTMLDivElement>(null);
   const menuButtonRef = useRef<HTMLButtonElement>(null);
 
@@ -50,15 +43,6 @@ export const Navbar: React.FC<NavbarProps> = ({
     mediaQuery.addEventListener('change', handler);
     return () => mediaQuery.removeEventListener('change', handler);
   }, []);
-
-  // When the app is ready and we are at the hero, make the header visible so the entrance is seen
-  useEffect(() => {
-    if (appReady && !pastHero) {
-      setIsHeaderVisible(true);
-    } else if (pastHero) {
-      setMobileMenuOpen(false);
-    }
-  }, [appReady, pastHero]);
 
   // Close the mobile dropdown on outside click or Escape
   useEffect(() => {
@@ -84,13 +68,6 @@ export const Navbar: React.FC<NavbarProps> = ({
       document.removeEventListener('keydown', handleKeyDown);
     };
   }, [mobileMenuOpen]);
-
-  // Hidden only AFTER the exit animation finishes
-  const handleAnimationComplete = (definition: unknown) => {
-    if (definition === 'hidden' && (!appReady || pastHero)) {
-      setIsHeaderVisible(false);
-    }
-  };
 
   const { nav } = content.hero;
 
@@ -127,75 +104,64 @@ export const Navbar: React.FC<NavbarProps> = ({
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
-  // Wrapper: transform only (no opacity, no filter), so backdrop-filter on the pills keeps working.
-  const headerVariants: Variants = {
-    shown: {
+  // Entrance only (after the preloader). Each pill fades in on its own, staggered.
+  const pillVariants: Variants = {
+    hidden: { opacity: 0, y: isReducedMotion ? 0 : -10 },
+    shown: (i: number) => ({
+      opacity: 1,
       y: 0,
       transition: isReducedMotion
         ? { duration: 0.15 }
-        : { duration: 0.45, ease: EASE_OUT, delayChildren: 0.08, staggerChildren: 0.08 },
-    },
-    hidden: {
-      y: isReducedMotion ? 0 : -24,
-      transition: isReducedMotion
-        ? { duration: 0.15 }
-        : { duration: 0.3, ease: EASE_IN, staggerChildren: 0.03, staggerDirection: -1 },
-    },
+        : { duration: 0.5, ease: EASE_OUT, delay: 0.1 + i * 0.08 },
+    }),
   };
 
-  // Each pill fades on its own (opacity on the glass element itself is fine)
-  const pillVariants: Variants = {
-    shown: {
-      opacity: 1,
-      transition: { duration: isReducedMotion ? 0.15 : 0.45, ease: EASE_OUT },
-    },
-    hidden: {
-      opacity: 0,
-      transition: { duration: isReducedMotion ? 0.15 : 0.25, ease: EASE_IN },
-    },
-  };
-
-  const isHeaderActive = appReady && !pastHero;
-  const pointer = isHeaderActive ? 'pointer-events-auto' : 'pointer-events-none';
+  const pointer = appReady ? 'pointer-events-auto' : 'pointer-events-none';
   const focusRing =
     'focus-visible:outline-2 focus-visible:outline-white focus-visible:outline-offset-[3px]';
+  const linkClass = `${focusRing} px-5 py-2 rounded-[10px] font-sans text-[15px] font-medium tracking-[-0.01em] text-white/90 hover:text-white hover:bg-white/10 transition-colors duration-[180ms] select-none whitespace-nowrap`;
 
   return (
-    <motion.header
-      initial={false}
-      animate={isHeaderActive ? 'shown' : 'hidden'}
-      variants={headerVariants}
-      onAnimationComplete={handleAnimationComplete}
+    // absolute (NOT fixed): the header belongs to the top of the page, it does not float.
+    // It scrolls away together with the hero, and the bottom dock takes over after the hero.
+    <header
       role="banner"
       aria-label="Top Navigation"
-      aria-hidden={!isHeaderActive}
-      inert={!isHeaderActive ? true : undefined}
-      className="fixed top-[24px] md:top-[30px] left-0 right-0 mx-auto w-[calc(100%-32px)] max-w-[1100px] h-[52px] z-50 pointer-events-none"
-      style={{ visibility: isHeaderVisible ? 'visible' : 'hidden' }}
+      aria-hidden={!appReady}
+      inert={!appReady ? true : undefined}
+      className="absolute top-4 left-0 right-0 mx-auto w-[calc(100%-32px)] max-w-[1100px] h-[52px] z-50 pointer-events-none"
     >
-      <div className="w-full h-full flex items-center gap-2">
-        {/* PILL 1: logo tile */}
-        <motion.button
-          type="button"
-          variants={pillVariants}
-          onClick={handleLogoClick}
-          aria-label="Appsian Home"
-          style={GLASS}
-          className={`${pointer} ${focusRing} w-[52px] h-[52px] min-w-[52px] rounded-[14px] flex items-center justify-center cursor-pointer select-none transition-colors duration-200 hover:border-white/30`}
-        >
-          <div className="w-7 h-7 rounded-[8px] bg-gradient-to-tr from-[#6EEDC2] to-[#4A7FF0] p-[1.5px] flex items-center justify-center">
-            <div className="w-full h-full bg-[#0E0F13] rounded-[7px] flex items-center justify-center">
-              <div className="w-2.5 h-2.5 rotate-45 border-2 border-[#6EEDC2] rounded-xs" />
+      <div className="w-full h-full grid grid-cols-[1fr_auto_1fr] items-center gap-2">
+        {/* LEFT: logo tile */}
+        <div className="justify-self-start">
+          <motion.button
+            type="button"
+            custom={0}
+            variants={pillVariants}
+            initial="hidden"
+            animate={appReady ? 'shown' : 'hidden'}
+            onClick={handleLogoClick}
+            aria-label="Appsian Home"
+            style={GLASS}
+            className={`${pointer} ${focusRing} w-[52px] h-[52px] min-w-[52px] rounded-[14px] flex items-center justify-center cursor-pointer select-none transition-colors duration-200 hover:border-white/30`}
+          >
+            <div className="w-7 h-7 rounded-[8px] bg-gradient-to-tr from-[#6EEDC2] to-[#4A7FF0] p-[1.5px] flex items-center justify-center">
+              <div className="w-full h-full bg-[#0E0F13] rounded-[7px] flex items-center justify-center">
+                <div className="w-2.5 h-2.5 rotate-45 border-2 border-[#6EEDC2] rounded-xs" />
+              </div>
             </div>
-          </div>
-        </motion.button>
+          </motion.button>
+        </div>
 
-        {/* PILL 2: navigation links (desktop) */}
+        {/* CENTER: compact menu pill (desktop only), sized to its content */}
         <motion.nav
+          custom={1}
           variants={pillVariants}
+          initial="hidden"
+          animate={appReady ? 'shown' : 'hidden'}
           aria-label="Main Navigation"
           style={GLASS}
-          className={`${pointer} flex-1 h-[52px] rounded-[14px] hidden min-[900px]:flex items-center justify-evenly px-3`}
+          className={`${pointer} hidden min-[900px]:flex items-center justify-center gap-1 h-[52px] px-2 rounded-[14px]`}
         >
           {nav.links.map((link) => (
             <a
@@ -203,74 +169,72 @@ export const Navbar: React.FC<NavbarProps> = ({
               href={link.href}
               onClick={(e) => handleScrollTo(e, link.href)}
               style={{ textShadow: TEXT_SHADOW }}
-              className={`${focusRing} px-[14px] py-[8px] rounded-[10px] font-sans text-[15px] font-medium tracking-[-0.01em] text-white/90 hover:text-white hover:bg-white/10 transition-colors duration-[180ms] select-none`}
+              className={linkClass}
             >
               {link.label}
             </a>
           ))}
-          <a
-            href="#pricing"
-            onClick={(e) => handleScrollTo(e, '#pricing')}
-            style={{ textShadow: TEXT_SHADOW }}
-            className={`${focusRing} px-[14px] py-[8px] rounded-[10px] font-sans text-[15px] font-medium tracking-[-0.01em] text-white/90 hover:text-white hover:bg-white/10 transition-colors duration-[180ms] select-none`}
-          >
-            {nav.loginLabel}
-          </a>
         </motion.nav>
+        {/* keeps the grid centered on small screens where the menu pill is hidden */}
+        <div className="min-[900px]:hidden" />
 
-        {/* Spacer on small screens so the CTA sits on the right */}
-        <div className="flex-1 min-[900px]:hidden" />
-
-        {/* PILL 3: CTA (underlined label + mint arrow square) */}
-        <motion.div
-          variants={pillVariants}
-          style={GLASS}
-          className={`${pointer} h-[52px] rounded-[14px] flex items-center p-[6px] min-[900px]:pl-[22px] min-[900px]:gap-[18px]`}
-        >
-          <button
-            type="button"
-            onClick={handleCtaClick}
-            style={{ textShadow: TEXT_SHADOW }}
-            className={`${focusRing} hidden min-[900px]:inline-flex items-center font-sans text-[15px] font-medium text-white underline underline-offset-4 decoration-1 decoration-white/70 hover:decoration-white cursor-pointer select-none`}
+        {/* RIGHT: CTA pill + mobile menu button */}
+        <div className="justify-self-end flex items-center gap-2">
+          <motion.div
+            custom={2}
+            variants={pillVariants}
+            initial="hidden"
+            animate={appReady ? 'shown' : 'hidden'}
+            style={GLASS}
+            className={`${pointer} h-[52px] rounded-[14px] flex items-center p-[6px] min-[900px]:pl-[22px] min-[900px]:gap-[18px]`}
           >
-            Get Free Demo
-          </button>
-          <button
-            type="button"
-            onClick={handleCtaClick}
-            aria-label="Get Free Demo"
-            className={`${focusRing} group w-[40px] h-[40px] min-w-[40px] rounded-[10px] bg-[#6EEDC2] flex items-center justify-center cursor-pointer transition-all duration-200 hover:brightness-110 active:scale-[0.96] shadow-[0_2px_10px_rgba(110,237,194,0.3)]`}
-          >
-            <ArrowUpRight
-              size={18}
-              strokeWidth={2.5}
-              className="text-[#062B20] transition-transform duration-200 group-hover:translate-x-[2px] group-hover:-translate-y-[2px]"
-            />
-          </button>
-        </motion.div>
+            <button
+              type="button"
+              onClick={handleCtaClick}
+              style={{ textShadow: TEXT_SHADOW }}
+              className={`${focusRing} hidden min-[900px]:inline-flex items-center font-sans text-[15px] font-medium text-white underline underline-offset-4 decoration-1 decoration-white/70 hover:decoration-white cursor-pointer select-none whitespace-nowrap`}
+            >
+              Get Free Demo
+            </button>
+            <button
+              type="button"
+              onClick={handleCtaClick}
+              aria-label="Get Free Demo"
+              className={`${focusRing} group w-[40px] h-[40px] min-w-[40px] rounded-[10px] bg-[#6EEDC2] flex items-center justify-center cursor-pointer transition-all duration-200 hover:brightness-110 active:scale-[0.96] shadow-[0_2px_10px_rgba(110,237,194,0.3)]`}
+            >
+              <ArrowUpRight
+                size={18}
+                strokeWidth={2.5}
+                className="text-[#062B20] transition-transform duration-200 group-hover:translate-x-[2px] group-hover:-translate-y-[2px]"
+              />
+            </button>
+          </motion.div>
 
-        {/* Mobile menu button pill */}
-        <motion.button
-          ref={menuButtonRef}
-          type="button"
-          variants={pillVariants}
-          onClick={() => setMobileMenuOpen((prev) => !prev)}
-          aria-expanded={mobileMenuOpen}
-          aria-label={mobileMenuOpen ? 'Close navigation menu' : 'Open navigation menu'}
-          style={GLASS}
-          className={`${pointer} ${focusRing} w-[52px] h-[52px] min-w-[52px] rounded-[14px] flex min-[900px]:hidden items-center justify-center cursor-pointer transition-colors duration-200 hover:border-white/30`}
-        >
-          {mobileMenuOpen ? (
-            <X size={20} className="text-white" />
-          ) : (
-            <Menu size={20} className="text-white" />
-          )}
-        </motion.button>
+          <motion.button
+            ref={menuButtonRef}
+            type="button"
+            custom={2}
+            variants={pillVariants}
+            initial="hidden"
+            animate={appReady ? 'shown' : 'hidden'}
+            onClick={() => setMobileMenuOpen((prev) => !prev)}
+            aria-expanded={mobileMenuOpen}
+            aria-label={mobileMenuOpen ? 'Close navigation menu' : 'Open navigation menu'}
+            style={GLASS}
+            className={`${pointer} ${focusRing} w-[52px] h-[52px] min-w-[52px] rounded-[14px] flex min-[900px]:hidden items-center justify-center cursor-pointer transition-colors duration-200 hover:border-white/30`}
+          >
+            {mobileMenuOpen ? (
+              <X size={20} className="text-white" />
+            ) : (
+              <Menu size={20} className="text-white" />
+            )}
+          </motion.button>
+        </div>
       </div>
 
       {/* Mobile dropdown (glass) */}
       <AnimatePresence>
-        {mobileMenuOpen && isHeaderActive && (
+        {mobileMenuOpen && appReady && (
           <motion.div
             ref={mobileMenuRef}
             initial={{ opacity: 0, y: -8 }}
@@ -292,13 +256,6 @@ export const Navbar: React.FC<NavbarProps> = ({
                 {link.label}
               </a>
             ))}
-            <a
-              href="#pricing"
-              onClick={(e) => handleScrollTo(e, '#pricing')}
-              className="w-full h-12 px-4 rounded-[10px] flex items-center font-sans text-[15px] font-medium text-white/90 hover:text-white hover:bg-white/10 transition-colors"
-            >
-              {nav.loginLabel}
-            </a>
             <div className="pt-2 mt-1 border-t border-white/10">
               <button
                 type="button"
@@ -312,6 +269,6 @@ export const Navbar: React.FC<NavbarProps> = ({
           </motion.div>
         )}
       </AnimatePresence>
-    </motion.header>
+    </header>
   );
 };
