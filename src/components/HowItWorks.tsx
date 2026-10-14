@@ -1,3 +1,4 @@
+import { AppsianLogoMark } from './AppsianLogo';
 import React, { useRef, useState, useEffect } from 'react';
 import { motion, useScroll, useMotionValueEvent } from 'motion/react';
 
@@ -377,11 +378,7 @@ export const HowItWorks: React.FC = () => {
                 style={getNodeStyle(activeStep >= 1)}
               >
                 {/* Appsian Logo Mark placeholder */}
-                <div className="w-5 h-5 rounded-md bg-[#6EEDC2]/20 border border-[#6EEDC2]/50 flex items-center justify-center text-[#6EEDC2] shrink-0">
-                  <svg className="w-3 h-3 fill-[#6EEDC2]" viewBox="0 0 24 24">
-                    <path d="M12 2L2 22h20L12 2zm0 5l6.5 13h-13L12 7z" />
-                  </svg>
-                </div>
+                <div className="w-5 h-5 rounded-md bg-[#6EEDC2]/20 border border-[#6EEDC2]/50 flex items-center justify-center text-[#6EEDC2] shrink-0"><AppsianLogoMark size={13} color="#6EEDC2" /></div>
                 <div className="flex flex-col text-left min-w-0">
                   <span className="text-[13px] font-medium leading-tight truncate">
                     Appsian answers

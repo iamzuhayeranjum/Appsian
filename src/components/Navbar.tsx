@@ -1,3 +1,4 @@
+import { AppsianLogoMark } from './AppsianLogo';
 import React, { useState, useEffect, useRef, useLayoutEffect } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import type { Variants } from 'motion/react';
@@ -264,7 +265,7 @@ export const Navbar: React.FC<NavbarProps> = ({ onBookDemoClick, pastHero = fals
           >
             <div className="w-6 h-6 md:w-6.5 md:h-6.5 rounded-[8px] bg-gradient-to-tr from-[#6EEDC2] to-[#4A7FF0] p-[1.5px] flex items-center justify-center">
               <div className="w-full h-full bg-[#0E0F13] rounded-[7px] flex items-center justify-center">
-                <div className="w-2 md:w-2.5 h-2 md:h-2.5 rotate-45 border-2 border-[#6EEDC2] rounded-xs" />
+                <AppsianLogoMark size={14} color="#6EEDC2" />
               </div>
             </div>
           </motion.button>

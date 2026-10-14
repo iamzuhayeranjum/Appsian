@@ -1,3 +1,4 @@
+import { AppsianLogoMark } from './AppsianLogo';
 import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import {
@@ -219,7 +220,7 @@ export const MeetAppsian: React.FC = () => {
             Meet
             <span className="inline-flex items-center align-middle gap-2 px-2.5 py-1 rounded-[10px] bg-white border border-[#2D283C]/10 shadow-xs mx-2">
               <span className="w-5 h-5 rounded-[6px] bg-[#0E0F13] flex items-center justify-center shrink-0">
-                <span className="w-2 h-2 rotate-45 border-[1.5px] border-[#6EEDC2] rounded-xs" />
+                <AppsianLogoMark size={11} color="#6EEDC2" />
               </span>
               <span className="font-medium text-[#2D283C] text-[18px] sm:text-[20px] tracking-tight">
                 Appsian
@@ -332,7 +333,7 @@ export const MeetAppsian: React.FC = () => {
             <div className="h-[46px] px-4 border-b border-[#EEF0F3] flex items-center justify-between bg-white/70">
               <div className="flex items-center gap-2">
                 <div className="w-5 h-5 rounded-[5px] bg-[#0E0F13] flex items-center justify-center">
-                  <div className="w-2 h-2 rotate-45 border-[1.5px] border-[#6EEDC2] rounded-xs" />
+                  <AppsianLogoMark size={11} color="#6EEDC2" />
                 </div>
                 <span className="font-semibold text-[13px] text-[#111827]">Calls</span>
               </div>
@@ -502,7 +503,7 @@ export const MeetAppsian: React.FC = () => {
               {/* Header */}
               <div className="flex items-center gap-2.5 pb-2.5 border-b border-[#EEF0F3]">
                 <div className="w-5 h-5 rounded-[5px] bg-[#0E0F13] flex items-center justify-center shrink-0">
-                  <div className="w-2 h-2 rotate-45 border-[1.5px] border-[#6EEDC2] rounded-xs" />
+                  <AppsianLogoMark size={11} color="#6EEDC2" />
                 </div>
                 <div className="flex flex-col text-left">
                   <span className="font-semibold text-[14px] text-[#111827] leading-none">
@@ -600,7 +601,7 @@ export const MeetAppsian: React.FC = () => {
           <div className="block sm:hidden w-[90%] mt-4 mx-auto rounded-[14px] bg-white p-3.5 shadow-[0_12px_32px_rgba(15,23,42,0.14)] border border-[#EEF0F3] z-20">
             <div className="flex items-center gap-2.5 pb-2.5 border-b border-[#EEF0F3]">
               <div className="w-5 h-5 rounded-[5px] bg-[#0E0F13] flex items-center justify-center shrink-0">
-                <div className="w-2 h-2 rotate-45 border-[1.5px] border-[#6EEDC2] rounded-xs" />
+                <AppsianLogoMark size={11} color="#6EEDC2" />
               </div>
               <div className="flex flex-col text-left">
                 <span className="font-semibold text-[14px] text-[#111827] leading-none">
