@@ -9,6 +9,7 @@ import Lenis from 'lenis';
 import { Hero } from './components/Hero';
 import { IntegrationsStrip } from './components/IntegrationsStrip';
 import { MissedCallCalculator } from './components/MissedCallCalculator';
+import { MeetAppsian } from './components/MeetAppsian';
 import { FeaturesSection } from './components/FeaturesSection';
 import { HowItWorks } from './components/HowItWorks';
 import { DarkBand1 } from './components/DarkBand1';
@@ -110,6 +111,9 @@ export default function App() {
 
       {/* Missed-call calculator: The cost of a missed call */}
       <MissedCallCalculator />
+
+      {/* Meet Appsian */}
+      <MeetAppsian />
 
       {/* 3. Features (white section with 987px big card & two 485px cards) */}
       <FeaturesSection />
