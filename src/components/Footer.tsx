@@ -2,10 +2,11 @@ import React, { useState } from 'react';
 import { ArrowUp } from 'lucide-react';
 import { content } from '../content';
 
-// The footer artwork lives in /public. It already contains the "Appsian" wordmark.
-const FOOTER_IMAGE = '/appsian-footer.jpg';
+// Direct footer artwork containing the "Appsian" wordmark
+const FOOTER_IMAGE = 'https://i.ibb.co.com/VpYWytwb/8d575d99-c8d3-44f1-8166-906c84c632a9.png';
+const LOCAL_FOOTER_IMAGE = '/appsian-footer.png';
 
-// Shown behind the image (and on its own if the image file is missing).
+// Shown behind the image (and on its own if the image file fails to load).
 const FALLBACK_BG =
   'linear-gradient(180deg, #02030A 0%, #03112E 28%, #0540C8 58%, #0A74FF 80%, #19C2FF 100%)';
 
@@ -34,7 +35,16 @@ const SOCIALS = [
 
 export const Footer: React.FC = () => {
   const { footer } = content;
+  const [imgSrc, setImgSrc] = useState(FOOTER_IMAGE);
   const [imgFailed, setImgFailed] = useState(false);
+
+  const handleImageError = () => {
+    if (imgSrc !== LOCAL_FOOTER_IMAGE) {
+      setImgSrc(LOCAL_FOOTER_IMAGE);
+    } else {
+      setImgFailed(true);
+    }
+  };
 
   const scrollToTop = () => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -53,7 +63,7 @@ export const Footer: React.FC = () => {
         >
           {!imgFailed ? (
             <img
-              src={FOOTER_IMAGE}
+              src={imgSrc}
               alt=""
               aria-hidden="true"
               width={2172}
@@ -61,7 +71,7 @@ export const Footer: React.FC = () => {
               loading="lazy"
               decoding="async"
               draggable={false}
-              onError={() => setImgFailed(true)}
+              onError={handleImageError}
               className="block w-full h-auto lg:absolute lg:inset-0 lg:h-full lg:object-cover select-none"
             />
           ) : (
