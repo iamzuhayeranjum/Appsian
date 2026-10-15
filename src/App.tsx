@@ -10,6 +10,7 @@ import { Hero } from './components/Hero';
 import { IntegrationsStrip } from './components/IntegrationsStrip';
 import { MissedCallCalculator } from './components/MissedCallCalculator';
 import { MeetAppsian } from './components/MeetAppsian';
+import { Benefits } from './components/Benefits';
 import { FeaturesSection } from './components/FeaturesSection';
 import { HowItWorks } from './components/HowItWorks';
 import { DarkBand1 } from './components/DarkBand1';
@@ -114,6 +115,9 @@ export default function App() {
 
       {/* Meet Appsian */}
       <MeetAppsian />
+
+      {/* Benefits: Sticky stacking pastel cards */}
+      <Benefits onBookDemoClick={handleOpenDemoModal} />
 
       {/* 3. Features (white section with 987px big card & two 485px cards) */}
       <FeaturesSection />
