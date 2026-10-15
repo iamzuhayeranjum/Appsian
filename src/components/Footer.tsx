@@ -1,4 +1,5 @@
 import React from 'react';
+import { AppsianMark } from './AppsianLogo';
 import { ArrowUp } from 'lucide-react';
 import { content } from '../content';
 
@@ -45,12 +46,7 @@ export const Footer: React.FC = () => {
             {/* Centered Lockup: Logo Mark + Appsian Text */}
             <g transform="translate(30, 15)">
               {/* Appsian brand logo mark */}
-              <g transform="translate(0, 5)">
-                <path
-                  d="M 90 20 C 85.5 20 81.4 22.7 79.2 26.8 L 35.1 128.4 C 32.4 134.5 36.7 141.5 43.6 141.5 L 62.1 141.5 C 67 141.5 71.1 138.3 72.9 133.8 L 80.1 115.4 L 99.9 115.4 L 107.1 133.8 C 108.9 138.3 113 141.5 117.9 141.5 L 136.4 141.5 C 143.3 141.5 147.6 134.5 144.9 128.4 L 100.8 26.8 C 98.6 22.7 94.5 20 90 20 Z M 90 60.5 L 96.5 96.5 L 83.5 96.5 Z"
-                  fill="url(#footerWordmarkGrad)"
-                />
-              </g>
+              <AppsianMark x="10" y="22" width="180" height="150" style={{ width: 180, height: 150 }} />
 
               {/* Text: Appsian with tight letter-spacing in Instrument Sans */}
               <text

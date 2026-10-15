@@ -1,4 +1,4 @@
-import { AppsianLogoMark } from './AppsianLogo';
+import { AppsianMark } from './AppsianLogo';
 import React, { useState, useEffect, useRef } from 'react';
 import { motion } from 'motion/react';
 
@@ -454,11 +454,9 @@ const PreloaderInner: React.FC<PreloaderProps> = ({ onComplete }) => {
               willChange: 'transform, opacity',
             }}
           >
-            {/* Appsian Geometric Mark in crisp near-black */}
-            <div className="w-6 h-6 sm:w-7 sm:h-7 md:w-8 md:h-8 rounded-[7px] sm:rounded-[8px] bg-[#0B0B0F] p-[1.5px] flex items-center justify-center shadow-xs">
-              <div className="w-full h-full bg-[#ECEFF2] rounded-[6px] sm:rounded-[7px] flex items-center justify-center">
-                <AppsianLogoMark className="w-3.5 h-3.5 sm:w-4 sm:h-4 md:w-4.5 md:h-4.5" color="#0B0B0F" />
-              </div>
+            {/* Appsian Brand Mark */}
+            <div className="w-6 h-6 sm:w-7 sm:h-7 md:w-8 md:h-8 flex items-center justify-center shrink-0">
+              <AppsianMark size={28} />
             </div>
 
             {/* Wordmark: Appsian in near-black */}

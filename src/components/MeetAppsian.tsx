@@ -1,4 +1,4 @@
-import { AppsianLogoMark } from './AppsianLogo';
+import { AppsianMark, AppsianIcon } from './AppsianLogo';
 import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import {
@@ -219,9 +219,7 @@ export const MeetAppsian: React.FC = () => {
           <h2 className="text-3xl sm:text-4xl md:text-[44px] lg:text-[48px] font-display font-light text-[#2D283C] tracking-[-0.03em] leading-[1.15] text-balance">
             Meet
             <span className="inline-flex items-center align-middle gap-2 px-2.5 py-1 rounded-[10px] bg-white border border-[#2D283C]/10 shadow-xs mx-2">
-              <span className="w-5 h-5 rounded-[6px] bg-[#0E0F13] flex items-center justify-center shrink-0">
-                <AppsianLogoMark size={11} color="#6EEDC2" />
-              </span>
+              <AppsianMark size={22} />
               <span className="font-medium text-[#2D283C] text-[18px] sm:text-[20px] tracking-tight">
                 Appsian
               </span>
@@ -332,9 +330,7 @@ export const MeetAppsian: React.FC = () => {
             {/* Top Bar: Appsian mark + Calls | Avatar & ghost buttons */}
             <div className="h-[46px] px-4 border-b border-[#EEF0F3] flex items-center justify-between bg-white/70">
               <div className="flex items-center gap-2">
-                <div className="w-5 h-5 rounded-[5px] bg-[#0E0F13] flex items-center justify-center">
-                  <AppsianLogoMark size={11} color="#6EEDC2" />
-                </div>
+                <AppsianIcon size={22} />
                 <span className="font-semibold text-[13px] text-[#111827]">Calls</span>
               </div>
 
@@ -502,9 +498,7 @@ export const MeetAppsian: React.FC = () => {
             >
               {/* Header */}
               <div className="flex items-center gap-2.5 pb-2.5 border-b border-[#EEF0F3]">
-                <div className="w-5 h-5 rounded-[5px] bg-[#0E0F13] flex items-center justify-center shrink-0">
-                  <AppsianLogoMark size={11} color="#6EEDC2" />
-                </div>
+                <AppsianIcon size={28} />
                 <div className="flex flex-col text-left">
                   <span className="font-semibold text-[14px] text-[#111827] leading-none">
                     Appsian
@@ -600,9 +594,7 @@ export const MeetAppsian: React.FC = () => {
           {/* MOBILE ONLY FLOATING CARD (centered below table when screen < 640px) */}
           <div className="block sm:hidden w-[90%] mt-4 mx-auto rounded-[14px] bg-white p-3.5 shadow-[0_12px_32px_rgba(15,23,42,0.14)] border border-[#EEF0F3] z-20">
             <div className="flex items-center gap-2.5 pb-2.5 border-b border-[#EEF0F3]">
-              <div className="w-5 h-5 rounded-[5px] bg-[#0E0F13] flex items-center justify-center shrink-0">
-                <AppsianLogoMark size={11} color="#6EEDC2" />
-              </div>
+              <AppsianIcon size={28} />
               <div className="flex flex-col text-left">
                 <span className="font-semibold text-[14px] text-[#111827] leading-none">
                   Appsian

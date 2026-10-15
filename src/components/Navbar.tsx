@@ -1,4 +1,4 @@
-import { AppsianLogoMark } from './AppsianLogo';
+import { AppsianMark } from './AppsianLogo';
 import React, { useState, useEffect, useRef, useLayoutEffect } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import type { Variants } from 'motion/react';
@@ -264,7 +264,9 @@ export const Navbar: React.FC<NavbarProps> = ({ onBookDemoClick, pastHero = fals
             style={GLASS_BLOCK}
             className={`${pointer} ${focusRing} w-[48px] h-[48px] min-w-[48px] rounded-[14px] flex items-center justify-center cursor-pointer select-none transition-all duration-200 hover:bg-white/75 active:scale-[0.97]`}
           >
-            <AppsianLogoMark size={20} color="#0E0F13" />
+            <div className="w-[26px] flex items-center justify-center shrink-0">
+              <AppsianMark size={26} />
+            </div>
           </motion.button>
 
           {/* 2. CENTER: Nav links - 48px wide pill with dark text on shared light glass */}

@@ -1,4 +1,4 @@
-import { AppsianLogoMark } from './AppsianLogo';
+import { AppsianIcon } from './AppsianLogo';
 import React, { useRef, useState, useEffect } from 'react';
 import { motion, useScroll, useMotionValueEvent } from 'motion/react';
 
@@ -377,8 +377,8 @@ export const HowItWorks: React.FC = () => {
                 }`}
                 style={getNodeStyle(activeStep >= 1)}
               >
-                {/* Appsian Logo Mark placeholder */}
-                <div className="w-5 h-5 rounded-md bg-[#6EEDC2]/20 border border-[#6EEDC2]/50 flex items-center justify-center text-[#6EEDC2] shrink-0"><AppsianLogoMark size={13} color="#6EEDC2" /></div>
+                {/* Appsian Logo Mark */}
+                <AppsianIcon size={22} />
                 <div className="flex flex-col text-left min-w-0">
                   <span className="text-[13px] font-medium leading-tight truncate">
                     Appsian answers

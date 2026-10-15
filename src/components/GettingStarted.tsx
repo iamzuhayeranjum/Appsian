@@ -1,4 +1,4 @@
-import { AppsianLogoMark } from './AppsianLogo';
+import { AppsianIcon } from './AppsianLogo';
 import React, { useRef, useState, useEffect, useMemo } from 'react';
 import { motion, useInView } from 'motion/react';
 import {
@@ -306,11 +306,9 @@ export const GettingStarted: React.FC<GettingStartedProps> = ({ onSuccessDemo })
             {/* Inner rim reflection */}
             <div className="absolute inset-[3px] rounded-full border border-white/20 pointer-events-none" />
 
-            {/* Appsian white glyph mark in center (about 52px on desktop) */}
-            <div className="relative z-10 w-10 h-10 md:w-[52px] md:h-[52px] rounded-[11px] md:rounded-[14px] bg-gradient-to-tr from-[#6EEDC2] to-[#4A7FF0] p-[2px] md:p-[2.5px] flex items-center justify-center shadow-lg">
-              <div className="w-full h-full bg-[#0E0F13] rounded-[9px] md:rounded-[12px] flex items-center justify-center">
-                <AppsianLogoMark className="w-4 h-4 md:w-6 md:h-6" color="#6EEDC2" />
-              </div>
+            <div className="relative z-10 w-10 h-10 md:w-[52px] md:h-[52px] rounded-[11px] md:rounded-[14px] bg-gradient-to-tr from-[#6EEDC2] to-[#4A7FF0] p-[2px] md:p-[2.5px] flex items-center justify-center shadow-lg overflow-hidden">
+              <AppsianIcon size={36} className="md:hidden" />
+              <AppsianIcon size={46} className="hidden md:block" />
             </div>
           </div>
         </div>

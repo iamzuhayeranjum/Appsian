@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
+import { AppsianMark } from './AppsianLogo';
 import { ArrowUpRight, Menu, X } from 'lucide-react';
 
 interface TopHeaderProps {
@@ -127,64 +128,9 @@ export const TopHeader: React.FC<TopHeaderProps> = ({
           style={getPillEntranceStyle(0)}
           className="glass-pill w-[52px] h-[52px] min-w-[52px] rounded-[14px] flex items-center justify-center cursor-pointer transition-all duration-200 hover:border-white/30 focus-visible:outline-2 focus-visible:outline-white focus-visible:outline-offset-[3px] select-none group"
         >
-          {/* Appsian mark: crisp isometric 3D stacked cubes mark (24px, white) matching reference */}
-          <svg
-            width="24"
-            height="24"
-            viewBox="0 0 28 28"
-            fill="none"
-            xmlns="http://www.w3.org/2000/svg"
-            className="transition-transform duration-200 group-hover:scale-105"
-            aria-hidden="true"
-          >
-            {/* Top Cube Isometric */}
-            <path
-              d="M14 2.5L22.5 7.4L14 12.3L5.5 7.4L14 2.5Z"
-              fill="white"
-              fillOpacity="0.95"
-            />
-            <path
-              d="M5.5 7.4L14 12.3V16.8L5.5 11.9V7.4Z"
-              fill="white"
-              fillOpacity="0.72"
-            />
-            <path
-              d="M22.5 7.4L14 12.3V16.8L22.5 11.9V7.4Z"
-              fill="white"
-              fillOpacity="0.45"
-            />
-            {/* Bottom-left accent node */}
-            <path
-              d="M9 14.5L13.8 17.2L9 20L4.2 17.2L9 14.5Z"
-              fill="#6EEDC2"
-            />
-            <path
-              d="M4.2 17.2L9 20V23.5L4.2 20.7V17.2Z"
-              fill="#6EEDC2"
-              fillOpacity="0.8"
-            />
-            <path
-              d="M13.8 17.2L9 20V23.5L13.8 20.7V17.2Z"
-              fill="#6EEDC2"
-              fillOpacity="0.5"
-            />
-            {/* Bottom-right node */}
-            <path
-              d="M19 14.5L23.8 17.2L19 20L14.2 17.2L19 14.5Z"
-              fill="white"
-              fillOpacity="0.9"
-            />
-            <path
-              d="M14.2 17.2L19 20V23.5L14.2 20.7V17.2Z"
-              fill="white"
-              fillOpacity="0.65"
-            />
-            <path
-              d="M23.8 17.2L19 20V23.5L23.8 20.7V17.2Z"
-              fill="white"
-              fillOpacity="0.35"
-            />
-          </svg>
+          <div className="w-[26px] flex items-center justify-center shrink-0">
+            <AppsianMark size={26} />
+          </div>
         </button>
 
         {/* ========================================================
