@@ -50,96 +50,123 @@ export const Footer: React.FC = () => {
   return (
     <footer
       ref={footerRef}
-      className="relative w-full min-h-screen min-h-[100svh] bg-[#050608] overflow-hidden flex flex-col justify-between m-0 p-0 rounded-none border-0 select-none font-['Inter',sans-serif]"
-      style={{ width: '100%' }}
+      className="relative w-full min-h-screen min-h-[100svh] bg-[#050608] overflow-hidden flex flex-col justify-between m-0 p-0 rounded-none border-0 select-none font-['Inter',sans-serif] z-[95]"
+      style={
+        {
+          width: '100%',
+          '--wm-crop-top': '0.206',
+          '--wm-letters-ratio': '0.59',
+        } as React.CSSProperties
+      }
     >
       <h2 className="sr-only">Appsian</h2>
 
-      {/* ── Direct Footer Artwork (attached image instead of building with code) ── */}
-      <div className="absolute inset-x-0 bottom-0 w-full pointer-events-none select-none overflow-hidden flex items-end justify-center z-0">
-        {!imgFailed && (
-          <img
-            src={imgSrc}
-            onError={handleImageError}
-            alt="Appsian"
-            className="w-full h-auto min-h-[45vh] md:min-h-[60vh] max-h-[85vh] object-cover md:object-contain object-bottom"
-            loading="eager"
-            decoding="async"
-          />
-        )}
-      </div>
+      {/* ── VERTICAL FLOW: Top row -> Tagline -> Cropped & Scaled Wordmark ── */}
+      <div className="relative z-10 w-full flex flex-col items-center">
+        {/* 1. Top row (Terms of Service / Copyright / Privacy Policy) */}
+        <div className="w-full pt-[56px] px-6 md:px-[clamp(24px,6vw,120px)]">
+          <div className="w-full max-w-[1920px] mx-auto">
+            {/* Mobile Layout (< 768px) */}
+            <div className="flex md:hidden flex-col items-center text-center gap-2.5">
+              <span className="text-[14px] text-white/90 tracking-tight font-medium">
+                ©2026 Appsian. All Rights Reserved.
+              </span>
+              <div className="flex items-center justify-center gap-5 text-[14px] text-white/88">
+                <a
+                  href="#terms"
+                  onClick={(e) => e.preventDefault()}
+                  className="hover:underline hover:text-white transition-colors"
+                >
+                  Terms of Service
+                </a>
+                <span className="text-white/40">·</span>
+                <a
+                  href="#privacy"
+                  onClick={(e) => e.preventDefault()}
+                  className="hover:underline hover:text-white transition-colors"
+                >
+                  Privacy Policy
+                </a>
+              </div>
+            </div>
 
-      {/* ── TOP SECTION: 3-column top row + centered tagline ─────────────── */}
-      <div className="relative z-10 w-full pt-10 md:pt-14 px-6 md:px-[clamp(24px,6vw,120px)] flex flex-col items-center">
-        {/* Desktop: 3-column row | Mobile: copyright first, then links beneath */}
-        <div className="w-full max-w-[1920px] mx-auto">
-          {/* Mobile Layout (< 768px) */}
-          <div className="flex md:hidden flex-col items-center text-center gap-2.5">
-            <span className="text-[14px] text-white/90 tracking-tight font-medium">
-              ©2026 Appsian. All Rights Reserved.
-            </span>
-            <div className="flex items-center justify-center gap-5 text-[14px] text-white/88">
-              <a
-                href="#terms"
-                onClick={(e) => e.preventDefault()}
-                className="hover:underline hover:text-white transition-colors"
-              >
-                Terms of Service
-              </a>
-              <span className="text-white/40">·</span>
-              <a
-                href="#privacy"
-                onClick={(e) => e.preventDefault()}
-                className="hover:underline hover:text-white transition-colors"
-              >
-                Privacy Policy
-              </a>
-            </div>
-          </div>
-
-          {/* Desktop Layout (>= 768px): 3-column grid */}
-          <div className="hidden md:grid grid-cols-3 items-center w-full text-[15px] font-normal tracking-tight text-white/88">
-            <div className="text-left">
-              <a
-                href="#terms"
-                onClick={(e) => e.preventDefault()}
-                className="hover:underline hover:text-white transition-colors"
-              >
-                Terms of Service
-              </a>
-            </div>
-            <div className="text-center text-white/85">
-              ©2026 Appsian. All Rights Reserved.
-            </div>
-            <div className="text-right">
-              <a
-                href="#privacy"
-                onClick={(e) => e.preventDefault()}
-                className="hover:underline hover:text-white transition-colors"
-              >
-                Privacy Policy
-              </a>
+            {/* Desktop Layout (>= 768px): 3-column grid */}
+            <div className="hidden md:grid grid-cols-3 items-center w-full text-[15px] font-normal tracking-tight text-white/88">
+              <div className="text-left">
+                <a
+                  href="#terms"
+                  onClick={(e) => e.preventDefault()}
+                  className="hover:underline hover:text-white transition-colors"
+                >
+                  Terms of Service
+                </a>
+              </div>
+              <div className="text-center text-white/85">
+                ©2026 Appsian. All Rights Reserved.
+              </div>
+              <div className="text-right">
+                <a
+                  href="#privacy"
+                  onClick={(e) => e.preventDefault()}
+                  className="hover:underline hover:text-white transition-colors"
+                >
+                  Privacy Policy
+                </a>
+              </div>
             </div>
           </div>
         </div>
 
-        {/* Centered tagline placed underneath top row */}
-        <p className="mt-10 md:mt-14 text-[15px] md:text-[16px] text-white/60 tracking-tight text-center max-w-xl">
+        {/* 2. Tagline (64px space above on desktop, 40px on mobile) */}
+        <p className="mt-10 md:mt-16 text-[16px] leading-normal text-white/60 tracking-tight text-center max-w-xl px-4">
           {footer.tagline}
         </p>
+
+        {/* 3. Wordmark wrapper with exact tight gap (40px desktop, 28px mobile) */}
+        {/* Crops empty space above glyphs via aspect-ratio + object-position bottom */}
+        {/* Scales wrapper so visible letters span 92% on desktop, 94% on mobile */}
+        <div className="relative w-full mt-7 md:mt-10 pointer-events-none select-none">
+          <style>{`
+            .wm-crop-wrapper {
+              width: calc(94% / var(--wm-letters-ratio, 0.59));
+              aspect-ratio: calc(2172 / (724 * (1 - var(--wm-crop-top, 0.206))));
+            }
+            @media (min-width: 768px) {
+              .wm-crop-wrapper {
+                width: calc(92% / var(--wm-letters-ratio, 0.59));
+              }
+            }
+          `}</style>
+          <div className="wm-crop-wrapper relative left-1/2 -translate-x-1/2 overflow-hidden">
+            {!imgFailed && (
+              <img
+                src={imgSrc}
+                onError={handleImageError}
+                alt="Appsian"
+                width={2172}
+                height={724}
+                loading="eager"
+                draggable={false}
+                className="w-full h-full object-cover object-bottom"
+              />
+            )}
+          </div>
+        </div>
       </div>
 
-      {/* ── SPACER: allows the artwork image to sit cleanly in the vertical center ── */}
-      <div className="relative z-10 flex-1 min-h-[160px] pointer-events-none" />
-
       {/* ── BOTTOM ROW: Back to Top (Left) & Social Icons (Right) ────────── */}
-      <div className="relative z-10 w-full pointer-events-none pb-[120px] md:pb-8">
+      {/* Positioned above the dock blur, fully sharp and clickable */}
+      <div className="relative z-20 w-full pointer-events-none pb-[120px] md:pb-8">
         {/* BACK TO TOP PILL */}
-        <div className="pointer-events-auto absolute md:left-[clamp(24px,4vw,56px)] md:bottom-6 bottom-[104px] left-1/2 -translate-x-1/2 md:translate-x-0">
+        <div className="pointer-events-auto absolute z-5 md:left-[clamp(24px,4vw,56px)] md:bottom-6 bottom-[104px] left-1/2 -translate-x-1/2 md:translate-x-0">
           <button
             type="button"
             onClick={scrollToTop}
             className="group h-[44px] bg-[#0A0A0A] border border-white/14 rounded-full pl-[7px] pr-4 py-[7px] flex items-center gap-2.5 cursor-pointer shadow-lg hover:border-white/30 transition-all duration-200"
+            style={{
+              backdropFilter: 'none',
+              WebkitBackdropFilter: 'none',
+            }}
             aria-label="Back to top"
           >
             <span className="w-6 h-6 rounded-full bg-white flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform duration-200">
@@ -152,7 +179,7 @@ export const Footer: React.FC = () => {
         </div>
 
         {/* SOCIAL ICONS PILL */}
-        <div className="pointer-events-auto absolute md:right-[clamp(24px,4vw,56px)] md:bottom-6 bottom-[160px] left-1/2 -translate-x-1/2 md:translate-x-0">
+        <div className="pointer-events-auto absolute z-5 md:right-[clamp(24px,4vw,56px)] md:bottom-6 bottom-[160px] left-1/2 -translate-x-1/2 md:translate-x-0">
           <div className="h-[44px] bg-white/[0.08] backdrop-blur-md border border-white/[0.18] rounded-full px-4 flex items-center gap-[14px] shadow-lg">
             {SOCIALS.map((s, idx) => (
               <React.Fragment key={s.label}>

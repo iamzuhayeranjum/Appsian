@@ -78,6 +78,22 @@ export default function ProgressiveBlur({
     }
   }, [debug, visible, dockTopFromBottom, measured, totalHeight]);
 
+  const [footerInView, setFooterInView] = useState(false);
+
+  useEffect(() => {
+    if (!mounted) return;
+    const footerEl = document.querySelector('footer');
+    if (!footerEl) return;
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        setFooterInView(entry.isIntersecting);
+      },
+      { threshold: 0.02 }
+    );
+    observer.observe(footerEl);
+    return () => observer.disconnect();
+  }, [mounted]);
+
   if (!mounted || typeof document === 'undefined') return null;
 
   const boost = (debug ? 2 : 1) * BLUR_STRENGTH; // ?pbdebug=1 doubles the blur and outlines the strip
@@ -95,9 +111,9 @@ export default function ProgressiveBlur({
         pointerEvents: 'none',
         zIndex: 90, // above page content, below the dock (dock is z-100)
         transform: visible ? 'translateY(0)' : 'translateY(100%)',
-        transition: 'transform 450ms cubic-bezier(0.22, 1, 0.36, 1)',
+        opacity: footerInView ? 0 : 1,
+        transition: 'opacity 200ms ease, transform 450ms cubic-bezier(0.22, 1, 0.36, 1)',
         outline: debug ? '1px dashed red' : 'none',
-        // NO opacity, NO filter, NO mask, NO clip-path, NO will-change, NO isolation here.
       }}
     >
       {LAYERS.map((l, i) => (
