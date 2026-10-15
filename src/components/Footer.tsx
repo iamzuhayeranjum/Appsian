@@ -124,7 +124,7 @@ export const Footer: React.FC = () => {
 
         {/* 3. Wordmark wrapper with exact tight gap (40px desktop, 28px mobile) */}
         {/* Crops empty space above glyphs via aspect-ratio + object-position bottom */}
-        {/* Scales wrapper so visible letters span 92% on desktop, 94% on mobile */}
+        {/* Scales wrapper so visible letters span 78% on desktop */}
         <div className="relative w-full mt-7 md:mt-10 pointer-events-none select-none">
           <style>{`
             .wm-crop-wrapper {
@@ -133,7 +133,7 @@ export const Footer: React.FC = () => {
             }
             @media (min-width: 768px) {
               .wm-crop-wrapper {
-                width: calc(92% / var(--wm-letters-ratio, 0.59));
+                width: calc(78% / var(--wm-letters-ratio, 0.59));
               }
             }
           `}</style>
