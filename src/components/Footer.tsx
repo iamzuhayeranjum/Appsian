@@ -1,14 +1,10 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import { ArrowUp } from 'lucide-react';
 import { content } from '../content';
 
-// Direct footer artwork containing the "Appsian" wordmark
+// Direct footer artwork containing the "Appsian" wordmark and blue glowing streaks
 const FOOTER_IMAGE = 'https://i.ibb.co.com/VpYWytwb/8d575d99-c8d3-44f1-8166-906c84c632a9.png';
 const LOCAL_FOOTER_IMAGE = '/appsian-footer.png';
-
-// Shown behind the image (and on its own if the image file fails to load).
-const FALLBACK_BG =
-  'linear-gradient(180deg, #02030A 0%, #03112E 28%, #0540C8 58%, #0A74FF 80%, #19C2FF 100%)';
 
 const SOCIALS = [
   {
@@ -35,6 +31,7 @@ const SOCIALS = [
 
 export const Footer: React.FC = () => {
   const { footer } = content;
+  const footerRef = useRef<HTMLElement>(null);
   const [imgSrc, setImgSrc] = useState(FOOTER_IMAGE);
   const [imgFailed, setImgFailed] = useState(false);
 
@@ -51,82 +48,134 @@ export const Footer: React.FC = () => {
   };
 
   return (
-    // Page-gray frame (matches the hero frame). Extra bottom padding keeps the legal bar clear of the floating dock.
-    <footer className="w-full bg-[#F5F6F8] px-2 md:px-[14px] pt-16 pb-[110px]">
+    <footer
+      ref={footerRef}
+      className="relative w-full min-h-screen min-h-[100svh] bg-[#050608] overflow-hidden flex flex-col justify-between m-0 p-0 rounded-none border-0 select-none font-['Inter',sans-serif]"
+      style={{ width: '100%' }}
+    >
       <h2 className="sr-only">Appsian</h2>
 
-      <div className="relative w-full max-w-[1920px] mx-auto">
-        {/* Artwork box: rounded like the hero box. Under 1024px it is just the image (no overlay). */}
-        <div
-          className="relative w-full overflow-clip rounded-[28px] lg:rounded-[48px] lg:aspect-[2172/724] lg:min-h-[420px]"
-          style={{ background: FALLBACK_BG }}
-        >
-          {!imgFailed ? (
-            <img
-              src={imgSrc}
-              alt=""
-              aria-hidden="true"
-              width={2172}
-              height={724}
-              loading="lazy"
-              decoding="async"
-              draggable={false}
-              onError={handleImageError}
-              className="block w-full h-auto lg:absolute lg:inset-0 lg:h-full lg:object-cover select-none"
-            />
-          ) : (
-            <div className="h-[170px] lg:hidden" aria-hidden="true" />
-          )}
-        </div>
+      {/* ── Direct Footer Artwork (attached image instead of building with code) ── */}
+      <div className="absolute inset-x-0 bottom-0 w-full pointer-events-none select-none overflow-hidden flex items-end justify-center z-0">
+        {!imgFailed && (
+          <img
+            src={imgSrc}
+            onError={handleImageError}
+            alt="Appsian"
+            className="w-full h-auto min-h-[45vh] md:min-h-[60vh] max-h-[85vh] object-cover md:object-contain object-bottom"
+            loading="eager"
+            decoding="async"
+          />
+        )}
+      </div>
 
-        {/* Text layer: sits over the artwork from 1024px up, stacked under it on smaller screens */}
-        <div className="flex flex-col gap-4 pt-5 lg:pt-0 lg:absolute lg:inset-0 lg:justify-between lg:p-8">
-          {/* Top row: tagline left, Back to top right */}
-          <div className="flex items-center justify-between gap-4">
-            <p className="text-[15px] font-normal tracking-tight text-[#5B5F68] lg:text-white/75">
-              {footer.tagline}
-            </p>
-
-            <button
-              type="button"
-              onClick={scrollToTop}
-              className="h-9 px-3.5 rounded-[10px] text-[13px] font-medium flex items-center justify-center gap-1.5 cursor-pointer transition-colors bg-white text-[#5B5F68] border border-[rgba(11,11,15,0.08)] hover:text-[#0B0B0F] lg:bg-white/10 lg:text-white lg:border-white/25 lg:hover:bg-white/20 lg:backdrop-blur-xl"
-            >
-              <span>{footer.backToTop}</span>
-              <ArrowUp className="w-3.5 h-3.5" />
-            </button>
+      {/* ── TOP SECTION: 3-column top row + centered tagline ─────────────── */}
+      <div className="relative z-10 w-full pt-10 md:pt-14 px-6 md:px-[clamp(24px,6vw,120px)] flex flex-col items-center">
+        {/* Desktop: 3-column row | Mobile: copyright first, then links beneath */}
+        <div className="w-full max-w-[1920px] mx-auto">
+          {/* Mobile Layout (< 768px) */}
+          <div className="flex md:hidden flex-col items-center text-center gap-2.5">
+            <span className="text-[14px] text-white/90 tracking-tight font-medium">
+              ©2026 Appsian. All Rights Reserved.
+            </span>
+            <div className="flex items-center justify-center gap-5 text-[14px] text-white/88">
+              <a
+                href="#terms"
+                onClick={(e) => e.preventDefault()}
+                className="hover:underline hover:text-white transition-colors"
+              >
+                Terms of Service
+              </a>
+              <span className="text-white/40">·</span>
+              <a
+                href="#privacy"
+                onClick={(e) => e.preventDefault()}
+                className="hover:underline hover:text-white transition-colors"
+              >
+                Privacy Policy
+              </a>
+            </div>
           </div>
 
-          {/* Legal bar: white card on small screens, frosted glass over the artwork on large screens */}
-          <div className="w-full min-h-[56px] rounded-[14px] px-5 lg:px-8 py-3 flex items-center justify-between gap-4 bg-white border border-[rgba(11,11,15,0.08)] text-[#5B5F68] lg:bg-white/10 lg:border-white/20 lg:text-white/80 lg:backdrop-blur-xl lg:shadow-[inset_0_1px_0_rgba(255,255,255,0.18)]">
-            <div className="flex flex-wrap items-center gap-x-2 gap-y-1 text-xs sm:text-[13px] font-normal">
-              <span>Privacy Policy</span>
-              <span className="text-[#9A9EA8] lg:text-white/40">·</span>
-              <span>Terms of Service</span>
-              <span className="text-[#9A9EA8] lg:text-white/40">·</span>
-              <span>©2026 Appsian. All Rights Reserved.</span>
+          {/* Desktop Layout (>= 768px): 3-column grid */}
+          <div className="hidden md:grid grid-cols-3 items-center w-full text-[15px] font-normal tracking-tight text-white/88">
+            <div className="text-left">
+              <a
+                href="#terms"
+                onClick={(e) => e.preventDefault()}
+                className="hover:underline hover:text-white transition-colors"
+              >
+                Terms of Service
+              </a>
             </div>
+            <div className="text-center text-white/85">
+              ©2026 Appsian. All Rights Reserved.
+            </div>
+            <div className="text-right">
+              <a
+                href="#privacy"
+                onClick={(e) => e.preventDefault()}
+                className="hover:underline hover:text-white transition-colors"
+              >
+                Privacy Policy
+              </a>
+            </div>
+          </div>
+        </div>
 
-            <div className="flex items-center gap-2.5 shrink-0">
-              {SOCIALS.map((s, i) => (
-                <React.Fragment key={s.label}>
-                  {i > 0 && (
-                    <div className="w-[1px] h-3.5 bg-[rgba(11,11,15,0.08)] lg:bg-white/20" />
-                  )}
-                  <a
-                    href={s.href}
-                    target="_blank"
-                    rel="noreferrer"
-                    aria-label={s.label}
-                    className="p-1 rounded-[6px] text-[#5B5F68] hover:text-[#0B0B0F] lg:text-white/80 lg:hover:text-white transition-colors"
+        {/* Centered tagline placed underneath top row */}
+        <p className="mt-10 md:mt-14 text-[15px] md:text-[16px] text-white/60 tracking-tight text-center max-w-xl">
+          {footer.tagline}
+        </p>
+      </div>
+
+      {/* ── SPACER: allows the artwork image to sit cleanly in the vertical center ── */}
+      <div className="relative z-10 flex-1 min-h-[160px] pointer-events-none" />
+
+      {/* ── BOTTOM ROW: Back to Top (Left) & Social Icons (Right) ────────── */}
+      <div className="relative z-10 w-full pointer-events-none pb-[120px] md:pb-8">
+        {/* BACK TO TOP PILL */}
+        <div className="pointer-events-auto absolute md:left-[clamp(24px,4vw,56px)] md:bottom-6 bottom-[104px] left-1/2 -translate-x-1/2 md:translate-x-0">
+          <button
+            type="button"
+            onClick={scrollToTop}
+            className="group h-[44px] bg-[#0A0A0A] border border-white/14 rounded-full pl-[7px] pr-4 py-[7px] flex items-center gap-2.5 cursor-pointer shadow-lg hover:border-white/30 transition-all duration-200"
+            aria-label="Back to top"
+          >
+            <span className="w-6 h-6 rounded-full bg-white flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform duration-200">
+              <ArrowUp className="w-3.5 h-3.5 text-[#0A0A0A] stroke-[2.5]" />
+            </span>
+            <span className="text-[14px] font-medium text-white tracking-tight">
+              Back to Top
+            </span>
+          </button>
+        </div>
+
+        {/* SOCIAL ICONS PILL */}
+        <div className="pointer-events-auto absolute md:right-[clamp(24px,4vw,56px)] md:bottom-6 bottom-[160px] left-1/2 -translate-x-1/2 md:translate-x-0">
+          <div className="h-[44px] bg-white/[0.08] backdrop-blur-md border border-white/[0.18] rounded-full px-4 flex items-center gap-[14px] shadow-lg">
+            {SOCIALS.map((s, idx) => (
+              <React.Fragment key={s.label}>
+                {idx > 0 && (
+                  <span className="w-[1px] h-3 bg-white/20" aria-hidden="true" />
+                )}
+                <a
+                  href={s.href}
+                  target="_blank"
+                  rel="noreferrer"
+                  aria-label={s.label}
+                  className="w-[18px] h-[18px] flex items-center justify-center text-white/80 hover:text-white hover:opacity-100 transition-all duration-150"
+                >
+                  <svg
+                    className="w-[18px] h-[18px] fill-current"
+                    viewBox="0 0 24 24"
+                    aria-hidden="true"
                   >
-                    <svg className="w-4 h-4 fill-current" viewBox="0 0 24 24" aria-hidden="true">
-                      <path d={s.path} />
-                    </svg>
-                  </a>
-                </React.Fragment>
-              ))}
-            </div>
+                    <path d={s.path} />
+                  </svg>
+                </a>
+              </React.Fragment>
+            ))}
           </div>
         </div>
       </div>
