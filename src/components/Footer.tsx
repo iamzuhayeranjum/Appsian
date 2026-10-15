@@ -3,7 +3,7 @@ import { ArrowUp } from 'lucide-react';
 import { content } from '../content';
 
 // The footer artwork lives in /public. It already contains the "Appsian" wordmark.
-const FOOTER_IMAGE = '/appsian-footer.webp';
+const FOOTER_IMAGE = '/appsian-footer.jpg';
 
 // Shown behind the image (and on its own if the image file is missing).
 const FALLBACK_BG =
