@@ -11,14 +11,14 @@ interface NavbarProps {
   pastHero?: boolean;
 }
 
-// Light frosted-glass pill style for elements on the light notch
-const NAV_GLASS: React.CSSProperties = {
-  background: 'rgba(255, 255, 255, 0.82)',
-  backdropFilter: 'blur(20px) saturate(180%)',
-  WebkitBackdropFilter: 'blur(20px) saturate(180%)',
-  border: '1px solid rgba(0, 0, 0, 0.08)',
+// Shared Light Frosted-Glass style matching reference
+const GLASS_BLOCK: React.CSSProperties = {
+  background: 'rgba(255, 255, 255, 0.55)',
+  backdropFilter: 'blur(16px) saturate(180%)',
+  WebkitBackdropFilter: 'blur(16px) saturate(180%)',
+  border: '1px solid rgba(255, 255, 255, 0.85)',
   boxShadow:
-    '0 2px 10px rgba(0, 0, 0, 0.04), inset 0 1px 0 rgba(255, 255, 255, 0.95)',
+    '0 2px 10px rgba(0, 0, 0, 0.04), 0 1px 2px rgba(0, 0, 0, 0.02), inset 0 1px 0 rgba(255, 255, 255, 0.95)',
 };
 
 const EASE_OUT: [number, number, number, number] = [0.22, 1, 0.36, 1];
@@ -156,13 +156,13 @@ export const Navbar: React.FC<NavbarProps> = ({ onBookDemoClick, pastHero = fals
   const pointer = isVisible ? 'pointer-events-auto' : 'pointer-events-none';
   const focusRing =
     'focus-visible:outline-2 focus-visible:outline-[#111827] focus-visible:outline-offset-[2px]';
-  const linkClass = `${focusRing} px-3 md:px-4 py-1.5 md:py-2 rounded-[9px] font-sans text-[13px] md:text-[14px] font-semibold tracking-[-0.01em] text-[#111827] hover:text-black hover:bg-black/[0.05] transition-colors duration-150 select-none whitespace-nowrap`;
+  const linkClass = `${focusRing} px-3.5 md:px-4 py-2 rounded-full font-sans text-[13px] md:text-[14px] font-semibold tracking-[-0.01em] text-[#111827] hover:text-black hover:bg-black/[0.05] transition-colors duration-150 select-none whitespace-nowrap`;
 
   // Geometry calculations for the notch wrapping the complete header bar
   const isDesktop = typeof window !== 'undefined' && window.innerWidth >= 768;
-  const paddingX = isDesktop ? 22 : 14;
-  const paddingBottom = 12;
-  const topOffset = isDesktop ? 10 : 8;
+  const paddingX = 20; // 20px padding each side
+  const paddingBottom = 12; // 12px bottom padding
+  const topOffset = 12; // 12px top padding
 
   const maxNotchWidth = typeof window !== 'undefined' ? window.innerWidth - 32 : 1100;
   const notchWidth = Math.min(barSize.width + paddingX * 2, maxNotchWidth);
@@ -250,9 +250,9 @@ export const Navbar: React.FC<NavbarProps> = ({ onBookDemoClick, pastHero = fals
       >
         <div
           ref={headerBarRef}
-          className="inline-flex items-center gap-2 md:gap-3 pointer-events-auto"
+          className="inline-flex items-center gap-2 pointer-events-auto"
         >
-          {/* LEFT: Logo tile - crisp dark tile that pops on the light notch */}
+          {/* 1. LEFT: Logo tile - 48px square frosted glass tile with centered Appsian mark */}
           <motion.button
             type="button"
             custom={0}
@@ -261,24 +261,21 @@ export const Navbar: React.FC<NavbarProps> = ({ onBookDemoClick, pastHero = fals
             animate={isVisible ? 'shown' : 'hidden'}
             onClick={handleLogoClick}
             aria-label="Appsian Home"
-            className={`${pointer} ${focusRing} w-[42px] h-[42px] md:w-[46px] md:h-[46px] min-w-[42px] md:min-w-[46px] rounded-[13px] bg-[#0E0F13] border border-black/10 shadow-[0_2px_8px_rgba(0,0,0,0.12),_inset_0_1px_0_rgba(255,255,255,0.15)] flex items-center justify-center cursor-pointer select-none transition-transform duration-200 hover:scale-[1.03] active:scale-[0.97]`}
+            style={GLASS_BLOCK}
+            className={`${pointer} ${focusRing} w-[48px] h-[48px] min-w-[48px] rounded-[14px] flex items-center justify-center cursor-pointer select-none transition-all duration-200 hover:bg-white/75 active:scale-[0.97]`}
           >
-            <div className="w-6 h-6 md:w-6.5 md:h-6.5 rounded-[8px] bg-gradient-to-tr from-[#6EEDC2] to-[#4A7FF0] p-[1.5px] flex items-center justify-center">
-              <div className="w-full h-full bg-[#0E0F13] rounded-[7px] flex items-center justify-center">
-                <AppsianLogoMark size={14} color="#6EEDC2" />
-              </div>
-            </div>
+            <AppsianLogoMark size={20} color="#0E0F13" />
           </motion.button>
 
-          {/* CENTER: Nav links - dark text in a crisp light-gray glass pill */}
+          {/* 2. CENTER: Nav links - 48px wide pill with dark text on shared light glass */}
           <motion.nav
             custom={1}
             variants={pillVariants}
             initial="hidden"
             animate={isVisible ? 'shown' : 'hidden'}
             aria-label="Main Navigation"
-            style={NAV_GLASS}
-            className={`${pointer} hidden min-[680px]:flex items-center justify-center gap-0.5 md:gap-1 h-[42px] md:h-[46px] px-1 md:px-1.5 rounded-[13px]`}
+            style={GLASS_BLOCK}
+            className={`${pointer} hidden min-[680px]:flex items-center justify-center gap-1 h-[48px] px-2 rounded-full`}
           >
             {nav.links.map((link) => (
               <a
@@ -292,27 +289,28 @@ export const Navbar: React.FC<NavbarProps> = ({ onBookDemoClick, pastHero = fals
             ))}
           </motion.nav>
 
-          {/* RIGHT: CTA pill - dark pill with crisp white text and bright accent icon */}
+          {/* 3. RIGHT: CTA block - 48px frosted glass pill with underlined text and mint square arrow button */}
           <motion.div
             custom={2}
             variants={pillVariants}
             initial="hidden"
             animate={isVisible ? 'shown' : 'hidden'}
             onClick={handleCtaClick}
-            className={`${pointer} ${focusRing} h-[42px] md:h-[46px] rounded-[13px] bg-[#0E0F13] text-white border border-black/10 shadow-[0_2px_8px_rgba(0,0,0,0.12),_inset_0_1px_0_rgba(255,255,255,0.15)] flex items-center p-[3px] md:p-[4px] pl-3.5 md:pl-4 gap-2 md:gap-2.5 group cursor-pointer hover:bg-[#1A1C24] transition-colors`}
+            style={GLASS_BLOCK}
+            className={`${pointer} ${focusRing} h-[48px] rounded-full flex items-center pl-4 md:pl-4.5 pr-1.5 gap-2.5 group cursor-pointer hover:bg-white/75 transition-all duration-200`}
           >
             <button
               type="button"
-              className={`${focusRing} inline-flex items-center font-sans text-[13px] md:text-[14px] font-medium text-white cursor-pointer select-none whitespace-nowrap`}
+              className={`${focusRing} inline-flex items-center font-sans text-[13px] md:text-[14px] font-medium text-[#111827] underline underline-offset-4 decoration-1 decoration-[#111827]/40 group-hover:decoration-[#111827] cursor-pointer select-none whitespace-nowrap`}
             >
               Get Free Demo
             </button>
             <div
               aria-hidden="true"
-              className="w-[30px] h-[30px] md:w-[34px] md:h-[34px] min-w-[30px] md:min-w-[34px] rounded-[9px] bg-[#6EEDC2] flex items-center justify-center transition-transform duration-200 group-hover:translate-x-[1.5px] group-hover:-translate-y-[1.5px] shadow-[0_2px_6px_rgba(110,237,194,0.3)]"
+              className="w-[34px] h-[34px] min-w-[34px] rounded-[10px] bg-[#6EEDC2] flex items-center justify-center transition-transform duration-200 group-hover:translate-x-[1.5px] group-hover:-translate-y-[1.5px] shadow-[0_2px_6px_rgba(110,237,194,0.35)]"
             >
               <ArrowUpRight
-                size={16}
+                size={17}
                 strokeWidth={2.5}
                 className="text-[#062B20]"
               />
@@ -330,8 +328,8 @@ export const Navbar: React.FC<NavbarProps> = ({ onBookDemoClick, pastHero = fals
             onClick={() => setMobileMenuOpen((prev) => !prev)}
             aria-expanded={mobileMenuOpen}
             aria-label={mobileMenuOpen ? 'Close navigation menu' : 'Open navigation menu'}
-            style={NAV_GLASS}
-            className={`${pointer} ${focusRing} w-[42px] h-[42px] md:w-[46px] md:h-[46px] min-w-[42px] md:min-w-[46px] rounded-[13px] flex min-[680px]:hidden items-center justify-center cursor-pointer transition-colors duration-200 hover:bg-white`}
+            style={GLASS_BLOCK}
+            className={`${pointer} ${focusRing} w-[48px] h-[48px] min-w-[48px] rounded-[14px] flex min-[680px]:hidden items-center justify-center cursor-pointer transition-colors duration-200 hover:bg-white/75`}
           >
             {mobileMenuOpen ? (
               <X size={18} className="text-[#111827]" />
