@@ -6,9 +6,6 @@ import {
   Check,
   AlertCircle,
   Loader2,
-  PhoneIncoming,
-  CalendarCheck,
-  UserPlus,
 } from 'lucide-react';
 import { HeroCallDemo } from './HeroCallDemo';
 import { useAppReady } from './Preloader';
@@ -290,7 +287,7 @@ export const Hero: React.FC<HeroProps> = ({ onBookDemoClick }) => {
                   delay: reduceMotion ? 0 : 0.48,
                   ease: EASE,
                 }}
-                className="mt-9 w-full max-w-[640px]"
+                className="mt-9 w-full max-w-[700px]"
               >
                 <AnimatePresence mode="wait">
                   {status === 'success' ? (
@@ -301,7 +298,7 @@ export const Hero: React.FC<HeroProps> = ({ onBookDemoClick }) => {
                       animate={{ opacity: 1, scale: 1 }}
                       exit={{ opacity: 0, scale: 0.96 }}
                       transition={{ duration: 0.3 }}
-                      className="w-full min-h-[64px] rounded-[20px] bg-white border border-[rgba(15,16,32,0.10)] p-4 md:px-6 shadow-[0_18px_50px_-18px_rgba(40,40,110,0.30),0_2px_6px_rgba(20,20,50,0.06)] flex items-center gap-3.5"
+                      className="w-full min-h-[74px] rounded-[22px] bg-white border border-[rgba(15,16,32,0.10)] p-4 lg:px-6 shadow-[0_18px_50px_-18px_rgba(40,40,110,0.30),0_2px_6px_rgba(20,20,50,0.06)] flex items-center gap-3.5"
                     >
                       <div className="w-10 h-10 rounded-full bg-[#6EEDC2] flex items-center justify-center text-[#062B20] shrink-0 shadow-xs">
                         <Check className="w-5 h-5 stroke-[2.5]" />
@@ -321,7 +318,7 @@ export const Hero: React.FC<HeroProps> = ({ onBookDemoClick }) => {
                       key="form"
                       noValidate
                       onSubmit={handleSubmit}
-                      className="relative w-full flex flex-col md:flex-row md:h-[64px] rounded-[20px] bg-white border border-[rgba(15,16,32,0.10)] p-2 md:p-[6px] gap-2 md:gap-0 shadow-[0_18px_50px_-18px_rgba(40,40,110,0.30),0_2px_6px_rgba(20,20,50,0.06)] focus-within:border-[rgba(74,127,240,0.55)] focus-within:ring-4 focus-within:ring-[rgba(74,127,240,0.14)] transition-all"
+                      className="relative w-full flex flex-col lg:flex-row lg:h-[74px] rounded-[22px] bg-white border border-[rgba(15,16,32,0.10)] p-2.5 lg:p-[8px] gap-2 lg:gap-0 shadow-[0_18px_50px_-18px_rgba(40,40,110,0.30),0_2px_6px_rgba(20,20,50,0.06)] focus-within:border-[rgba(74,127,240,0.55)] focus-within:ring-4 focus-within:ring-[rgba(74,127,240,0.14)] transition-all"
                     >
                       {/* Hidden Spam Honeypot */}
                       <input
@@ -350,18 +347,18 @@ export const Hero: React.FC<HeroProps> = ({ onBookDemoClick }) => {
                           aria-label="Your name"
                           aria-invalid={errorField === 'name'}
                           aria-describedby={errorField ? 'hero-demo-error' : undefined}
-                          className="w-full h-[52px] md:h-full rounded-[14px] md:rounded-none bg-[#F5F6FA] md:bg-transparent px-4 md:px-[18px] text-[15px] text-[#0B0F19] placeholder-[#8A91A5] border-0 outline-none focus:outline-none transition-colors disabled:opacity-50"
+                          className="w-full h-[54px] lg:h-full rounded-[14px] lg:rounded-none bg-[#F5F6FA] lg:bg-transparent px-4 lg:px-[20px] text-[16px] text-[#0B0F19] placeholder-[#8A91A5] border-0 outline-none focus:outline-none transition-colors disabled:opacity-50"
                         />
                       </div>
 
                       {/* Vertical Divider (Desktop only) */}
                       <div
-                        className="hidden md:block w-[1px] h-6 bg-[#E2E5EE] my-auto shrink-0"
+                        className="hidden lg:block w-[1px] h-7 bg-[#E2E5EE] my-auto shrink-0"
                         aria-hidden="true"
                       />
 
                       {/* Email Input */}
-                      <div className="flex-[1.35] min-w-0 flex items-center">
+                      <div className="flex-[1.3] min-w-0 flex items-center">
                         <input
                           ref={emailInputRef}
                           id="hero-demo-email"
@@ -376,16 +373,16 @@ export const Hero: React.FC<HeroProps> = ({ onBookDemoClick }) => {
                           aria-label="Work email"
                           aria-invalid={errorField === 'email'}
                           aria-describedby={errorField ? 'hero-demo-error' : undefined}
-                          className="w-full h-[52px] md:h-full rounded-[14px] md:rounded-none bg-[#F5F6FA] md:bg-transparent px-4 md:px-[18px] text-[15px] text-[#0B0F19] placeholder-[#8A91A5] border-0 outline-none focus:outline-none transition-colors disabled:opacity-50"
+                          className="w-full h-[54px] lg:h-full rounded-[14px] lg:rounded-none bg-[#F5F6FA] lg:bg-transparent px-4 lg:px-[20px] text-[16px] text-[#0B0F19] placeholder-[#8A91A5] border-0 outline-none focus:outline-none transition-colors disabled:opacity-50"
                         />
                       </div>
 
                       {/* Submit Button */}
-                      <div className="w-full md:w-auto shrink-0 flex items-center">
+                      <div className="w-full lg:w-auto shrink-0 flex items-center">
                         <button
                           type="submit"
                           disabled={status === 'loading'}
-                          className="btn-premium group w-full md:w-auto h-[52px] md:h-full rounded-[14px] px-6 text-[15px] font-semibold text-white flex items-center justify-center gap-2.5 cursor-pointer select-none focus-visible:outline-2 focus-visible:outline-[#4A7FF0] focus-visible:outline-offset-[2px] disabled:opacity-75 disabled:cursor-not-allowed"
+                          className="btn-premium group w-full lg:w-auto h-[58px] rounded-[16px] px-[30px] text-[16px] font-semibold text-white flex items-center justify-center gap-2.5 cursor-pointer select-none focus-visible:outline-2 focus-visible:outline-[#4A7FF0] focus-visible:outline-offset-[2px] disabled:opacity-75 disabled:cursor-not-allowed"
                         >
                           {status === 'loading' ? (
                             <>
@@ -417,13 +414,13 @@ export const Hero: React.FC<HeroProps> = ({ onBookDemoClick }) => {
                 )}
 
                 {/* Microcopy below the form */}
-                <p className="mt-3 text-[13px] text-[#64748B] font-normal text-left">
+                <p className="mt-[14px] text-[13px] text-[#64748B] font-normal text-left">
                   Free personalized demo · No commitment
                 </p>
               </motion.div>
             </div>
 
-            {/* RIGHT COLUMN: The Stage with the Phone Demo & Floating Mini Cards */}
+            {/* RIGHT COLUMN: iPhone Call Screen */}
             <motion.div
               initial={reduceMotion ? { opacity: 0 } : { opacity: 0, y: 32 }}
               animate={
@@ -438,84 +435,9 @@ export const Hero: React.FC<HeroProps> = ({ onBookDemoClick }) => {
                 delay: reduceMotion ? 0 : 0.35,
                 ease: EASE,
               }}
-              className="relative flex justify-center md:justify-end w-full max-w-[440px] mx-auto md:max-w-none mt-6 md:mt-0"
+              className="relative flex justify-center md:justify-end w-full mt-6 md:mt-0"
             >
-              {/* THE STAGE WRAPPER: pastel indigo-to-mint rounded panel behind phone */}
-              <div
-                className="relative w-full max-w-[440px] ml-auto md:ml-auto mx-auto rounded-[44px] p-6 sm:p-8 pb-10 border border-white/90"
-                style={{
-                  background:
-                    'radial-gradient(120% 70% at 85% 0%, rgba(110,237,194,0.30), rgba(110,237,194,0) 60%), radial-gradient(110% 70% at 0% 20%, rgba(124,140,255,0.28), rgba(124,140,255,0) 62%), linear-gradient(165deg, #F1F3FF 0%, #E8EDFF 45%, #E3F8F0 100%)',
-                  boxShadow:
-                    '0 40px 90px -30px rgba(70,80,200,0.30), inset 0 1px 0 rgba(255,255,255,0.9)',
-                }}
-              >
-                {/* DEMO HINT PILL: overlapping top edge of stage */}
-                <div
-                  className="absolute -top-4 left-1/2 -translate-x-1/2 h-9 rounded-full px-3.5 bg-white shadow-[0_10px_30px_-10px_rgba(40,40,110,0.30)] border border-[rgba(15,16,32,0.06)] text-[13px] font-semibold text-[#0B0B0F] flex items-center gap-2 whitespace-nowrap z-20 pointer-events-none"
-                >
-                  <span className="w-2 h-2 rounded-full bg-[#6EEDC2] hero-pulse shrink-0" />
-                  <span>Tap Accept to hear a real call</span>
-                </div>
-
-                {/* FLOATING MINI CARDS (desktop xl+ only: hidden below 1280px) */}
-                {/* Card 1: Left at ~28% height, shifted 70px outside stage edge */}
-                <motion.div
-                  initial={reduceMotion ? { opacity: 0 } : { opacity: 0, x: -16 }}
-                  animate={appReady ? { opacity: 1, x: 0 } : { opacity: 0, x: -16 }}
-                  transition={{ duration: 0.6, delay: 0.55 }}
-                  aria-hidden="true"
-                  className="hidden xl:flex absolute top-[28%] -left-[70px] z-20 pointer-events-none rounded-[16px] p-[10px_14px] bg-white shadow-[0_14px_40px_-12px_rgba(40,40,110,0.28)] border border-[rgba(15,16,32,0.05)] items-center gap-2.5 hero-float"
-                  style={{ animationDelay: '0s' }}
-                >
-                  <div className="w-7 h-7 rounded-[9px] bg-[#E8FBF4] text-[#059669] flex items-center justify-center shrink-0">
-                    <PhoneIncoming className="w-3.5 h-3.5 stroke-[2.2]" />
-                  </div>
-                  <div className="text-left whitespace-nowrap">
-                    <p className="text-[13px] font-semibold text-[#0B0B0F] leading-tight">Call answered</p>
-                    <p className="text-[11.5px] text-[#64748B] leading-tight mt-0.5">11:42 PM · After hours</p>
-                  </div>
-                </motion.div>
-
-                {/* Card 2: Right at ~46% height, shifted 36px outside stage edge */}
-                <motion.div
-                  initial={reduceMotion ? { opacity: 0 } : { opacity: 0, x: 16 }}
-                  animate={appReady ? { opacity: 1, x: 0 } : { opacity: 0, x: 16 }}
-                  transition={{ duration: 0.6, delay: 0.65 }}
-                  aria-hidden="true"
-                  className="hidden xl:flex absolute top-[46%] -right-[36px] z-20 pointer-events-none rounded-[16px] p-[10px_14px] bg-white shadow-[0_14px_40px_-12px_rgba(40,40,110,0.28)] border border-[rgba(15,16,32,0.05)] items-center gap-2.5 hero-float"
-                  style={{ animationDelay: '1.4s' }}
-                >
-                  <div className="w-7 h-7 rounded-[9px] bg-[#EEF2FF] text-[#4F46E5] flex items-center justify-center shrink-0">
-                    <CalendarCheck className="w-3.5 h-3.5 stroke-[2.2]" />
-                  </div>
-                  <div className="text-left whitespace-nowrap">
-                    <p className="text-[13px] font-semibold text-[#0B0B0F] leading-tight">Job booked</p>
-                    <p className="text-[11.5px] text-[#64748B] leading-tight mt-0.5">Tomorrow, 10:00 AM</p>
-                  </div>
-                </motion.div>
-
-                {/* Card 3: Left at ~64% height, shifted 64px outside stage edge */}
-                <motion.div
-                  initial={reduceMotion ? { opacity: 0 } : { opacity: 0, x: -16 }}
-                  animate={appReady ? { opacity: 1, x: 0 } : { opacity: 0, x: -16 }}
-                  transition={{ duration: 0.6, delay: 0.75 }}
-                  aria-hidden="true"
-                  className="hidden xl:flex absolute top-[64%] -left-[64px] z-20 pointer-events-none rounded-[16px] p-[10px_14px] bg-white shadow-[0_14px_40px_-12px_rgba(40,40,110,0.28)] border border-[rgba(15,16,32,0.05)] items-center gap-2.5 hero-float"
-                  style={{ animationDelay: '2.8s' }}
-                >
-                  <div className="w-7 h-7 rounded-[9px] bg-[#FEF3C7] text-[#D97706] flex items-center justify-center shrink-0">
-                    <UserPlus className="w-3.5 h-3.5 stroke-[2.2]" />
-                  </div>
-                  <div className="text-left whitespace-nowrap">
-                    <p className="text-[13px] font-semibold text-[#0B0B0F] leading-tight">New lead captured</p>
-                    <p className="text-[11.5px] text-[#64748B] leading-tight mt-0.5">Leaky pipe · Zach P.</p>
-                  </div>
-                </motion.div>
-
-                {/* iPhone Call Demo centered inside stage */}
-                <HeroCallDemo />
-              </div>
+              <HeroCallDemo />
             </motion.div>
 
           </div>

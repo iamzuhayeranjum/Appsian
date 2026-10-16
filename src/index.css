@@ -343,21 +343,4 @@
   .hero-gradient-text { animation: none; }
 }
 
-/* ---------- Hero Floating Cards and Pulse Animations ---------- */
-@keyframes heroFloat {
-  0%, 100% { transform: translateY(-6px); }
-  50% { transform: translateY(6px); }
-}
-@keyframes heroPulse {
-  0%, 100% { transform: scale(1); opacity: 1; }
-  50% { transform: scale(1.6); opacity: 0.45; }
-}
-.hero-float {
-  animation: heroFloat 7s ease-in-out infinite;
-}
-.hero-pulse {
-  animation: heroPulse 1.8s ease-in-out infinite;
-}
-@media (prefers-reduced-motion: reduce) {
-  .hero-float, .hero-pulse { animation: none !important; }
-}
+

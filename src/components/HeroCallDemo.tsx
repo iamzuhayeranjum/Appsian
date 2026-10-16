@@ -1,305 +1,8 @@
-import React, { useState, useEffect, useRef, useCallback } from 'react';
-
-// Exact transcript text and timings from the reference prototype
-export const TX: [number, number, 'A' | 'C', string][] = [
-  [0.74, 4.38, 'A', "Hello. My name is Allison. I'm a representative of New York Plumbing. How can I assist you today?"],
-  [4.7, 11.5, 'C', "Hey, Allison. I have a leaky pipe in my bathroom right now, and I need someone to come out and help me right now."],
-  [11.92, 17.84, 'A', "So you have a leaky pipe in your bathroom. Can you tell me more about the issue? Is it a faucet, toilet, or somewhere else in the bathroom that's leaking?"],
-  [18.5, 19.96, 'C', "Yeah, it's under the sink."],
-  [20.48, 22.94, 'A', "I'd be happy to help you with that. Can you please tell me your full name?"],
-  [23.86, 24.96, 'C', "Yeah. It is Zach Phillips."],
-  [25.54, 26.72, 'A', "Can you please tell me your service address?"],
-  [27.04, 31.08, 'C', "Yeah. It's 55 Seashell Lane, North Myrtle Beach, South Carolina."],
-  [31.44, 35.22, 'A', "All right. Let me check what times we have available to get someone out there to help with leaky pipe under the sink."],
-  [36.7, 40.98, 'A', "Okay. We have someone available tomorrow at 10:00 a.m., Wednesday at 2:00 p.m., or Thursday at 9:00 a.m."],
-  [41.0, 42.3, 'C', "Yeah, tomorrow-"],
-  [42.6, 43.9, 'A', "Are any of these times okay for you?"],
-  [44.12, 45.08, 'C', "... at 10:00 a.m. sounds good."],
-  [45.51, 52.7, 'A', "All right. Here are your appointment details. Your requested appointment time is tomorrow at 10:00 a.m. at 55 Seashell Lane, North Myrtle Beach, South Carolina, for a leaky pipe under the sink. Is that all correct?"],
-  [53.1, 53.54, 'C', "Yes, ma'am."],
-];
-
-const p2 = (n: number) => String(n).padStart(2, '0');
-const formatClock = (n: number) => Math.floor(n / 60) + ':' + p2(Math.floor(n % 60));
-const formatTimer = (n: number) => p2(Math.floor(n / 60)) + ':' + p2(Math.floor(n % 60));
+import React from 'react';
 
 export const HeroCallDemo: React.FC = () => {
-  const [callState, setCallState] = useState<'incoming' | 'call' | 'ended' | 'declined'>('incoming');
-  const [timerText, setTimerText] = useState('mobile');
-  const [currentTime, setCurrentTime] = useState(0);
-  const [duration, setDuration] = useState(53.9);
-  const [activeLineIdx, setActiveLineIdx] = useState(-1);
-  const [lineWordCounts, setLineWordCounts] = useState<number[]>(() => TX.map(() => 0));
-
-  // Toggles for in-call buttons
-  const [isMuted, setIsMuted] = useState(false);
-  const [isAudioOn, setIsAudioOn] = useState(true);
-
-  // References
-  const rootRef = useRef<HTMLDivElement>(null);
-  const audioRef = useRef<HTMLAudioElement>(null);
-  const bdRef = useRef<HTMLDivElement>(null);
-  const rafRef = useRef<number | null>(null);
-  const backTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
-  const declineTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
-
-  // Prefers reduced motion
-  const [isReducedMotion, setIsReducedMotion] = useState(false);
-  useEffect(() => {
-    const mq = window.matchMedia('(prefers-reduced-motion: reduce)');
-    setIsReducedMotion(mq.matches);
-    const handler = (e: MediaQueryListEvent) => setIsReducedMotion(e.matches);
-    mq.addEventListener('change', handler);
-    return () => mq.removeEventListener('change', handler);
-  }, []);
-
-  // Pre-split line words
-  const parsedLines = useRef(
-    TX.map((line) => ({
-      start: line[0],
-      end: line[1],
-      speaker: line[2],
-      text: line[3],
-      words: line[3].split(' '),
-    }))
-  ).current;
-
-  // Reset to initial waiting state
-  const resetState = useCallback(() => {
-    setActiveLineIdx(-1);
-    setLineWordCounts(TX.map(() => 0));
-    setCurrentTime(0);
-    setIsMuted(false);
-    setIsAudioOn(true);
-  }, []);
-
-  // Finish call with message
-  const finishCall = useCallback(
-    (msg: string) => {
-      const audio = audioRef.current;
-      if (audio) {
-        audio.pause();
-      }
-      if (rafRef.current) {
-        cancelAnimationFrame(rafRef.current);
-        rafRef.current = null;
-      }
-      setCallState('ended');
-      setTimerText(msg);
-
-      if (backTimerRef.current) clearTimeout(backTimerRef.current);
-      backTimerRef.current = setTimeout(() => {
-        setCallState('incoming');
-        setTimerText('mobile');
-        resetState();
-      }, 1600);
-    },
-    [resetState]
-  );
-
-  // Paint / Animation update loop
-  const paint = useCallback(() => {
-    const a = audioRef.current;
-    if (!a) return;
-
-    const c = a.currentTime;
-    const d = a.duration || 53.9;
-    setCurrentTime(c);
-    setDuration(d);
-    setTimerText(formatTimer(c));
-
-    // Find current line
-    let n = -1;
-    for (let i = 0; i < TX.length; i++) {
-      if (c >= TX[i][0]) {
-        n = i;
-      }
-    }
-
-    setActiveLineIdx(n);
-
-    // Compute visible word counts
-    if (n >= 0) {
-      const l = TX[n];
-      const wordsCount = parsedLines[n].words.length;
-      const progress = Math.max(0, Math.min(1, (c - l[0]) / (l[1] - l[0])));
-      const k = Math.ceil(wordsCount * progress);
-
-      setLineWordCounts((prev) => {
-        const next = [...prev];
-        // All lines before n have all words visible
-        for (let j = 0; j < n; j++) {
-          next[j] = parsedLines[j].words.length;
-        }
-        next[n] = k;
-        // Lines after n have 0
-        for (let j = n + 1; j < TX.length; j++) {
-          next[j] = 0;
-        }
-        return next;
-      });
-
-      // Auto scroll transcript body
-      if (bdRef.current) {
-        bdRef.current.scrollTo({
-          top: bdRef.current.scrollHeight,
-          behavior: isReducedMotion ? 'auto' : 'smooth',
-        });
-      }
-    }
-  }, [parsedLines, isReducedMotion]);
-
-  // Main RAF loop
-  const loop = useCallback(() => {
-    paint();
-    const a = audioRef.current;
-    if (a && !a.paused && !a.ended) {
-      rafRef.current = requestAnimationFrame(loop);
-    }
-  }, [paint]);
-
-  // Handle Accept
-  const handleAccept = () => {
-    if (backTimerRef.current) clearTimeout(backTimerRef.current);
-    if (declineTimerRef.current) clearTimeout(declineTimerRef.current);
-    resetState();
-    setCallState('call');
-
-    const audio = audioRef.current;
-    if (audio) {
-      audio.currentTime = 0;
-      audio.play().catch(() => {
-        // Fallback for autoplay policy rejection: still let timer/animation run
-      });
-    }
-
-    if (rafRef.current) cancelAnimationFrame(rafRef.current);
-    rafRef.current = requestAnimationFrame(loop);
-  };
-
-  // Handle Decline
-  const handleDecline = () => {
-    setCallState('declined');
-    setTimerText('declined');
-    if (declineTimerRef.current) clearTimeout(declineTimerRef.current);
-    declineTimerRef.current = setTimeout(() => {
-      setCallState('incoming');
-      setTimerText('mobile');
-    }, 1200);
-  };
-
-  // Handle End Call
-  const handleEndCall = () => {
-    paint();
-    finishCall('call ended');
-  };
-
-  // Sync audio play/ended events
-  useEffect(() => {
-    const audio = audioRef.current;
-    if (!audio) return;
-
-    const onPlay = () => {
-      if (rafRef.current) cancelAnimationFrame(rafRef.current);
-      rafRef.current = requestAnimationFrame(loop);
-    };
-
-    const onEnded = () => {
-      paint();
-      finishCall('call ended');
-    };
-
-    audio.addEventListener('play', onPlay);
-    audio.addEventListener('ended', onEnded);
-
-    return () => {
-      audio.removeEventListener('play', onPlay);
-      audio.removeEventListener('ended', onEnded);
-    };
-  }, [loop, paint, finishCall]);
-
-  // Pause & reset when hero leaves viewport (IntersectionObserver threshold 0.2)
-  useEffect(() => {
-    const root = rootRef.current;
-    if (!root) return;
-
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (!entry.isIntersecting) {
-            // When scrolled out of view, pause audio and reset to incoming
-            const audio = audioRef.current;
-            if (audio && !audio.paused) {
-              audio.pause();
-            }
-            if (rafRef.current) {
-              cancelAnimationFrame(rafRef.current);
-              rafRef.current = null;
-            }
-            setCallState('incoming');
-            setTimerText('mobile');
-            resetState();
-          }
-        });
-      },
-      { threshold: 0.2 }
-    );
-
-    observer.observe(root);
-    return () => observer.disconnect();
-  }, [resetState]);
-
-  // Pause when browser tab becomes hidden
-  useEffect(() => {
-    const handleVisibilityChange = () => {
-      if (document.hidden) {
-        const audio = audioRef.current;
-        if (audio && !audio.paused) {
-          audio.pause();
-        }
-        if (rafRef.current) {
-          cancelAnimationFrame(rafRef.current);
-          rafRef.current = null;
-        }
-      }
-    };
-
-    document.addEventListener('visibilitychange', handleVisibilityChange);
-    return () => document.removeEventListener('visibilitychange', handleVisibilityChange);
-  }, []);
-
-  // Cleanup on unmount
-  useEffect(() => {
-    return () => {
-      const audio = audioRef.current;
-      if (audio) {
-        audio.pause();
-      }
-      if (rafRef.current) {
-        cancelAnimationFrame(rafRef.current);
-      }
-      if (backTimerRef.current) clearTimeout(backTimerRef.current);
-      if (declineTimerRef.current) clearTimeout(declineTimerRef.current);
-    };
-  }, []);
-
-  const progressBarPercent = Math.min(100, Math.max(0, (currentTime / (duration || 53.9)) * 100));
-
-  const isCallLive = callState === 'call';
-  const hasStartedTranscript = activeLineIdx >= 0 || callState === 'call' || callState === 'ended';
-
-  let statusSubtitle = 'Sample call · tap Accept to listen';
-  if (callState === 'call') {
-    statusSubtitle = 'Live · call in progress';
-  } else if (callState === 'ended') {
-    statusSubtitle = 'Call ended';
-  }
-
   return (
-    <div
-      ref={rootRef}
-      className="hcd-root relative w-full flex flex-col items-center justify-center select-none"
-    >
+    <div className="hcd-root relative flex flex-col items-center justify-center select-none pointer-events-none">
       {/* Scoped CSS block strictly isolated to .hcd-root */}
       <style>{`
         .hcd-root {
@@ -319,6 +22,8 @@ export const HeroCallDemo: React.FC = () => {
           border-radius: 13% / 6%;
           box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.1), 0 30px 80px rgba(20, 20, 50, 0.14);
           flex: none;
+          -webkit-mask-image: linear-gradient(to bottom, #000 0%, #000 55%, rgba(0, 0, 0, 0.45) 86%, transparent 100%);
+          mask-image: linear-gradient(to bottom, #000 0%, #000 55%, rgba(0, 0, 0, 0.45) 86%, transparent 100%);
           background:
             radial-gradient(ellipse 75% 7% at 8% 56.5%, rgba(32, 92, 140, 0.55), transparent),
             radial-gradient(ellipse 90% 9% at 50% 70%, rgba(86, 88, 90, 0.5), transparent),
@@ -431,7 +136,8 @@ export const HeroCallDemo: React.FC = () => {
           padding: 0;
           color: inherit;
           font: inherit;
-          cursor: pointer;
+          cursor: default;
+          pointer-events: none;
         }
         .hcd-c {
           width: 100%;
@@ -443,19 +149,11 @@ export const HeroCallDemo: React.FC = () => {
           -webkit-backdrop-filter: blur(20px);
           backdrop-filter: blur(20px);
           color: #fff;
-          transition: background 0.2s, color 0.2s;
         }
         .hcd-c svg {
           width: calc(var(--sw, 72) * var(--u));
           height: calc(var(--sh, 72) * var(--u));
           overflow: visible;
-        }
-        .hcd-btn.on .hcd-c {
-          background: #fff;
-          color: #000;
-        }
-        .hcd-btn:active .hcd-c {
-          filter: brightness(1.3);
         }
         .hcd-l {
           font-size: calc(36 * var(--u));
@@ -464,36 +162,13 @@ export const HeroCallDemo: React.FC = () => {
           white-space: nowrap;
           color: #fff;
         }
-        .hcd-end {
-          display: grid;
-          place-items: center;
-          border: 0;
-          padding: 0;
-          border-radius: 50%;
-          background: #ff453a;
-          color: #fff;
-          cursor: pointer;
-          transition: filter 0.15s;
-        }
-        .hcd-end:active {
-          filter: brightness(0.85);
-        }
-        .hcd-end svg {
-          width: calc(88 * var(--u));
-          height: calc(32 * var(--u));
-        }
         .hcd-home {
           background: rgba(235, 235, 240, 0.92);
           border-radius: 999px;
         }
-        .hcd-phone button:focus-visible {
-          outline: 2px solid #fff;
-          outline-offset: 3px;
-        }
         .hcd-layer {
           position: absolute;
           inset: 0;
-          transition: opacity 0.25s;
         }
         .hcd-sm {
           --sw: 54;
@@ -507,194 +182,16 @@ export const HeroCallDemo: React.FC = () => {
         }
         .hcd-c.green {
           background: #30d158;
-          animation: hcd-ring 1.6s ease-out infinite;
-        }
-        @keyframes hcd-ring {
-          0% { box-shadow: 0 0 0 0 rgba(48, 209, 88, 0.55); }
-          100% { box-shadow: 0 0 0 calc(46 * var(--u)) rgba(48, 209, 88, 0); }
-        }
-
-        /* Transcript Panel Styles: Light theme overlapping bottom of phone like a bottom sheet */
-        .hcd-panel {
-          position: relative;
-          z-index: 10;
-          display: flex;
-          flex-direction: column;
-          width: calc(244.5px + 24px);
-          max-width: calc(100% - 16px);
-          height: 250px;
-          margin-top: -54px;
-          padding: 16px 16px 12px;
-          border-radius: 24px 24px 18px 18px;
-          background: #FFFFFF;
-          color: #0F172A;
-          border: 1px solid rgba(15, 16, 32, 0.06);
-          box-shadow: 0 -8px 40px rgba(20, 20, 50, 0.08), 0 20px 50px rgba(20, 20, 50, 0.10);
-          flex: none;
-        }
-        @media (max-width: 600px) {
-          .hcd-panel {
-            width: calc(220px + 24px);
-            margin-top: -48px;
-            height: 240px;
-          }
-        }
-        .hcd-panel header {
-          display: flex;
-          justify-content: space-between;
-          align-items: flex-start;
-          margin-bottom: 10px;
-        }
-        .hcd-panel h2 {
-          margin: 0;
-          font-size: 12px;
-          font-weight: 600;
-          color: #0F172A;
-          letter-spacing: -0.01em;
-          line-height: 1.2;
-        }
-        .hcd-panel header p {
-          margin: 2px 0 0;
-          font-size: 10px;
-          color: #94A3B8;
-          line-height: 1.2;
-        }
-        .hcd-dot {
-          width: 7px;
-          height: 7px;
-          border-radius: 50%;
-          background: #CBD5E1;
-          margin-top: 3px;
-          transition: background 0.3s;
-        }
-        .hcd-panel.live .hcd-dot {
-          background: #10B981;
-          box-shadow: 0 0 0 2px rgba(16, 185, 129, 0.2);
-        }
-        .hcd-bd {
-          position: relative;
-          flex: 1;
-          min-height: 0;
-          overflow-y: auto;
-          overflow-x: hidden;
-        }
-        .hcd-tx {
-          list-style: none;
-          margin: 0;
-          padding: 2px 2px 8px 2px;
-          display: flex;
-          flex-direction: column;
-          gap: 8px;
-        }
-        .hcd-ln {
-          display: none;
-          border-radius: 14px;
-          padding: 7px 10px;
-          font-size: 12px;
-          line-height: 1.4;
-          max-width: 88%;
-          word-break: break-word;
-          animation: hcd-in 0.3s ease-out;
-        }
-        .hcd-ln.show {
-          display: block;
-        }
-        /* Receptionist (Allison) on left with mint tint */
-        .hcd-ln.ai {
-          align-self: flex-start;
-          background: #E8FBF4;
-          color: #1E293B;
-          border: 1px solid rgba(110, 237, 194, 0.45);
-        }
-        /* Caller on right with background #F1F3F7 and text slate-800 */
-        .hcd-ln.cl {
-          align-self: flex-end;
-          background: #F1F3F7;
-          color: #1E293B;
-          border: 1px solid transparent;
-        }
-        .hcd-ln b {
-          display: block;
-          font-size: 10px;
-          font-weight: 600;
-          margin-bottom: 2px;
-          opacity: 0.8;
-          text-transform: uppercase;
-          letter-spacing: 0.02em;
-        }
-        .hcd-ln.ai b {
-          color: #065F46;
-        }
-        .hcd-ln.cl b {
-          color: #475569;
-        }
-        .hcd-ln p {
-          margin: 0;
-          font-size: 11.5px;
-          line-height: 1.35;
-        }
-        @keyframes hcd-in {
-          from { opacity: 0; transform: translateY(6px); }
-          to { opacity: 1; transform: none; }
-        }
-        .hcd-empty {
-          position: absolute;
-          inset: 0;
-          display: grid;
-          place-items: center;
-          margin: 0;
-          padding: 0 16px;
-          text-align: center;
-          color: #94A3B8;
-          font-size: 11px;
-          line-height: 1.4;
-        }
-        .hcd-panel.has .hcd-empty,
-        .hcd-panel.live .hcd-empty {
-          display: none;
-        }
-        .hcd-panel footer {
-          display: flex;
-          align-items: center;
-          gap: 8px;
-          margin-top: 10px;
-          font-size: 11px;
-          color: #94A3B8;
-          font-variant-numeric: tabular-nums;
-        }
-        .hcd-bar {
-          flex: 1;
-          height: 3px;
-          border-radius: 2px;
-          background: rgba(0, 0, 0, 0.06);
-          overflow: hidden;
-        }
-        .hcd-bar i {
-          display: block;
-          height: 100%;
-          background: #10B981;
-          transition: width 0.1s linear;
-        }
-        .hcd-ln span {
-          opacity: 0;
-          transition: opacity 0.15s;
-        }
-        .hcd-ln span.v {
-          opacity: 1;
-        }
-        @media (prefers-reduced-motion: reduce) {
-          .hcd-c.green, .hcd-ln { animation: none; }
-          .hcd-ln span { transition: none; }
         }
       `}</style>
 
-      {/* Hidden audio element loading on demand without autoplay */}
-      <audio ref={audioRef} preload="none" src="/call-demo.mp3" />
-
-      {/* iPhone Screen Frame */}
-      <main
+      {/* iPhone Screen Frame with Soft Fade Mask */}
+      <div
         className="hcd-phone"
-        data-state={callState}
+        style={{
+          WebkitMaskImage: 'linear-gradient(to bottom, #000 0%, #000 55%, rgba(0,0,0,0.45) 86%, transparent 100%)',
+          maskImage: 'linear-gradient(to bottom, #000 0%, #000 55%, rgba(0,0,0,0.45) 86%, transparent 100%)',
+        }}
         aria-label="Phone call screen"
       >
         {/* Dynamic Island */}
@@ -758,171 +255,15 @@ export const HeroCallDemo: React.FC = () => {
 
         {/* Timer / Status Tag */}
         <p className="hcd-timer hcd-a" style={{ '--x': 0, '--y': 330, '--w': 852, '--h': 56 } as React.CSSProperties}>
-          {timerText}
+          mobile
         </p>
 
-        {/* IN-CALL LAYER */}
-        <div
-          className={`hcd-layer transition-opacity duration-200 ${
-            callState === 'call' || callState === 'ended'
-              ? 'opacity-100 pointer-events-auto visible'
-              : 'opacity-0 pointer-events-none invisible'
-          }`}
-        >
-          {/* Row 1 */}
-          <button
-            type="button"
-            onClick={() => setIsMuted((prev) => !prev)}
-            className={`hcd-btn hcd-a ${isMuted ? 'on' : ''}`}
-            style={{ '--x': 88, '--y': 669, '--w': 184 } as React.CSSProperties}
-            aria-label="mute"
-          >
-            <span className="hcd-c">
-              <svg viewBox="0 0 48 48" style={{ '--sw': 62, '--sh': 62 } as React.CSSProperties} fill="currentColor">
-                <defs>
-                  <mask id="hcd-mute-mask">
-                    <rect width="48" height="48" fill="#fff" />
-                    <line x1="5" y1="3" x2="43" y2="45" stroke="#000" strokeWidth="9" />
-                  </mask>
-                </defs>
-                <g mask="url(#hcd-mute-mask)">
-                  <rect x="17" y="3" width="14" height="25" rx="7" />
-                  <path d="M10 22v2a14 14 0 0 0 28 0v-2" fill="none" stroke="currentColor" strokeWidth="3.2" strokeLinecap="round" />
-                  <path d="M24 38v6M17 44h14" stroke="currentColor" strokeWidth="3.2" strokeLinecap="round" fill="none" />
-                </g>
-                <line x1="8" y1="6" x2="40" y2="43" stroke="currentColor" strokeWidth="3.4" strokeLinecap="round" />
-              </svg>
-            </span>
-            <span className="hcd-l">mute</span>
-          </button>
-
-          <button
-            type="button"
-            className="hcd-btn hcd-a"
-            style={{ '--x': 335, '--y': 669, '--w': 184 } as React.CSSProperties}
-            aria-label="keypad"
-          >
-            <span className="hcd-c">
-              <svg viewBox="0 0 72 72" fill="currentColor">
-                <g id="hcd-keypad-row">
-                  <circle cx="11" cy="11" r="10.5" />
-                  <circle cx="36" cy="11" r="10.5" />
-                  <circle cx="61" cy="11" r="10.5" />
-                </g>
-                <use href="#hcd-keypad-row" y="25" />
-                <use href="#hcd-keypad-row" y="50" />
-              </svg>
-            </span>
-            <span className="hcd-l">keypad</span>
-          </button>
-
-          <button
-            type="button"
-            onClick={() => setIsAudioOn((prev) => !prev)}
-            className={`hcd-btn hcd-a ${isAudioOn ? 'on' : ''}`}
-            style={{ '--x': 581, '--y': 669, '--w': 184 } as React.CSSProperties}
-            aria-label="audio"
-          >
-            <span className="hcd-c">
-              <svg viewBox="0 0 84 72" style={{ '--sw': 84 } as React.CSSProperties} fill="currentColor">
-                <path d="M4 24h12L36 6q6-4 6 3v54q0 7-6 3L16 48H4q-4 0-4-4V28q0-4 4-4z" />
-                <g fill="none" stroke="currentColor" strokeWidth="5.5" strokeLinecap="round">
-                  <path d="M54.5 27.5A12 12 0 0 1 54.5 44.5" />
-                  <path d="M64.4 17.6A26 26 0 0 1 64.4 54.4" />
-                  <path d="M74.3 7.7A40 40 0 0 1 74.3 64.3" />
-                </g>
-              </svg>
-            </span>
-            <span className="hcd-l">audio</span>
-          </button>
-
-          {/* Row 2 */}
-          <button
-            type="button"
-            className="hcd-btn hcd-a"
-            style={{ '--x': 88, '--y': 953, '--w': 184 } as React.CSSProperties}
-            aria-label="add call"
-          >
-            <span className="hcd-c">
-              <svg
-                viewBox="0 0 72 72"
-                style={{ '--sw': 60, '--sh': 60 } as React.CSSProperties}
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="5.5"
-                strokeLinecap="round"
-              >
-                <path d="M6 36h60M36 6v60" />
-              </svg>
-            </span>
-            <span className="hcd-l">add call</span>
-          </button>
-
-          <button
-            type="button"
-            className="hcd-btn hcd-a"
-            style={{ '--x': 335, '--y': 953, '--w': 184 } as React.CSSProperties}
-            aria-label="FaceTime"
-          >
-            <span className="hcd-c">
-              <svg viewBox="0 0 88 58" style={{ '--sw': 88, '--sh': 58 } as React.CSSProperties} fill="currentColor">
-                <rect width="62" height="58" rx="13" />
-                <path d="M66 22l14-11q6-4 6 3v30q0 7-6 3L66 36z" />
-              </svg>
-            </span>
-            <span className="hcd-l">FaceTime</span>
-          </button>
-
-          <button
-            type="button"
-            className="hcd-btn hcd-a"
-            style={{ '--x': 581, '--y': 953, '--w': 184 } as React.CSSProperties}
-            aria-label="contacts"
-          >
-            <span className="hcd-c">
-              <svg viewBox="0 0 72 72" fill="currentColor">
-                <defs>
-                  <clipPath id="hcd-contact-clip">
-                    <circle cx="36" cy="36" r="30" />
-                  </clipPath>
-                </defs>
-                <circle cx="36" cy="36" r="33.5" fill="none" stroke="currentColor" strokeWidth="5" />
-                <g clipPath="url(#hcd-contact-clip)">
-                  <circle cx="36" cy="28" r="11" />
-                  <ellipse cx="36" cy="62" rx="23" ry="18" />
-                </g>
-              </svg>
-            </span>
-            <span className="hcd-l">contacts</span>
-          </button>
-
-          {/* End Call Button */}
-          <button
-            type="button"
-            onClick={handleEndCall}
-            className="hcd-end hcd-a"
-            style={{ '--x': 345, '--y': 1411, '--w': 163, '--h': 163 } as React.CSSProperties}
-            aria-label="end call"
-          >
-            <svg viewBox="0 0 88 32" fill="currentColor">
-              <path d="M2 22C2 12 14 7 44 7s42 5 42 15v4q0 4-4 4H70q-4 0-4-4v-4q0-3-4-3.5-18-2.5-36 0-4 .5-4 3.5v4q0 4-4 4H6q-4 0-4-4z" />
-            </svg>
-          </button>
-        </div>
-
-        {/* INCOMING CALL LAYER */}
-        <div
-          className={`hcd-layer transition-opacity duration-200 ${
-            callState === 'incoming' || callState === 'declined'
-              ? 'opacity-100 pointer-events-auto visible'
-              : 'opacity-0 pointer-events-none invisible'
-          }`}
-        >
-          <button
-            type="button"
+        {/* INCOMING CALL SCREEN */}
+        <div className="hcd-layer">
+          <div
             className="hcd-btn hcd-sm hcd-a"
             style={{ '--x': 135, '--y': 1120, '--w': 130 } as React.CSSProperties}
-            aria-label="Remind me"
+            aria-hidden="true"
           >
             <span className="hcd-c">
               <svg viewBox="0 0 54 54" fill="none" stroke="currentColor" strokeWidth="4" strokeLinecap="round" strokeLinejoin="round">
@@ -931,13 +272,12 @@ export const HeroCallDemo: React.FC = () => {
               </svg>
             </span>
             <span className="hcd-l">Remind Me</span>
-          </button>
+          </div>
 
-          <button
-            type="button"
+          <div
             className="hcd-btn hcd-sm hcd-a"
             style={{ '--x': 587, '--y': 1120, '--w': 130 } as React.CSSProperties}
-            aria-label="Message"
+            aria-hidden="true"
           >
             <span className="hcd-c">
               <svg viewBox="0 0 54 54" fill="currentColor">
@@ -945,14 +285,12 @@ export const HeroCallDemo: React.FC = () => {
               </svg>
             </span>
             <span className="hcd-l">Message</span>
-          </button>
+          </div>
 
-          <button
-            type="button"
-            onClick={handleDecline}
+          <div
             className="hcd-btn hcd-a"
             style={{ '--x': 118, '--y': 1411, '--w': 163 } as React.CSSProperties}
-            aria-label="Decline"
+            aria-hidden="true"
           >
             <span className="hcd-c red">
               <svg viewBox="0 0 88 32" style={{ '--sw': 80, '--sh': 29 } as React.CSSProperties} fill="currentColor">
@@ -960,14 +298,12 @@ export const HeroCallDemo: React.FC = () => {
               </svg>
             </span>
             <span className="hcd-l">Decline</span>
-          </button>
+          </div>
 
-          <button
-            type="button"
-            onClick={handleAccept}
+          <div
             className="hcd-btn hcd-a"
             style={{ '--x': 571, '--y': 1411, '--w': 163 } as React.CSSProperties}
-            aria-label="Accept"
+            aria-hidden="true"
           >
             <span className="hcd-c green">
               <svg
@@ -979,106 +315,12 @@ export const HeroCallDemo: React.FC = () => {
               </svg>
             </span>
             <span className="hcd-l">Accept</span>
-          </button>
+          </div>
         </div>
 
         {/* Home Indicator */}
         <div className="hcd-home hcd-a" style={{ '--x': 275, '--y': 1819, '--w': 303, '--h': 10 } as React.CSSProperties} />
-      </main>
-
-      {/* Transcript Panel */}
-      <aside
-        className={`hcd-panel ${isCallLive ? 'live' : ''} ${hasStartedTranscript ? 'has' : ''}`}
-        aria-label="Call transcript"
-      >
-        <header>
-          <div>
-            <h2>Live transcript</h2>
-            <p>{statusSubtitle}</p>
-          </div>
-          <span className="hcd-dot" />
-        </header>
-
-        <div ref={bdRef} className="hcd-bd">
-          <p className="hcd-empty">Answer the call to hear the audio and follow along here.</p>
-
-          <ol className="hcd-tx" aria-live="polite">
-            {parsedLines.map((line, idx) => {
-              const isShown = idx <= activeLineIdx;
-              const isCurrent = idx === activeLineIdx;
-              const isAI = line.speaker === 'A';
-              const visibleWordsCount = lineWordCounts[idx];
-
-              return (
-                <li
-                  key={idx}
-                  className={`hcd-ln ${isAI ? 'ai' : 'cl'} ${isShown ? 'show' : ''} ${isCurrent ? 'on' : ''}`}
-                >
-                  <b>{isAI ? 'Allison (AI)' : 'Caller'}</b>
-                  <p>
-                    {line.words.map((w, wIdx) => (
-                      <span key={wIdx} className={wIdx < visibleWordsCount ? 'v' : ''}>
-                        {w}{' '}
-                      </span>
-                    ))}
-                  </p>
-                </li>
-              );
-            })}
-          </ol>
-
-          {currentTime >= 18.5 && (
-            <div className="mt-2.5 p-2.5 rounded-[12px] bg-white border border-[rgba(15,16,32,0.08)] shadow-xs text-[11px] font-sans">
-              <div className="flex items-center justify-between pb-1.5 mb-1.5 border-b border-slate-100">
-                <span className="font-semibold text-slate-900 text-[11px]">Job Details</span>
-                {currentTime >= 53.1 ? (
-                  <span className="px-2 py-0.5 rounded-full text-[9px] font-semibold bg-[#E8FBF4] text-[#047857]">
-                    Booked
-                  </span>
-                ) : (
-                  <span className="px-2 py-0.5 rounded-full text-[9px] font-semibold bg-amber-50 text-amber-700">
-                    In progress
-                  </span>
-                )}
-              </div>
-              <div className="grid grid-cols-[48px_1fr] gap-y-1 gap-x-2 text-[10.5px] leading-tight">
-                <span className="text-slate-500">Issue</span>
-                <span className="font-medium text-slate-900">Leaky pipe under sink</span>
-
-                {currentTime >= 23.86 && (
-                  <>
-                    <span className="text-slate-500">Caller</span>
-                    <span className="font-medium text-slate-900">Zach Phillips</span>
-                  </>
-                )}
-
-                {currentTime >= 31.08 && (
-                  <>
-                    <span className="text-slate-500">Address</span>
-                    <span className="font-medium text-slate-900">55 Seashell Lane</span>
-                  </>
-                )}
-
-                {currentTime >= 44.12 && (
-                  <>
-                    <span className="text-slate-500">Appt</span>
-                    <span className="font-medium text-slate-900">Tomorrow, 10:00 AM</span>
-                  </>
-                )}
-              </div>
-            </div>
-          )}
-        </div>
-
-        <footer>
-          <div className="hcd-bar">
-            <i style={{ width: `${progressBarPercent}%` }} />
-          </div>
-          <span>
-            {formatClock(currentTime)} / {formatClock(Math.round(duration || 53.9))}
-          </span>
-        </footer>
-      </aside>
+      </div>
     </div>
   );
 };
