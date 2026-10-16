@@ -316,3 +316,48 @@
     --btn-glow: rgba(0, 0, 0, 0.25);
   }
 }
+
+/* ---------- Hero Animated Gradient Text ---------- */
+.hero-gradient-text {
+  background-image: linear-gradient(
+    90deg,
+    #8e9bf8 0%,
+    #a66cff 24%,
+    #f06bd0 50%,
+    #4a7ff0 76%,
+    #6eedc2 100%
+  );
+  background-size: 200% 100%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  color: transparent;
+  padding-bottom: 0.08em;
+  animation: heroGradientShift 8s ease-in-out infinite alternate;
+}
+@keyframes heroGradientShift {
+  from { background-position: 0% 50%; }
+  to { background-position: 100% 50%; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .hero-gradient-text { animation: none; }
+}
+
+/* ---------- Hero Floating Cards and Pulse Animations ---------- */
+@keyframes heroFloat {
+  0%, 100% { transform: translateY(-6px); }
+  50% { transform: translateY(6px); }
+}
+@keyframes heroPulse {
+  0%, 100% { transform: scale(1); opacity: 1; }
+  50% { transform: scale(1.6); opacity: 0.45; }
+}
+.hero-float {
+  animation: heroFloat 7s ease-in-out infinite;
+}
+.hero-pulse {
+  animation: heroPulse 1.8s ease-in-out infinite;
+}
+@media (prefers-reduced-motion: reduce) {
+  .hero-float, .hero-pulse { animation: none !important; }
+}

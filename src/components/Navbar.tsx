@@ -10,21 +10,22 @@ interface NavbarProps {
   pastHero?: boolean;
 }
 
-// Shared Light Frosted-Glass style matching reference
-const GLASS_BLOCK: React.CSSProperties = {
-  background: 'rgba(255, 255, 255, 0.55)',
-  backdropFilter: 'blur(14px) saturate(1.2)',
-  WebkitBackdropFilter: 'blur(14px) saturate(1.2)',
-  border: '1px solid rgba(255, 255, 255, 0.85)',
-  boxShadow:
-    '0 0 0 1px rgba(15, 23, 42, 0.06), 0 4px 14px rgba(15, 23, 42, 0.06), inset 0 1px 0 rgba(255, 255, 255, 0.9)',
+// Shared Dark Frosted-Glass style matching reference
+const GLASS: React.CSSProperties = {
+  background: 'linear-gradient(180deg, rgba(26,28,38,0.90) 0%, rgba(10,11,16,0.86) 100%)',
+  backdropFilter: 'blur(22px) saturate(160%)',
+  WebkitBackdropFilter: 'blur(22px) saturate(160%)',
+  border: '1px solid rgba(255,255,255,0.10)',
+  boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.18), inset 0 -1px 0 rgba(255,255,255,0.03), 0 8px 24px rgba(15,16,24,0.18)',
   borderRadius: '14px',
 };
+const GLASS_BLOCK = GLASS;
+const TEXT_SHADOW = 'none';
 
 const EASE_OUT: [number, number, number, number] = [0.22, 1, 0.36, 1];
 
 // Page background color that matches the space around the hero box exactly
-const PAGE_BG = '#F5F6F8';
+const PAGE_BG = '#FFFFFF';
 
 export const Navbar: React.FC<NavbarProps> = ({ onBookDemoClick, pastHero = false }) => {
   const appReady = useAppReady();
@@ -121,6 +122,14 @@ export const Navbar: React.FC<NavbarProps> = ({ onBookDemoClick, pastHero = fals
 
   const handleCtaClick = () => {
     setMobileMenuOpen(false);
+    const heroDemoInput = document.getElementById('hero-demo-name') as HTMLInputElement | null;
+    if (heroDemoInput && window.scrollY < window.innerHeight * 0.8) {
+      heroDemoInput.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      setTimeout(() => {
+        heroDemoInput.focus();
+      }, 450);
+      return;
+    }
     if (onBookDemoClick) {
       onBookDemoClick();
       return;
@@ -156,7 +165,7 @@ export const Navbar: React.FC<NavbarProps> = ({ onBookDemoClick, pastHero = fals
   const isVisible = appReady && !pastHero;
   const pointer = isVisible ? 'pointer-events-auto' : 'pointer-events-none';
   const focusRing =
-    'focus-visible:outline-2 focus-visible:outline-[#111827] focus-visible:outline-offset-[2px]';
+    'focus-visible:outline-2 focus-visible:outline-[#4A7FF0] focus-visible:outline-offset-[2px]';
 
   // Geometry calculations for the notch wrapping the complete header bar
   const isDesktop = typeof window !== 'undefined' && window.innerWidth >= 768;
@@ -276,11 +285,11 @@ export const Navbar: React.FC<NavbarProps> = ({ onBookDemoClick, pastHero = fals
                 style={{ display: 'block', flexShrink: 0 }}
               >
                 <path
-                  fill="#0B0F19"
+                  fill="#FFFFFF"
                   d="M633 301 949 860H698L536 568C516 532 510 497 523 468 530 452 538 442 546 431Z"
                 />
                 <path
-                  fill="#0B0F19"
+                  fill="#FFFFFF"
                   d="M265 860 323 766C345 732 366 708 395 690 430 666 490 656 534 687 562 708 574 732 576 752 579 780 575 797 567 815 562 826 556 834 552 842 548 852 544 857 538 860Z"
                 />
               </svg>
@@ -306,10 +315,10 @@ export const Navbar: React.FC<NavbarProps> = ({ onBookDemoClick, pastHero = fals
                   handleScrollTo(e, link.href);
                 }}
                 style={{ fontFamily: 'inherit' }}
-                className={`relative py-[6px] px-[10px] rounded-[10px] text-[14px] font-medium text-[#111827] transition-all duration-150 select-none whitespace-nowrap ${
+                className={`relative py-[6px] px-[10px] rounded-[10px] text-[14px] font-medium text-white/90 transition-all duration-150 select-none whitespace-nowrap ${
                   activeLink === link.href
-                    ? 'bg-[rgba(15,23,42,0.06)]'
-                    : 'hover:bg-[rgba(15,23,42,0.06)]'
+                    ? 'bg-white/[0.14] text-white'
+                    : 'hover:bg-white/[0.08] hover:text-white'
                 }`}
               >
                 {link.label}
@@ -329,15 +338,15 @@ export const Navbar: React.FC<NavbarProps> = ({ onBookDemoClick, pastHero = fals
             aria-expanded={mobileMenuOpen}
             aria-label={mobileMenuOpen ? 'Close navigation menu' : 'Open navigation menu'}
             style={{ ...GLASS_BLOCK, fontFamily: 'inherit' }}
-            className={`${pointer} ${focusRing} w-[44px] h-[44px] min-w-[44px] rounded-[14px] flex lg:hidden items-center justify-center cursor-pointer transition-all duration-150 ease-out hover:!bg-[rgba(255,255,255,0.75)] active:scale-[0.97]`}
+            className={`${pointer} ${focusRing} w-[44px] h-[44px] min-w-[44px] rounded-[14px] flex lg:hidden items-center justify-center cursor-pointer transition-all duration-150 ease-out hover:brightness-110 active:scale-[0.97]`}
           >
             {mobileMenuOpen ? (
-              <svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="#111827" strokeWidth="2" strokeLinecap="round">
+              <svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="#FFFFFF" strokeWidth="2" strokeLinecap="round">
                 <line x1="4" y1="4" x2="14" y2="14" />
                 <line x1="14" y1="4" x2="4" y2="14" />
               </svg>
             ) : (
-              <svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="#111827" strokeWidth="2" strokeLinecap="round">
+              <svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="#FFFFFF" strokeWidth="2" strokeLinecap="round">
                 <line x1="3" y1="6" x2="15" y2="6" />
                 <line x1="3" y1="12" x2="15" y2="12" />
               </svg>
@@ -352,7 +361,7 @@ export const Navbar: React.FC<NavbarProps> = ({ onBookDemoClick, pastHero = fals
             animate={isVisible ? 'shown' : 'hidden'}
             onClick={handleCtaClick}
             style={{ ...GLASS_BLOCK, fontFamily: 'inherit' }}
-            className={`${pointer} ${focusRing} h-[44px] w-[44px] min-w-[44px] p-0 lg:w-auto lg:h-[48px] lg:min-w-0 lg:pl-[20px] lg:pr-[6px] lg:gap-3 rounded-[14px] flex items-center justify-center group cursor-pointer hover:!bg-[rgba(255,255,255,0.75)] transition-all duration-150 ease-out active:scale-[0.98]`}
+            className={`${pointer} ${focusRing} h-[44px] w-[44px] min-w-[44px] p-0 lg:w-auto lg:h-[48px] lg:min-w-0 lg:pl-[20px] lg:pr-[6px] lg:gap-3 rounded-[14px] flex items-center justify-center group cursor-pointer hover:brightness-110 transition-all duration-150 ease-out active:scale-[0.98]`}
             role="button"
             tabIndex={0}
             onKeyDown={(e) => {
@@ -369,9 +378,9 @@ export const Navbar: React.FC<NavbarProps> = ({ onBookDemoClick, pastHero = fals
                 textDecoration: 'underline',
                 textDecorationThickness: '1px',
                 textUnderlineOffset: '4px',
-                textDecorationColor: '#111827',
+                textDecorationColor: '#FFFFFF',
               }}
-              className="hidden lg:inline text-[14px] font-medium text-[#111827] select-none whitespace-nowrap"
+              className="hidden lg:inline text-[14px] font-medium text-white select-none whitespace-nowrap"
             >
               Get Free Demo
             </span>
@@ -399,7 +408,7 @@ export const Navbar: React.FC<NavbarProps> = ({ onBookDemoClick, pastHero = fals
               transition={{ duration: 0.18, ease: 'easeOut' }}
               role="dialog"
               aria-label="Mobile navigation"
-              className="absolute top-[64px] left-1/2 -translate-x-1/2 w-[calc(100vw-32px)] max-w-[340px] rounded-[18px] p-3 flex flex-col gap-1 pointer-events-auto bg-white/95 backdrop-blur-xl border border-black/10 shadow-[0_20px_40px_rgba(0,0,0,0.18)]"
+              className="absolute top-[64px] left-1/2 -translate-x-1/2 w-[calc(100vw-32px)] max-w-[340px] rounded-[18px] p-3 flex flex-col gap-1 pointer-events-auto bg-white/95 backdrop-blur-xl border border-black/10 shadow-[0_20px_40px_rgba(20,20,50,0.25)]"
             >
               {nav.links.map((link) => (
                 <a
@@ -416,9 +425,9 @@ export const Navbar: React.FC<NavbarProps> = ({ onBookDemoClick, pastHero = fals
                   type="button"
                   onClick={handleCtaClick}
                   style={{ ...GLASS_BLOCK, fontFamily: 'inherit' }}
-                  className="w-full h-[44px] rounded-[10px] text-[#111827] font-medium text-[14px] flex items-center justify-between px-4 hover:!bg-[rgba(255,255,255,0.75)] active:scale-[0.98] transition-all cursor-pointer group"
+                  className="w-full h-[44px] rounded-[10px] text-white font-medium text-[14px] flex items-center justify-between px-4 hover:brightness-110 active:scale-[0.98] transition-all cursor-pointer group"
                 >
-                  <span className="underline underline-offset-[4px] decoration-1 decoration-[#111827]">Get Free Demo</span>
+                  <span className="underline underline-offset-[4px] decoration-1 decoration-white">Get Free Demo</span>
                   <div className="btn-premium btn-premium--mint w-[30px] h-[30px] rounded-[8px] flex items-center justify-center text-[#0B0F19] group-hover:-translate-y-[1px] group-hover:translate-x-[1px] transition-transform">
                     <ArrowUpRight size={15} strokeWidth={2} className="btn-arrow-diag" />
                   </div>

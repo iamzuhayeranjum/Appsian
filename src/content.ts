@@ -48,10 +48,14 @@ export const content = {
       loginLabel: 'Log In',
       ctaLabel: 'Book a Demo',
     },
-    h1: 'Plug In AI Phone Agents That Book More Quotes On Autopilot',
-    subline: 'Appsian Answers Every Inbound Call, Qualifies The Enquiry And Books The Next Step, 24/7.',
-    primaryCta: 'Book a Demo',
-    secondaryCta: 'Get Started',
+    h1Line1: 'AI Phone Agents',
+    h1Line2: 'That Bring Extra',
+    h1Line3: 'Revenue.',
+    h1: 'AI Phone Agents That Bring Extra Revenue.',
+    subline: 'Your AI receptionist answers every call, qualifies the caller and books the job, day or night.',
+    linkText: 'See how it works',
+    primaryCta: "Let's Talk",
+    secondaryCta: 'See Results',
   },
 
   integrations: {

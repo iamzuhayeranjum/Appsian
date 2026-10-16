@@ -5,6 +5,7 @@ import { Mail, Check, CheckCircle2 } from 'lucide-react';
 import { Headline, Button, Reveal } from './design-system';
 import { CurtainBackground } from './CurtainBackground';
 import { SectionFade } from './SectionFade';
+import { submitDemoRequest } from '../lib/submitDemoRequest';
 
 interface FinalCtaBandProps {
   onSuccessDemo?: () => void;
@@ -23,7 +24,7 @@ export const FinalCtaBand: React.FC<FinalCtaBandProps> = ({ onSuccessDemo }) => 
       return;
     }
     setError('');
-    // Lead capture simulation
+    submitDemoRequest({ email });
     setSubmitted(true);
     if (onSuccessDemo) onSuccessDemo();
   };

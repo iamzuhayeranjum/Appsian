@@ -298,7 +298,7 @@ export const HeroCallDemo: React.FC = () => {
   return (
     <div
       ref={rootRef}
-      className="hcd-root relative w-full flex flex-col min-[900px]:flex-row items-center justify-center gap-6 min-[900px]:gap-10 py-4 select-none"
+      className="hcd-root relative w-full flex flex-col items-center justify-center select-none"
     >
       {/* Scoped CSS block strictly isolated to .hcd-root */}
       <style>{`
@@ -317,7 +317,7 @@ export const HeroCallDemo: React.FC = () => {
           user-select: none;
           -webkit-tap-highlight-color: transparent;
           border-radius: 13% / 6%;
-          box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.1), 0 20px 45px -10px rgba(0, 0, 0, 0.5);
+          box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.1), 0 30px 80px rgba(20, 20, 50, 0.14);
           flex: none;
           background:
             radial-gradient(ellipse 75% 7% at 8% 56.5%, rgba(32, 92, 140, 0.55), transparent),
@@ -514,95 +514,124 @@ export const HeroCallDemo: React.FC = () => {
           100% { box-shadow: 0 0 0 calc(46 * var(--u)) rgba(48, 209, 88, 0); }
         }
 
-        /* Transcript Panel Styles matching white dashboard theme */
+        /* Transcript Panel Styles: Light theme overlapping bottom of phone like a bottom sheet */
         .hcd-panel {
+          position: relative;
+          z-index: 10;
           display: flex;
           flex-direction: column;
-          width: min(100%, 400px);
-          height: 530px;
-          padding: 22px 22px 18px;
-          border-radius: 24px;
+          width: calc(244.5px + 24px);
+          max-width: calc(100% - 16px);
+          height: 250px;
+          margin-top: -54px;
+          padding: 16px 16px 12px;
+          border-radius: 24px 24px 18px 18px;
           background: #FFFFFF;
-          color: #1C1C1E;
-          border: 1px solid rgba(0, 0, 0, 0.08);
-          font-size: 15px;
-          line-height: 1.5;
-          box-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.06), 0 0 1px rgba(0, 0, 0, 0.1);
+          color: #0F172A;
+          border: 1px solid rgba(15, 16, 32, 0.06);
+          box-shadow: 0 -8px 40px rgba(20, 20, 50, 0.08), 0 20px 50px rgba(20, 20, 50, 0.10);
           flex: none;
         }
-        @media (max-width: 899px) {
+        @media (max-width: 600px) {
           .hcd-panel {
-            width: 100%;
-            height: 340px;
+            width: calc(220px + 24px);
+            margin-top: -48px;
+            height: 240px;
           }
         }
         .hcd-panel header {
           display: flex;
           justify-content: space-between;
-          align-items: center;
-          margin-bottom: 14px;
+          align-items: flex-start;
+          margin-bottom: 10px;
         }
         .hcd-panel h2 {
           margin: 0;
-          font-size: 18px;
+          font-size: 12px;
           font-weight: 600;
-          color: #1C1C1E;
-          letter-spacing: -0.015em;
+          color: #0F172A;
+          letter-spacing: -0.01em;
+          line-height: 1.2;
         }
         .hcd-panel header p {
           margin: 2px 0 0;
-          font-size: 13px;
-          color: #6E6E73;
+          font-size: 10px;
+          color: #94A3B8;
+          line-height: 1.2;
         }
         .hcd-dot {
-          width: 10px;
-          height: 10px;
+          width: 7px;
+          height: 7px;
           border-radius: 50%;
-          background: rgba(0, 0, 0, 0.12);
+          background: #CBD5E1;
+          margin-top: 3px;
           transition: background 0.3s;
         }
         .hcd-panel.live .hcd-dot {
-          background: #1F9D45;
-          box-shadow: 0 0 0 3px rgba(31, 157, 69, 0.2);
+          background: #10B981;
+          box-shadow: 0 0 0 2px rgba(16, 185, 129, 0.2);
         }
         .hcd-bd {
           position: relative;
           flex: 1;
           min-height: 0;
           overflow-y: auto;
+          overflow-x: hidden;
         }
         .hcd-tx {
           list-style: none;
           margin: 0;
-          padding: 0 4px 0 0;
+          padding: 2px 2px 8px 2px;
           display: flex;
           flex-direction: column;
-          gap: 13px;
+          gap: 8px;
         }
         .hcd-ln {
           display: none;
-          padding-left: 12px;
-          border-left: 3px solid transparent;
-          color: #6E6E73;
+          border-radius: 14px;
+          padding: 7px 10px;
+          font-size: 12px;
+          line-height: 1.4;
+          max-width: 88%;
+          word-break: break-word;
           animation: hcd-in 0.3s ease-out;
         }
         .hcd-ln.show {
           display: block;
         }
-        .hcd-ln.on {
-          border-color: #1F9D45;
-          color: #1C1C1E;
+        /* Receptionist (Allison) on left with mint tint */
+        .hcd-ln.ai {
+          align-self: flex-start;
+          background: #E8FBF4;
+          color: #1E293B;
+          border: 1px solid rgba(110, 237, 194, 0.45);
+        }
+        /* Caller on right with background #F1F3F7 and text slate-800 */
+        .hcd-ln.cl {
+          align-self: flex-end;
+          background: #F1F3F7;
+          color: #1E293B;
+          border: 1px solid transparent;
         }
         .hcd-ln b {
           display: block;
-          font-size: 12px;
+          font-size: 10px;
           font-weight: 600;
           margin-bottom: 2px;
+          opacity: 0.8;
+          text-transform: uppercase;
+          letter-spacing: 0.02em;
+        }
+        .hcd-ln.ai b {
+          color: #065F46;
+        }
+        .hcd-ln.cl b {
+          color: #475569;
         }
         .hcd-ln p {
           margin: 0;
-          font-size: 14.5px;
-          line-height: 1.45;
+          font-size: 11.5px;
+          line-height: 1.35;
         }
         @keyframes hcd-in {
           from { opacity: 0; transform: translateY(6px); }
@@ -614,10 +643,11 @@ export const HeroCallDemo: React.FC = () => {
           display: grid;
           place-items: center;
           margin: 0;
-          padding: 0 24px;
+          padding: 0 16px;
           text-align: center;
-          color: #6E6E73;
-          font-size: 14px;
+          color: #94A3B8;
+          font-size: 11px;
+          line-height: 1.4;
         }
         .hcd-panel.has .hcd-empty,
         .hcd-panel.live .hcd-empty {
@@ -626,23 +656,23 @@ export const HeroCallDemo: React.FC = () => {
         .hcd-panel footer {
           display: flex;
           align-items: center;
-          gap: 12px;
-          margin-top: 14px;
-          font-size: 13px;
-          color: #6E6E73;
+          gap: 8px;
+          margin-top: 10px;
+          font-size: 11px;
+          color: #94A3B8;
           font-variant-numeric: tabular-nums;
         }
         .hcd-bar {
           flex: 1;
-          height: 4px;
+          height: 3px;
           border-radius: 2px;
-          background: rgba(0, 0, 0, 0.08);
+          background: rgba(0, 0, 0, 0.06);
           overflow: hidden;
         }
         .hcd-bar i {
           display: block;
           height: 100%;
-          background: #1F9D45;
+          background: #10B981;
           transition: width 0.1s linear;
         }
         .hcd-ln span {
@@ -651,9 +681,6 @@ export const HeroCallDemo: React.FC = () => {
         }
         .hcd-ln span.v {
           opacity: 1;
-        }
-        .hcd-ln.cl {
-          margin-left: 18px;
         }
         @media (prefers-reduced-motion: reduce) {
           .hcd-c.green, .hcd-ln { animation: none; }
@@ -999,6 +1026,48 @@ export const HeroCallDemo: React.FC = () => {
               );
             })}
           </ol>
+
+          {currentTime >= 18.5 && (
+            <div className="mt-2.5 p-2.5 rounded-[12px] bg-white border border-[rgba(15,16,32,0.08)] shadow-xs text-[11px] font-sans">
+              <div className="flex items-center justify-between pb-1.5 mb-1.5 border-b border-slate-100">
+                <span className="font-semibold text-slate-900 text-[11px]">Job Details</span>
+                {currentTime >= 53.1 ? (
+                  <span className="px-2 py-0.5 rounded-full text-[9px] font-semibold bg-[#E8FBF4] text-[#047857]">
+                    Booked
+                  </span>
+                ) : (
+                  <span className="px-2 py-0.5 rounded-full text-[9px] font-semibold bg-amber-50 text-amber-700">
+                    In progress
+                  </span>
+                )}
+              </div>
+              <div className="grid grid-cols-[48px_1fr] gap-y-1 gap-x-2 text-[10.5px] leading-tight">
+                <span className="text-slate-500">Issue</span>
+                <span className="font-medium text-slate-900">Leaky pipe under sink</span>
+
+                {currentTime >= 23.86 && (
+                  <>
+                    <span className="text-slate-500">Caller</span>
+                    <span className="font-medium text-slate-900">Zach Phillips</span>
+                  </>
+                )}
+
+                {currentTime >= 31.08 && (
+                  <>
+                    <span className="text-slate-500">Address</span>
+                    <span className="font-medium text-slate-900">55 Seashell Lane</span>
+                  </>
+                )}
+
+                {currentTime >= 44.12 && (
+                  <>
+                    <span className="text-slate-500">Appt</span>
+                    <span className="font-medium text-slate-900">Tomorrow, 10:00 AM</span>
+                  </>
+                )}
+              </div>
+            </div>
+          )}
         </div>
 
         <footer>
