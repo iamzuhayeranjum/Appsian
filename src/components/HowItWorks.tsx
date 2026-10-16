@@ -1088,10 +1088,10 @@ export const HowItWorks: React.FC = () => {
               <button
                 type="button"
                 onClick={handleScrollToHeroDemo}
-                className="group h-[44px] px-6 rounded-[10px] bg-[#6EEDC2] text-[#062B20] font-sans font-medium text-[15px] flex items-center justify-center gap-2 cursor-pointer shadow-[0_8px_30px_rgba(110,237,194,0.35)] transition-all duration-300 hover:-translate-y-[3px] hover:shadow-[0_12px_36px_rgba(110,237,194,0.5)] active:scale-[0.98]"
+                className="btn-premium btn-premium--mint group h-[44px] px-6 rounded-[10px] font-sans font-medium text-[15px] flex items-center justify-center gap-3 cursor-pointer"
               >
                 <span>Get Free Demo</span>
-                <span className="font-bold transition-transform duration-200 group-hover:translate-x-1">
+                <span className="btn-arrow font-bold inline-block">
                   →
                 </span>
               </button>

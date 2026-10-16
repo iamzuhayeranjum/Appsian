@@ -268,23 +268,15 @@ export const Button: React.FC<ButtonProps> = ({
 
   let variantClasses = '';
   if (variant === 'primary') {
-    variantClasses = `bg-[#6EEDC2] text-[#050507] font-medium rounded-[10px] shadow-sm transition-all ${
-      forceHover ? 'bg-[#85f3ce] shadow-md -translate-y-0.5' : 'hover:bg-[#85f3ce] hover:shadow-md'
-    }`;
+    variantClasses = 'btn-premium btn-premium--mint rounded-[10px]';
   } else if (variant === 'glass') {
     if (isDark) {
-      variantClasses = `bg-white/10 text-white border border-white/15 rounded-[10px] backdrop-blur-md transition-all ${
-        forceHover ? 'bg-white/20 border-white/25 -translate-y-0.5' : 'hover:bg-white/15 hover:border-white/20'
-      }`;
+      variantClasses = 'btn-premium btn-premium--dark rounded-[10px]';
     } else {
-      variantClasses = `bg-white/80 text-[#0B0B0F] border border-[rgba(11,11,15,0.1)] rounded-[10px] shadow-xs backdrop-blur-md transition-all ${
-        forceHover ? 'bg-white shadow-sm -translate-y-0.5' : 'hover:bg-white hover:shadow-sm'
-      }`;
+      variantClasses = 'btn-premium btn-premium--light rounded-[10px]';
     }
   } else if (variant === 'secondary') {
-    variantClasses = `bg-[#EEF0F2] text-[#0B0B0F] rounded-[10px] transition-all ${
-      forceHover ? 'bg-[#E2E4E8] -translate-y-0.5' : 'hover:bg-[#E2E4E8]'
-    }`;
+    variantClasses = 'btn-premium btn-premium--light rounded-[10px]';
   } else if (variant === 'link-icon') {
     return (
       <button
@@ -312,7 +304,7 @@ export const Button: React.FC<ButtonProps> = ({
 
   return (
     <button
-      className={`inline-flex items-center justify-center font-sans cursor-pointer select-none transition-transform active:scale-[0.98] disabled:opacity-50 disabled:pointer-events-none ${sizeClasses} ${variantClasses} ${className}`}
+      className={`inline-flex items-center justify-center font-sans cursor-pointer select-none disabled:opacity-50 disabled:pointer-events-none ${sizeClasses} ${variantClasses} ${className}`}
       {...props}
     >
       {children}

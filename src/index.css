@@ -160,3 +160,159 @@
     animation: none !important;
   }
 }
+
+@layer components {
+  /* ---------- Premium button base ---------- */
+  .btn-premium {
+    --btn-base: #7c41f9;           /* overridden by the variants / inline var below */
+    --btn-fg: #ffffff;
+    --btn-top: color-mix(in oklab, var(--btn-base) 76%, #000000);
+    --btn-bottom: color-mix(in oklab, var(--btn-base) 84%, #ffffff);
+    --btn-glow: color-mix(in oklab, var(--btn-base) 60%, transparent);
+
+    position: relative;
+    isolation: isolate;
+    overflow: hidden;
+    cursor: pointer;
+    color: var(--btn-fg);
+    font-weight: 600;
+    letter-spacing: -0.01em;
+    text-shadow: 0 1px 1px rgba(0, 0, 0, 0.22);
+    background-color: var(--btn-base);
+    background-image: linear-gradient(
+      180deg,
+      var(--btn-top) 0%,
+      var(--btn-base) 52%,
+      var(--btn-bottom) 100%
+    );
+    box-shadow:
+      inset 0 -1px 0 rgba(255, 255, 255, 0.3),
+      inset 0 -12px 16px -10px rgba(255, 255, 255, 0.28),
+      0 10px 24px -8px var(--btn-glow),
+      0 2px 5px rgba(8, 8, 20, 0.22);
+    transition:
+      transform 0.22s cubic-bezier(0.22, 1, 0.36, 1),
+      filter 0.2s ease;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  /* 1px light rim: bright on top, dimmer in the middle, bright again at the bottom */
+  .btn-premium::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    border-radius: inherit;
+    padding: 1px;
+    pointer-events: none;
+    background: linear-gradient(
+      180deg,
+      rgba(255, 255, 255, 0.85) 0%,
+      rgba(255, 255, 255, 0.28) 35%,
+      rgba(255, 255, 255, 0.22) 70%,
+      rgba(255, 255, 255, 0.55) 100%
+    );
+    -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+  }
+
+  /* specular top line + glossy upper half + soft top-right glow */
+  .btn-premium::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    border-radius: inherit;
+    pointer-events: none;
+    background:
+      linear-gradient(
+          90deg,
+          rgba(255, 255, 255, 0) 0%,
+          rgba(255, 255, 255, 0.95) 22%,
+          rgba(255, 255, 255, 0.9) 82%,
+          rgba(255, 255, 255, 0.4) 100%
+        )
+        left 6px top 1px / calc(100% - 12px) 1px no-repeat,
+      radial-gradient(70px 40px at 90% 0%, rgba(255, 255, 255, 0.26), transparent 70%),
+      linear-gradient(180deg, rgba(255, 255, 255, 0.16) 0%, rgba(255, 255, 255, 0) 48%);
+  }
+
+  .btn-premium:hover {
+    transform: translateY(-1px);
+    filter: brightness(1.07) saturate(1.05);
+  }
+  .btn-premium:active {
+    transform: translateY(0) scale(0.985);
+    filter: brightness(0.97);
+  }
+  .btn-premium:focus-visible {
+    outline: 2px solid color-mix(in oklab, var(--btn-base) 65%, #ffffff);
+    outline-offset: 3px;
+  }
+  .btn-premium:disabled,
+  .btn-premium[aria-disabled='true'] {
+    filter: saturate(0.6) brightness(0.92);
+    cursor: not-allowed;
+    transform: none;
+  }
+
+  /* arrow icons nudge forward on hover (add class "btn-arrow" or "btn-arrow-diag" to the icon) */
+  .btn-premium .btn-arrow,
+  .btn-premium .btn-arrow-diag {
+    transition: transform 0.25s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+  .btn-premium:hover .btn-arrow { transform: translateX(3px); }
+  .btn-premium:hover .btn-arrow-diag { transform: translate(2px, -2px); }
+
+  /* ---------- Colour variants: these match my CURRENT button colours ---------- */
+  /* mint (my accent #6EEDC2, dark text) */
+  .btn-premium--mint {
+    --btn-base: #6eedc2;
+    --btn-fg: #062b20;
+    --btn-top: #58ddb0;
+    --btn-bottom: #9cf8e0;
+    --btn-glow: rgba(110, 237, 194, 0.5);
+    text-shadow: 0 1px 0 rgba(255, 255, 255, 0.4);
+  }
+  /* black / near-black pills (white text) */
+  .btn-premium--dark {
+    --btn-base: #15161b;
+    --btn-fg: #ffffff;
+    --btn-top: #08080b;
+    --btn-bottom: #2b2c34;
+    --btn-glow: rgba(10, 10, 20, 0.45);
+  }
+  /* white / light buttons (dark text) */
+  .btn-premium--light {
+    --btn-base: #ffffff;
+    --btn-fg: #0f1020;
+    --btn-top: #eceef5;
+    --btn-bottom: #ffffff;
+    --btn-glow: rgba(30, 30, 70, 0.18);
+    text-shadow: none;
+    box-shadow:
+      inset 0 0 0 1px rgba(15, 16, 32, 0.08),
+      inset 0 -1px 0 rgba(255, 255, 255, 0.9),
+      0 8px 20px -10px rgba(30, 30, 70, 0.35),
+      0 1px 3px rgba(20, 20, 50, 0.12);
+  }
+  .btn-premium--light::before { opacity: 0.6; }
+
+  @media (prefers-reduced-motion: reduce) {
+    .btn-premium,
+    .btn-premium .btn-arrow,
+    .btn-premium .btn-arrow-diag { transition: none; }
+    .btn-premium:hover,
+    .btn-premium:active { transform: none; }
+  }
+}
+
+/* very old browsers without color-mix(): fall back to flat colours instead of breaking */
+@supports not (color: color-mix(in oklab, red 50%, blue)) {
+  .btn-premium {
+    --btn-top: var(--btn-base);
+    --btn-bottom: var(--btn-base);
+    --btn-glow: rgba(0, 0, 0, 0.25);
+  }
+}

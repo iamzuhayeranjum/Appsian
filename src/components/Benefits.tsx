@@ -330,13 +330,13 @@ export const Benefits: React.FC<BenefitsProps> = ({ onBookDemoClick }) => {
                           type="button"
                           onClick={handleCtaClick}
                           style={{ fontFamily: 'inherit' }}
-                          className="group h-[50px] px-5 rounded-[14px] bg-[#0B0F19] text-white text-[15px] font-medium flex items-center justify-center gap-2 cursor-pointer hover:bg-[#1A1F2C] active:scale-[0.98] transition-all shadow-sm"
+                          className="btn-premium btn-premium--dark group h-[50px] px-5 rounded-[14px] text-[15px] font-medium flex items-center justify-center gap-3 cursor-pointer"
                         >
                           <span>Get Free Demo</span>
                           <ArrowUpRight
                             size={16}
-                            strokeWidth={2.5}
-                            className="text-[#6EEDC2] group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform"
+                            strokeWidth={2}
+                            className="btn-arrow-diag text-[#6EEDC2]"
                           />
                         </button>
 
@@ -344,7 +344,7 @@ export const Benefits: React.FC<BenefitsProps> = ({ onBookDemoClick }) => {
                           href="#how-it-works"
                           onClick={handleSecondaryClick}
                           style={{ fontFamily: 'inherit' }}
-                          className="h-[50px] px-5 rounded-[14px] bg-white text-[#0B0F19] border border-[#0F172A]/[0.08] text-[15px] font-medium flex items-center justify-center cursor-pointer hover:bg-black/[0.02] active:scale-[0.98] transition-all shadow-xs"
+                          className="btn-premium btn-premium--light h-[50px] px-5 rounded-[14px] text-[15px] font-medium flex items-center justify-center cursor-pointer"
                         >
                           See how it works
                         </a>

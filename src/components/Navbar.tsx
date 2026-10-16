@@ -377,12 +377,12 @@ export const Navbar: React.FC<NavbarProps> = ({ onBookDemoClick, pastHero = fals
             </span>
             <div
               aria-hidden="true"
-              className="w-[36px] h-[36px] min-w-[36px] rounded-[10px] bg-[#6EEDC2] flex items-center justify-center transition-transform duration-150 ease-out group-hover:-translate-y-[2px] group-hover:translate-x-[2px]"
+              className="btn-premium btn-premium--mint w-[36px] h-[36px] min-w-[36px] rounded-[10px] flex items-center justify-center transition-transform duration-150 ease-out group-hover:-translate-y-[2px] group-hover:translate-x-[2px]"
             >
               <ArrowUpRight
                 size={16}
                 strokeWidth={2}
-                className="text-[#0B0F19]"
+                className="btn-arrow-diag text-[#0B0F19]"
               />
             </div>
           </motion.div>
@@ -419,8 +419,8 @@ export const Navbar: React.FC<NavbarProps> = ({ onBookDemoClick, pastHero = fals
                   className="w-full h-[44px] rounded-[10px] text-[#111827] font-medium text-[14px] flex items-center justify-between px-4 hover:!bg-[rgba(255,255,255,0.75)] active:scale-[0.98] transition-all cursor-pointer group"
                 >
                   <span className="underline underline-offset-[4px] decoration-1 decoration-[#111827]">Get Free Demo</span>
-                  <div className="w-[30px] h-[30px] rounded-[8px] bg-[#6EEDC2] flex items-center justify-center text-[#0B0F19] group-hover:-translate-y-[1px] group-hover:translate-x-[1px] transition-transform">
-                    <ArrowUpRight size={15} strokeWidth={2} />
+                  <div className="btn-premium btn-premium--mint w-[30px] h-[30px] rounded-[8px] flex items-center justify-center text-[#0B0F19] group-hover:-translate-y-[1px] group-hover:translate-x-[1px] transition-transform">
+                    <ArrowUpRight size={15} strokeWidth={2} className="btn-arrow-diag" />
                   </div>
                 </button>
               </div>

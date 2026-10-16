@@ -187,10 +187,10 @@ export const GettingStarted: React.FC<GettingStartedProps> = ({ onSuccessDemo })
           <button
             type="button"
             onClick={handleCtaClick}
-            className="group relative px-7 py-3.5 rounded-[10px] bg-[#6EEDC2] hover:bg-[#85f3ce] text-[#062B20] font-sans font-semibold text-[15px] cursor-pointer transition-all duration-200 select-none hover:-translate-y-[1px] active:translate-y-0 shadow-[0_8px_20px_-6px_rgba(110,237,194,0.45)] hover:shadow-[0_12px_28px_-4px_rgba(110,237,194,0.65)] flex items-center gap-2"
+            className="btn-premium btn-premium--mint group relative px-7 py-3.5 rounded-[10px] font-sans font-semibold text-[15px] cursor-pointer select-none flex items-center gap-3"
           >
             <span>Get Free Demo</span>
-            <ArrowRight className="w-4 h-4 stroke-[2.4] transition-transform duration-200 group-hover:translate-x-1" />
+            <ArrowRight className="btn-arrow w-4 h-4" strokeWidth={2} />
           </button>
 
           <p className="mt-3 text-[12px] text-white/50 font-sans tracking-normal">

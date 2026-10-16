@@ -111,15 +111,10 @@ export const PricingSection: React.FC<PricingSectionProps> = ({ onPlanSelect }) 
                         <button
                           type="button"
                           onClick={() => onPlanSelect(plan.name)}
-                          className="group relative w-full h-[44px] rounded-[12px] bg-[#6EEDC2] text-[#062B20] text-[14px] font-[500] border-t border-white/50 shadow-[0_6px_20px_rgba(110,237,194,0.28)] flex items-center justify-center transition-all duration-200 cursor-pointer overflow-hidden hover:-translate-y-[1px] hover:bg-[#82F2CB] hover:shadow-[0_8px_24px_rgba(110,237,194,0.36)]"
+                          className="btn-premium btn-premium--mint group relative w-full h-[44px] rounded-[12px] text-[14px] font-[500] flex items-center justify-center cursor-pointer overflow-hidden gap-3"
                         >
-                          <span className="inline-flex items-center gap-1.5 transition-transform duration-200 ease-out group-hover:-translate-x-1">
-                            <span>{plan.ctaLabel}</span>
-                            <span className="relative w-4 h-4 overflow-hidden inline-flex items-center justify-center">
-                              <ArrowRight className="w-3.5 h-3.5 absolute transition-transform duration-200 ease-out group-hover:translate-x-4" />
-                              <ArrowRight className="w-3.5 h-3.5 absolute -translate-x-4 transition-transform duration-200 ease-out group-hover:translate-x-0" />
-                            </span>
-                          </span>
+                          <span>{plan.ctaLabel}</span>
+                          <ArrowRight className="btn-arrow w-3.5 h-3.5" strokeWidth={2} />
                         </button>
                       </div>
 
@@ -169,15 +164,10 @@ export const PricingSection: React.FC<PricingSectionProps> = ({ onPlanSelect }) 
                       <button
                         type="button"
                         onClick={() => onPlanSelect(plan.name)}
-                        className="group relative w-full h-[44px] rounded-[12px] bg-[#FFFFFF] text-[#1A1A24] text-[14px] font-[500] shadow-[0_1px_2px_rgba(20,20,40,0.08),0_6px_16px_rgba(20,20,40,0.07)] flex items-center justify-center transition-all duration-200 cursor-pointer overflow-hidden hover:-translate-y-[1px] hover:shadow-[0_2px_4px_rgba(20,20,40,0.1),0_8px_20px_rgba(20,20,40,0.09)]"
+                        className="btn-premium btn-premium--light group relative w-full h-[44px] rounded-[12px] text-[14px] font-[500] flex items-center justify-center cursor-pointer overflow-hidden gap-3"
                       >
-                        <span className="inline-flex items-center gap-1.5 transition-transform duration-200 ease-out group-hover:-translate-x-1">
-                          <span>{plan.ctaLabel}</span>
-                          <span className="relative w-4 h-4 overflow-hidden inline-flex items-center justify-center">
-                            <ArrowRight className="w-3.5 h-3.5 absolute transition-transform duration-200 ease-out group-hover:translate-x-4" />
-                            <ArrowRight className="w-3.5 h-3.5 absolute -translate-x-4 transition-transform duration-200 ease-out group-hover:translate-x-0" />
-                          </span>
-                        </span>
+                        <span>{plan.ctaLabel}</span>
+                        <ArrowRight className="btn-arrow w-3.5 h-3.5" strokeWidth={2} />
                       </button>
                     </div>
 
@@ -223,7 +213,7 @@ export const PricingSection: React.FC<PricingSectionProps> = ({ onPlanSelect }) 
           <button
             type="button"
             onClick={() => onPlanSelect('Founding pilot')}
-            className="shrink-0 h-[32px] px-4 rounded-full bg-white text-[#1A1A24] text-[13px] font-medium shadow-[0_1px_2px_rgba(20,20,40,0.08)] hover:shadow-[0_4px_12px_rgba(20,20,40,0.08)] hover:-translate-y-0.5 transition-all cursor-pointer whitespace-nowrap"
+            className="btn-premium btn-premium--light shrink-0 h-[32px] px-4 rounded-full text-[13px] font-medium cursor-pointer whitespace-nowrap"
           >
             Claim pilot spot
           </button>

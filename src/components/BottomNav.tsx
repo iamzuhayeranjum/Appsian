@@ -430,30 +430,12 @@ export const BottomNav: React.FC<BottomNavProps> = ({ onCtaClick, pastHero: prop
             <button
               type="button"
               onClick={handleCtaClick}
-              onMouseEnter={() => setIsHoveredCta(true)}
-              onMouseLeave={() => setIsHoveredCta(false)}
-              className="group relative w-[132px] md:w-[164px] h-[46px] md:h-[54px] rounded-[10px] flex items-center justify-center gap-1.5 md:gap-2 text-[#062B20] font-sans font-[600] text-[13px] md:text-[15px] cursor-pointer transition-all duration-200 overflow-hidden select-none hover:-translate-y-[1px] active:translate-y-0"
-              style={{
-                background: 'linear-gradient(135deg, #7CF2CD 0%, #4DDDAE 100%)',
-                border: '1px solid rgba(255, 255, 255, 0.45)',
-                boxShadow: isHoveredCta
-                  ? '0 10px 24px -4px rgba(110, 237, 194, 0.65)'
-                  : '0 8px 20px -6px rgba(110, 237, 194, 0.45)',
-              }}
+              className="btn-premium btn-premium--mint group relative w-[132px] md:w-[164px] h-[46px] md:h-[54px] rounded-[10px] flex items-center justify-center gap-2 md:gap-3 font-sans font-[600] text-[13px] md:text-[15px] cursor-pointer select-none"
             >
-              {/* Subtle top-right sheen */}
-              <div
-                className="absolute inset-0 pointer-events-none transition-opacity duration-300"
-                style={{
-                  background:
-                    'radial-gradient(circle at top right, rgba(255, 255, 255, 0.65) 0%, rgba(255, 255, 255, 0) 65%)',
-                  opacity: isHoveredCta ? 0.45 : 0.25,
-                }}
-              />
-
               <span className="relative z-10 whitespace-nowrap">Get Free Demo</span>
               <ArrowRight
-                className="relative z-10 w-4 h-4 md:w-[18px] md:h-[18px] stroke-[2.4] transition-transform duration-200 group-hover:translate-x-[3px]"
+                className="btn-arrow relative z-10 w-4 h-4 md:w-[18px] md:h-[18px]"
+                strokeWidth={2}
               />
             </button>
           </motion.div>

@@ -230,13 +230,10 @@ export const MissedCallCalculator: React.FC = () => {
               <button
                 type="button"
                 onClick={handleScrollToHeroDemo}
-                className="group h-[44px] rounded-[10px] px-4 sm:px-[22px] bg-[#6EEDC2] text-[#062B20] font-sans font-medium text-[13px] sm:text-[15px] flex items-center gap-2 cursor-pointer transition-all duration-200 hover:-translate-y-[1px] shadow-[0_8px_30px_rgba(110,237,194,0.35)] active:scale-[0.98]"
+                className="btn-premium btn-premium--mint group h-[44px] rounded-[10px] px-4 sm:px-[22px] font-sans font-medium text-[13px] sm:text-[15px] flex items-center gap-3 cursor-pointer"
               >
                 <span>Get Free Demo</span>
-                <span className="relative inline-flex items-center justify-center w-4 h-4 overflow-hidden ml-1 shrink-0">
-                  <ArrowRight className="w-4 h-4 absolute transition-transform duration-350 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:translate-x-5" />
-                  <ArrowRight className="w-4 h-4 absolute -translate-x-5 transition-transform duration-350 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:translate-x-0" />
-                </span>
+                <ArrowRight className="btn-arrow w-4 h-4" strokeWidth={2} />
               </button>
             </div>
 

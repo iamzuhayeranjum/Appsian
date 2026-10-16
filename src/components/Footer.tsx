@@ -162,11 +162,7 @@ export const Footer: React.FC = () => {
           <button
             type="button"
             onClick={scrollToTop}
-            className="group h-[44px] bg-[#0A0A0A] border border-white/14 rounded-full pl-[7px] pr-4 py-[7px] flex items-center gap-2.5 cursor-pointer shadow-lg hover:border-white/30 transition-all duration-200"
-            style={{
-              backdropFilter: 'none',
-              WebkitBackdropFilter: 'none',
-            }}
+            className="btn-premium btn-premium--dark group h-[44px] rounded-full pl-[7px] pr-4 py-[7px] flex items-center gap-2.5 cursor-pointer"
             aria-label="Back to top"
           >
             <span className="w-6 h-6 rounded-full bg-white flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform duration-200">

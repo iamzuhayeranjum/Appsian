@@ -180,10 +180,8 @@ export const DemoBar: React.FC<DemoBarProps> = ({ onSuccess }) => {
             <button
               type="submit"
               disabled={isSuccess}
-              className={`group w-full sm:w-auto h-[52px] rounded-[10px] px-[22px] font-sans font-medium text-[15px] flex items-center justify-center gap-2 cursor-pointer transition-all duration-200 active:scale-[0.98] ${
-                isSuccess
-                  ? 'bg-[#6EEDC2] text-[#062B20] opacity-95 cursor-default'
-                  : 'bg-[#6EEDC2] text-[#062B20] hover:-translate-y-[1px] shadow-[0_8px_30px_rgba(110,237,194,0.35)]'
+              className={`btn-premium btn-premium--mint group w-full sm:w-auto h-[52px] rounded-[10px] px-[22px] font-sans font-medium text-[15px] flex items-center justify-center gap-3 cursor-pointer ${
+                isSuccess ? 'opacity-95 cursor-default' : ''
               }`}
             >
               {isSuccess ? (
@@ -194,10 +192,7 @@ export const DemoBar: React.FC<DemoBarProps> = ({ onSuccess }) => {
               ) : (
                 <>
                   <span>Get Free Demo</span>
-                  <span className="relative inline-flex items-center justify-center w-4 h-4 overflow-hidden ml-1 shrink-0">
-                    <ArrowRight className="w-4 h-4 absolute transition-transform duration-350 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:translate-x-5" />
-                    <ArrowRight className="w-4 h-4 absolute -translate-x-5 transition-transform duration-350 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:translate-x-0" />
-                  </span>
+                  <ArrowRight className="btn-arrow w-4 h-4" strokeWidth={2} />
                 </>
               )}
             </button>

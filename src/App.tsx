@@ -17,6 +17,7 @@ import { DarkBand1 } from './components/DarkBand1';
 import { TrustRow } from './components/TrustRow';
 import { WhyAppsian } from './components/WhyAppsian';
 import { GettingStarted } from './components/GettingStarted';
+import { ResultsSection } from './components/ResultsSection';
 import { PricingSection } from './components/PricingSection';
 import { TestimonialsSection } from './components/TestimonialsSection';
 import { FaqSection } from './components/FaqSection';
@@ -136,6 +137,9 @@ export default function App() {
 
       {/* Getting Started (4-step timeline) */}
       <GettingStarted onSuccessDemo={handleOpenDemoModal} />
+
+      {/* Results: what customers see with an AI phone calling agent */}
+      <ResultsSection onSuccessDemo={handleOpenDemoModal} />
 
       {/* 6. Pricing (1187px wide) */}
       <PricingSection onPlanSelect={handlePlanSelect} />

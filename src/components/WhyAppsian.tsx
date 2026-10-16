@@ -748,10 +748,10 @@ export const WhyAppsian: React.FC = () => {
           <button
             type="button"
             onClick={handleScrollToDemoBar}
-            className="group relative inline-flex items-center justify-center gap-2 h-[48px] px-7 rounded-[12px] bg-[#6EEDC2] hover:bg-[#85f3ce] text-[#062B20] text-sm font-semibold tracking-tight transition-all duration-200 cursor-pointer shadow-sm hover:shadow-md hover:-translate-y-0.5 active:scale-[0.98]"
+            className="btn-premium btn-premium--mint group relative inline-flex items-center justify-center gap-3 h-[48px] px-7 rounded-[12px] text-sm font-semibold tracking-tight cursor-pointer"
           >
             <span>Get Free Demo</span>
-            <ArrowRight className="w-4 h-4 stroke-[2.2] transition-transform duration-200 group-hover:translate-x-0.5" />
+            <ArrowRight className="btn-arrow w-4 h-4" strokeWidth={2} />
           </button>
         </div>
       </div>
