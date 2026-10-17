@@ -50,10 +50,10 @@ export const DarkBand1: React.FC = () => {
         </div>
 
         {/* 2. HEADLINE */}
-        <h2 className="mt-[22px] mb-14 md:mb-[72px] text-center font-display font-semibold text-[#0B0B0F] tracking-[-0.03em] leading-[1.08] text-[clamp(34px,4.8vw,62px)] max-w-3xl">
-          Made for <span className="font-serif-italic text-[1.06em]">busy trades</span>,{' '}
+        <h2 className="mt-[22px] mb-12 md:mb-[56px] text-center font-display tracking-[-0.03em] leading-[1.15] text-3xl sm:text-4xl md:text-[44px] max-w-3xl">
+          <span className="font-light text-[#7B8296]">Made for busy trades,</span>{' '}
           <br className="hidden md:inline" />
-          built for <span className="font-serif-italic text-[1.06em]">booked jobs</span>
+          <span className="font-semibold text-[#0B0B0F]">built for booked jobs</span>
         </h2>
 
         {/* 3. BENTO GRID */}
