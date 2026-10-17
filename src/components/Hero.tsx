@@ -13,21 +13,6 @@ import { submitDemoRequest } from '../lib/submitDemoRequest';
 
 const EASE: [number, number, number, number] = [0.22, 1, 0.36, 1];
 
-const SHARED_GLASS_STYLE: React.CSSProperties = {
-  background: 'rgba(255, 255, 255, 0.55)',
-  backdropFilter: 'blur(14px) saturate(1.2)',
-  WebkitBackdropFilter: 'blur(14px) saturate(1.2)',
-  border: '1px solid rgba(255, 255, 255, 0.85)',
-  boxShadow:
-    '0 0 0 1px rgba(15, 23, 42, 0.05), 0 8px 24px rgba(15, 23, 42, 0.06), inset 0 1px 0 rgba(255, 255, 255, 0.9)',
-};
-
-const FORM_GLASS_STYLE: React.CSSProperties = {
-  ...SHARED_GLASS_STYLE,
-  boxShadow:
-    '0 0 0 6px rgba(255, 255, 255, 0.45), 0 0 0 1px rgba(15, 23, 42, 0.05), 0 8px 24px rgba(15, 23, 42, 0.06), inset 0 1px 0 rgba(255, 255, 255, 0.9)',
-};
-
 const TRADES = ['Roofing', 'Plumbing', 'HVAC', 'Electrical'];
 
 interface HeroProps {
@@ -145,10 +130,77 @@ export const Hero: React.FC<HeroProps> = ({ onBookDemoClick }) => {
       ref={heroRef}
       className="relative w-full bg-[#FFFFFF] overflow-hidden min-h-[100svh] flex flex-col justify-center items-center select-none"
     >
-      {/* 1. Animated Dot Background Canvas with Interactive Hover Effect */}
-      <HeroDots containerRef={heroRef} />
+      {/* Custom Styles for Raised Glass Form, Tag, and Chips */}
+      <style>{`
+        .hero-form-glass {
+          background: rgba(255, 255, 255, 0.72);
+          backdrop-filter: blur(14px) saturate(1.2);
+          -webkit-backdrop-filter: blur(14px) saturate(1.2);
+          border: 1px solid rgba(255, 255, 255, 0.9);
+          box-shadow:
+            inset 0 1px 0 rgba(255, 255, 255, 1),
+            0 6px 18px rgba(15, 23, 42, 0.06),
+            0 0 0 6px rgba(255, 255, 255, 0.45),
+            0 0 0 7px rgba(15, 23, 42, 0.04);
+          transition: transform 220ms ease, box-shadow 220ms ease, background 220ms ease;
+        }
+        .hero-form-glass:hover,
+        .hero-form-glass:focus-within {
+          transform: translateY(-1px);
+          box-shadow:
+            inset 0 1px 0 rgba(255, 255, 255, 1),
+            0 6px 18px rgba(15, 23, 42, 0.06),
+            0 0 0 6px rgba(255, 255, 255, 0.8),
+            0 0 0 7px rgba(124, 92, 255, 0.14),
+            0 14px 44px rgba(124, 92, 255, 0.16);
+        }
+        .hero-tag-glass {
+          background: rgba(255, 255, 255, 0.72);
+          backdrop-filter: blur(14px) saturate(1.2);
+          -webkit-backdrop-filter: blur(14px) saturate(1.2);
+          border: 1px solid rgba(255, 255, 255, 0.9);
+          box-shadow:
+            inset 0 1px 0 rgba(255, 255, 255, 1),
+            0 4px 14px rgba(15, 23, 42, 0.07),
+            0 1px 2px rgba(15, 23, 42, 0.04);
+          transition: transform 200ms ease, box-shadow 200ms ease;
+        }
+        .hero-tag-glass:hover {
+          transform: translateY(-1px);
+          box-shadow:
+            inset 0 1px 0 rgba(255, 255, 255, 1),
+            0 8px 20px rgba(15, 23, 42, 0.10),
+            0 2px 4px rgba(15, 23, 42, 0.05);
+        }
+        .hero-chip-glass {
+          height: 36px;
+          padding: 0 16px;
+          border-radius: 10px;
+          background: rgba(255, 255, 255, 0.75);
+          backdrop-filter: blur(12px);
+          -webkit-backdrop-filter: blur(12px);
+          border: 1px solid rgba(255, 255, 255, 0.9);
+          box-shadow:
+            inset 0 1px 0 rgba(255, 255, 255, 1),
+            0 2px 8px rgba(15, 23, 42, 0.06);
+          color: #334155;
+          font-size: 14px;
+          font-weight: 500;
+          transition: all 180ms ease;
+          cursor: pointer;
+        }
+        .hero-chip-glass:hover,
+        .hero-chip-glass:focus-visible {
+          background: #0B0F19;
+          color: #FFFFFF;
+          border-color: transparent;
+          transform: translateY(-1px);
+          box-shadow: 0 6px 18px rgba(11, 15, 25, 0.18);
+          outline: none;
+        }
+      `}</style>
 
-      {/* 2. Background Atmosphere Pastel Glows (staying visible behind the arc) */}
+      {/* 1. Background Atmosphere Pastel Glows (staying visible behind the arc) */}
       <div
         className="absolute -top-[120px] -right-[120px] w-[720px] h-[720px] pointer-events-none select-none z-0"
         style={{
@@ -164,7 +216,7 @@ export const Hero: React.FC<HeroProps> = ({ onBookDemoClick }) => {
         aria-hidden="true"
       />
 
-      {/* 3. The Big Soft Arc (above dots at z-0, behind content at z-10) */}
+      {/* 2. The Big Soft Arc (above dots at z-0, behind content at z-10) */}
       <div
         className="absolute left-1/2 -translate-x-1/2 top-[100px] md:top-[120px] w-[220%] md:w-[170%] h-[700px] md:h-[1000px] rounded-[50%] pointer-events-none z-1"
         style={{
@@ -176,7 +228,10 @@ export const Hero: React.FC<HeroProps> = ({ onBookDemoClick }) => {
         aria-hidden="true"
       />
 
-      {/* 4. Centered Main Content Block */}
+      {/* 3. Animated Cursor Dot Trail Canvas (z-index 2: above arc, below content) */}
+      <HeroDots containerRef={heroRef} />
+
+      {/* 4. Centered Main Content Block (z-index 10: above dot canvas) */}
       <div
         id="hero-box"
         className="w-full max-w-[1240px] mx-auto px-5 md:px-10 pt-[112px] md:pt-[128px] pb-[124px] md:pb-[140px] flex flex-col items-center text-center relative z-10"
@@ -196,8 +251,7 @@ export const Hero: React.FC<HeroProps> = ({ onBookDemoClick }) => {
             delay: reduceMotion ? 0 : 0.05,
             ease: EASE,
           }}
-          className="mb-7 h-[36px] pl-1.5 pr-3.5 rounded-full flex items-center gap-2.5 cursor-default select-none transition-transform duration-200 hover:scale-[1.02]"
-          style={SHARED_GLASS_STYLE}
+          className="hero-tag-glass mb-7 h-[36px] pl-1.5 pr-3.5 rounded-full flex items-center gap-2.5 cursor-default select-none"
         >
           {/* 24px dark circle with mint Appsian mark */}
           <div className="w-6 h-6 rounded-full bg-[#0B0F19] flex items-center justify-center shrink-0 shadow-xs">
@@ -307,7 +361,7 @@ export const Hero: React.FC<HeroProps> = ({ onBookDemoClick }) => {
           </a>
         </motion.p>
 
-        {/* Centered Glass Form: width min(680px, 100%) */}
+        {/* Centered Raised Glass Form: width min(680px, 100%) */}
         <motion.div
           initial={reduceMotion ? { opacity: 0 } : { opacity: 0, y: 16 }}
           animate={
@@ -326,15 +380,14 @@ export const Hero: React.FC<HeroProps> = ({ onBookDemoClick }) => {
         >
           <AnimatePresence mode="wait">
             {status === 'success' ? (
-              /* Success Card with glass styling */
+              /* Success Card with raised double-ring glass styling */
               <motion.div
                 key="success"
                 initial={{ opacity: 0, scale: 0.96 }}
                 animate={{ opacity: 1, scale: 1 }}
                 exit={{ opacity: 0, scale: 0.96 }}
                 transition={{ duration: 0.3 }}
-                className="w-full min-h-[74px] rounded-[22px] p-4 lg:px-6 flex items-center gap-3.5 text-left"
-                style={FORM_GLASS_STYLE}
+                className="hero-form-glass w-full min-h-[74px] rounded-[22px] p-4 lg:px-6 flex items-center gap-3.5 text-left"
               >
                 <div className="w-10 h-10 rounded-full bg-[#6EEDC2] flex items-center justify-center text-[#062B20] shrink-0 shadow-xs">
                   <Check className="w-5 h-5 stroke-[2.5]" />
@@ -344,18 +397,17 @@ export const Hero: React.FC<HeroProps> = ({ onBookDemoClick }) => {
                     Thanks, {name.trim().split(' ')[0] || 'there'}! We&apos;ll be in touch shortly.
                   </p>
                   <p className="text-[13px] text-[#64748B] mt-0.5 leading-tight">
-                    We&apos;ll email you at <span className="text-[#0B0B0F] font-medium">{email.trim()}</span>.
+                    We&apos;ll email you at <span className="text-[#0B0F19] font-medium">{email.trim()}</span>.
                   </p>
                 </div>
               </motion.div>
             ) : (
-              /* The Centered Glass Form Bar */
+              /* The Centered Raised Glass Form Bar with Double Ring & Soft Purple Halo */
               <motion.form
                 key="form"
                 noValidate
                 onSubmit={handleSubmit}
-                className="relative w-full flex flex-col lg:flex-row lg:h-[74px] rounded-[22px] p-2.5 lg:p-[8px] gap-2 lg:gap-0 focus-within:border-[rgba(74,127,240,0.55)] focus-within:ring-4 focus-within:ring-[rgba(74,127,240,0.14)] transition-all"
-                style={FORM_GLASS_STYLE}
+                className="hero-form-glass relative w-full flex flex-col lg:flex-row lg:h-[74px] rounded-[22px] p-2.5 lg:p-[8px] gap-2 lg:gap-0 focus-within:border-[rgba(74,127,240,0.55)]"
               >
                 {/* Hidden Spam Honeypot */}
                 <input
@@ -491,32 +543,32 @@ export const Hero: React.FC<HeroProps> = ({ onBookDemoClick }) => {
       >
         {/* Desktop (1024px+) & Tablet (768px-1023px) layout */}
         <div className="hidden md:flex items-center justify-between gap-6 w-full">
-          {/* Left: 4 glass chips in a row */}
+          {/* Left: 4 glass chips in a row (turns near-black #0B0F19 on hover) */}
           <div className="flex items-center gap-2.5">
             {TRADES.map((trade) => (
-              <div
+              <button
+                type="button"
                 key={trade}
-                className="h-[36px] px-4 rounded-full flex items-center justify-center text-[14px] font-medium text-[#334155] cursor-default hover:-translate-y-[2px] transition-transform duration-200 select-none"
-                style={SHARED_GLASS_STYLE}
+                className="hero-chip-glass"
               >
                 {trade}
-              </div>
+              </button>
             ))}
           </div>
 
           {/* Center: "See how it works" text + 40px square mint button */}
-          <div className="flex items-center gap-3">
+          <div className="group/see flex items-center gap-3">
             <a
               href="#how-it-works"
               onClick={handleSeeHowItWorks}
-              className="text-[15px] font-medium text-[#0B0F19] underline underline-offset-4 decoration-1 decoration-slate-700 hover:text-[#0B0B0F] transition-colors cursor-pointer select-none"
+              className="text-[15px] font-medium text-[#0B0F19] underline underline-offset-4 decoration-1 group-hover/see:decoration-2 transition-all cursor-pointer select-none"
             >
               See how it works
             </a>
             <button
               type="button"
               onClick={handleSeeHowItWorks}
-              className="w-10 h-10 rounded-[10px] bg-[#6EEDC2] hover:bg-[#5FE2B5] transition-colors flex items-center justify-center cursor-pointer shadow-xs border-0 text-[#0B0F19] active:scale-95"
+              className="w-10 h-10 rounded-[10px] bg-[#6EEDC2] group-hover/see:translate-y-[2px] transition-transform duration-160 ease-out flex items-center justify-center cursor-pointer shadow-xs border-0 text-[#0B0F19] active:scale-95"
               aria-label="Scroll to how it works"
             >
               <ArrowDown className="w-4 h-4 stroke-[2.2]" />
@@ -537,11 +589,10 @@ export const Hero: React.FC<HeroProps> = ({ onBookDemoClick }) => {
             <button
               type="button"
               onClick={handleNextSection}
-              className="w-10 h-10 rounded-[10px] flex items-center justify-center cursor-pointer hover:bg-white/70 active:scale-95 transition-all text-[#0B0F19]"
-              style={SHARED_GLASS_STYLE}
+              className="group/arrow w-10 h-10 rounded-[10px] flex items-center justify-center cursor-pointer border border-[rgba(255,255,255,0.9)] bg-[rgba(255,255,255,0.75)] backdrop-blur-[12px] shadow-[0_2px_8px_rgba(15,23,42,0.06),inset_0_1px_0_rgba(255,255,255,1)] hover:bg-white hover:-translate-y-[1px] hover:shadow-[0_6px_16px_rgba(15,23,42,0.10)] active:scale-95 transition-all duration-180 ease-out text-[#0B0F19]"
               aria-label="Scroll to next section"
             >
-              <ArrowRight className="w-4 h-4 stroke-[2]" />
+              <ArrowRight className="w-4 h-4 stroke-[2] transition-transform duration-180 ease-out group-hover/arrow:translate-x-[2px]" />
             </button>
           </div>
         </div>
@@ -550,28 +601,28 @@ export const Hero: React.FC<HeroProps> = ({ onBookDemoClick }) => {
         <div className="flex md:hidden flex-col items-center gap-3.5 w-full">
           <div className="flex flex-wrap justify-center items-center gap-2">
             {TRADES.map((trade) => (
-              <div
+              <button
+                type="button"
                 key={trade}
-                className="h-[32px] px-3.5 rounded-full flex items-center justify-center text-[13px] font-medium text-[#334155] cursor-default"
-                style={SHARED_GLASS_STYLE}
+                className="hero-chip-glass h-[32px] px-3.5 text-[13px]"
               >
                 {trade}
-              </div>
+              </button>
             ))}
           </div>
 
-          <div className="flex items-center gap-2 mt-0.5">
+          <div className="group/see flex items-center gap-2 mt-0.5">
             <a
               href="#how-it-works"
               onClick={handleSeeHowItWorks}
-              className="text-[14px] font-medium text-[#0B0F19] underline underline-offset-4 decoration-1 decoration-slate-700 hover:text-[#0B0B0F] transition-colors cursor-pointer"
+              className="text-[14px] font-medium text-[#0B0F19] underline underline-offset-4 decoration-1 group-hover/see:decoration-2 transition-all cursor-pointer"
             >
               See how it works
             </a>
             <button
               type="button"
               onClick={handleSeeHowItWorks}
-              className="w-8 h-8 rounded-[8px] bg-[#6EEDC2] hover:bg-[#5FE2B5] transition-colors flex items-center justify-center cursor-pointer shadow-xs border-0 text-[#0B0F19] active:scale-95"
+              className="w-8 h-8 rounded-[8px] bg-[#6EEDC2] group-hover/see:translate-y-[2px] transition-transform duration-160 ease-out flex items-center justify-center cursor-pointer shadow-xs border-0 text-[#0B0F19] active:scale-95"
               aria-label="Scroll to how it works"
             >
               <ArrowDown className="w-3.5 h-3.5 stroke-[2.2]" />

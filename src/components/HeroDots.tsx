@@ -4,25 +4,6 @@ interface HeroDotsProps {
   containerRef?: React.RefObject<HTMLElement | null>;
 }
 
-interface Dot {
-  x: number;
-  y: number;
-  baseRadius: number;
-  currentRadius: number;
-  targetRadius: number;
-  currentX: number;
-  currentY: number;
-  targetX: number;
-  targetY: number;
-  currentAlpha: number;
-  targetAlpha: number;
-  colorR: number;
-  colorG: number;
-  colorB: number;
-  distFromCenter: number;
-  spawnTime: number;
-}
-
 export const HeroDots: React.FC<HeroDotsProps> = ({ containerRef }) => {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
 
@@ -32,73 +13,59 @@ export const HeroDots: React.FC<HeroDotsProps> = ({ containerRef }) => {
     const ctx = canvas.getContext('2d');
     if (!ctx) return;
 
-    // Check prefers-reduced-motion
     const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    // Check touch devices
-    const isTouch = window.matchMedia('(hover: none)').matches || 'ontouchstart' in window;
+    const isCoarse =
+      window.matchMedia('(pointer: coarse)').matches ||
+      window.matchMedia('(hover: none)').matches ||
+      'ontouchstart' in window;
+
+    if (reduceMotion || isCoarse) {
+      return;
+    }
+
+    const SPACING = 10;
+    const R = 110;
+    const R_SQ = R * R;
+    const HALF_LIFE = 0.55;
+    const DECAY_CONSTANT = Math.LN2 / HALF_LIFE;
 
     let width = 0;
     let height = 0;
-    let dots: Dot[] = [];
+    let cols = 0;
+    let rows = 0;
+    let totalDots = 0;
+    let offsetX = 0;
+    let offsetY = 0;
+
+    let energies = new Float32Array(0);
+    let isActive = new Uint8Array(0);
+    const activeList: number[] = [];
+
     let rafId: number | null = null;
     let isVisible = true;
-    let lastMouseMoveTime = 0;
+    let lastFrameTime = performance.now();
 
-    const mouse = {
+    const lastPointer = {
       x: -9999,
       y: -9999,
-      active: false,
     };
 
-    const startTime = performance.now();
+    const initGrid = () => {
+      cols = Math.floor(width / SPACING);
+      rows = Math.floor(height / SPACING);
+      totalDots = cols * rows;
+      offsetX = (width - cols * SPACING) / 2;
+      offsetY = (height - rows * SPACING) / 2;
 
-    const initDots = () => {
-      const isMobile = width < 768;
-      const spacing = isMobile ? 28 : 24;
-      const baseRadius = 1.1;
-
-      const cols = Math.floor(width / spacing);
-      const rows = Math.floor(height / spacing);
-      const offsetX = (width - cols * spacing) / 2;
-      const offsetY = (height - rows * spacing) / 2;
-      const centerX = width / 2;
-      const centerY = height / 2;
-      const maxDist = Math.hypot(centerX, centerY) || 1;
-
-      dots = [];
-      for (let r = 0; r <= rows; r++) {
-        for (let c = 0; c <= cols; c++) {
-          const x = offsetX + c * spacing;
-          const y = offsetY + r * spacing;
-          const dist = Math.hypot(x - centerX, y - centerY);
-          const normalizedDist = dist / maxDist;
-
-          dots.push({
-            x,
-            y,
-            baseRadius,
-            currentRadius: reduceMotion ? baseRadius : 0,
-            targetRadius: baseRadius,
-            currentX: x,
-            currentY: y,
-            targetX: x,
-            targetY: y,
-            currentAlpha: reduceMotion ? 0.28 : 0,
-            targetAlpha: 0.28,
-            colorR: 100,
-            colorG: 116,
-            colorB: 139,
-            distFromCenter: dist,
-            spawnTime: startTime + normalizedDist * 500,
-          });
-        }
-      }
+      energies = new Float32Array(totalDots);
+      isActive = new Uint8Array(totalDots);
+      activeList.length = 0;
     };
 
     const resize = () => {
-      const parent = canvas.parentElement;
-      if (!parent) return;
-      const rect = parent.getBoundingClientRect();
+      const targetEl = containerRef?.current || canvas.parentElement;
+      if (!targetEl) return;
+      const rect = targetEl.getBoundingClientRect();
       const dpr = Math.min(window.devicePixelRatio || 1, 2);
 
       width = rect.width;
@@ -112,163 +79,149 @@ export const HeroDots: React.FC<HeroDotsProps> = ({ containerRef }) => {
       ctx.setTransform(1, 0, 0, 1, 0, 0);
       ctx.scale(dpr, dpr);
 
-      initDots();
-      draw(performance.now());
+      initGrid();
     };
 
-    const resizeObserver = new ResizeObserver(() => {
-      resize();
-    });
+    const injectAt = (px: number, py: number) => {
+      if (cols === 0 || rows === 0) return;
 
-    if (canvas.parentElement) {
-      resizeObserver.observe(canvas.parentElement);
-    }
+      const minCol = Math.max(0, Math.floor((px - R - offsetX) / SPACING));
+      const maxCol = Math.min(cols - 1, Math.ceil((px + R - offsetX) / SPACING));
+      const minRow = Math.max(0, Math.floor((py - R - offsetY) / SPACING));
+      const maxRow = Math.min(rows - 1, Math.ceil((py + R - offsetY) / SPACING));
 
-    const draw = (now: number) => {
+      for (let r = minRow; r <= maxRow; r++) {
+        const dotY = r * SPACING + offsetY;
+        const dy = dotY - py;
+        const rowOffset = r * cols;
+
+        for (let c = minCol; c <= maxCol; c++) {
+          const dotX = c * SPACING + offsetX;
+          const dx = dotX - px;
+          const distSq = dx * dx + dy * dy;
+
+          if (distSq < R_SQ) {
+            const e = 1 - distSq / R_SQ;
+            const idx = rowOffset + c;
+
+            if (e > energies[idx]) {
+              energies[idx] = e;
+              if (!isActive[idx]) {
+                isActive[idx] = 1;
+                activeList.push(idx);
+              }
+            }
+          }
+        }
+      }
+    };
+
+    const render = (now: number) => {
       if (!ctx || width === 0 || height === 0) return;
+
+      const dt = Math.min((now - lastFrameTime) / 1000, 0.1);
+      lastFrameTime = now;
 
       ctx.clearRect(0, 0, width, height);
 
-      let needsMoreFrames = false;
-      const lerpFactor = 0.12;
+      const decayFactor = Math.exp(-dt * DECAY_CONSTANT);
+      let writeIdx = 0;
 
-      for (let i = 0; i < dots.length; i++) {
-        const d = dots[i];
+      for (let i = 0; i < activeList.length; i++) {
+        const idx = activeList[i];
+        const newEnergy = energies[idx] * decayFactor;
 
-        // Entrance stagger fade
-        if (!reduceMotion && now < d.spawnTime + 400) {
-          if (now >= d.spawnTime) {
-            const progress = Math.min(1, (now - d.spawnTime) / 400);
-            d.currentAlpha = 0.28 * progress;
-            d.currentRadius = d.baseRadius * progress;
-            needsMoreFrames = true;
-          } else {
-            d.currentAlpha = 0;
-            d.currentRadius = 0;
-            needsMoreFrames = true;
-          }
-        }
+        if (newEnergy >= 0.01) {
+          energies[idx] = newEnergy;
+          activeList[writeIdx++] = idx;
 
-        // Hover physics
-        if (!isTouch && !reduceMotion && mouse.active) {
-          const dx = mouse.x - d.x;
-          const dy = mouse.y - d.y;
-          const dist = Math.hypot(dx, dy);
+          const c = idx % cols;
+          const r = Math.floor(idx / cols);
+          const dotX = c * SPACING + offsetX;
+          const dotY = r * SPACING + offsetY;
+          const size = 1.1 + newEnergy * 0.9;
+          const alpha = newEnergy * 0.55;
 
-          if (dist < 150) {
-            const factor = 1 - dist / 150;
-            d.targetRadius = d.baseRadius + (2.8 - d.baseRadius) * factor;
-            d.targetAlpha = 0.28 + (0.85 - 0.28) * factor;
-
-            // Push away by up to 8px
-            const angle = Math.atan2(dy, dx);
-            d.targetX = d.x - Math.cos(angle) * (8 * factor);
-            d.targetY = d.y - Math.sin(angle) * (8 * factor);
-
-            // Interpolate toward purple #7C41F9 (124, 65, 249)
-            d.colorR = Math.round(100 + (124 - 100) * factor);
-            d.colorG = Math.round(116 + (65 - 116) * factor);
-            d.colorB = Math.round(139 + (249 - 139) * factor);
-          } else {
-            d.targetRadius = d.baseRadius;
-            d.targetAlpha = 0.28;
-            d.targetX = d.x;
-            d.targetY = d.y;
-            d.colorR = 100;
-            d.colorG = 116;
-            d.colorB = 139;
-          }
-        } else if (!reduceMotion) {
-          d.targetRadius = d.baseRadius;
-          d.targetAlpha = 0.28;
-          d.targetX = d.x;
-          d.targetY = d.y;
-          d.colorR = 100;
-          d.colorG = 116;
-          d.colorB = 139;
-        }
-
-        // Smooth glide with lerp
-        if (!reduceMotion) {
-          const deltaX = d.targetX - d.currentX;
-          const deltaY = d.targetY - d.currentY;
-          const deltaR = d.targetRadius - d.currentRadius;
-          const deltaA = d.targetAlpha - d.currentAlpha;
-
-          d.currentX += deltaX * lerpFactor;
-          d.currentY += deltaY * lerpFactor;
-          d.currentRadius += deltaR * lerpFactor;
-          d.currentAlpha += deltaA * lerpFactor;
-
-          if (
-            Math.abs(deltaX) > 0.05 ||
-            Math.abs(deltaY) > 0.05 ||
-            Math.abs(deltaR) > 0.02 ||
-            Math.abs(deltaA) > 0.01
-          ) {
-            needsMoreFrames = true;
-          }
-        }
-
-        if (d.currentAlpha > 0.01 && d.currentRadius > 0.1) {
           ctx.beginPath();
-          ctx.arc(d.currentX, d.currentY, d.currentRadius, 0, Math.PI * 2);
-          ctx.fillStyle = `rgba(${d.colorR}, ${d.colorG}, ${d.colorB}, ${d.currentAlpha})`;
+          ctx.arc(dotX, dotY, size, 0, Math.PI * 2);
+          ctx.fillStyle = `rgba(100, 116, 139, ${alpha})`;
           ctx.fill();
+        } else {
+          energies[idx] = 0;
+          isActive[idx] = 0;
         }
       }
 
-      // Check if mouse moved recently
-      if (now - lastMouseMoveTime < 1500) {
-        needsMoreFrames = true;
-      }
+      activeList.length = writeIdx;
 
-      if (needsMoreFrames && isVisible && !reduceMotion) {
-        rafId = requestAnimationFrame(draw);
+      if (activeList.length > 0 && isVisible) {
+        rafId = requestAnimationFrame(render);
       } else {
         rafId = null;
       }
     };
 
-    const requestFrame = () => {
-      if (!rafId && isVisible && !reduceMotion) {
-        rafId = requestAnimationFrame(draw);
+    const startLoop = () => {
+      if (!rafId && isVisible) {
+        lastFrameTime = performance.now();
+        rafId = requestAnimationFrame(render);
       }
     };
 
-    const handleMouseMove = (e: MouseEvent) => {
-      const targetEl = containerRef?.current || canvas.parentElement;
+    const handlePointerMove = (e: PointerEvent) => {
+      const targetEl = containerRef?.current;
       if (!targetEl) return;
       const rect = targetEl.getBoundingClientRect();
+      const currentX = e.clientX - rect.left;
+      const currentY = e.clientY - rect.top;
 
-      mouse.x = e.clientX - rect.left;
-      mouse.y = e.clientY - rect.top;
-      mouse.active = true;
-      lastMouseMoveTime = performance.now();
-      requestFrame();
+      if (lastPointer.x === -9999) {
+        injectAt(currentX, currentY);
+      } else {
+        const dx = currentX - lastPointer.x;
+        const dy = currentY - lastPointer.y;
+        const dist = Math.hypot(dx, dy);
+        const steps = Math.max(1, Math.ceil(dist / 8));
+
+        for (let s = 1; s <= steps; s++) {
+          const ix = lastPointer.x + dx * (s / steps);
+          const iy = lastPointer.y + dy * (s / steps);
+          injectAt(ix, iy);
+        }
+      }
+
+      lastPointer.x = currentX;
+      lastPointer.y = currentY;
+      startLoop();
     };
 
-    const handleMouseLeave = () => {
-      mouse.active = false;
-      mouse.x = -9999;
-      mouse.y = -9999;
-      lastMouseMoveTime = performance.now();
-      requestFrame();
+    const handlePointerLeave = () => {
+      lastPointer.x = -9999;
+      lastPointer.y = -9999;
     };
 
     const targetElement = containerRef?.current || canvas.parentElement;
-    if (targetElement && !isTouch) {
-      targetElement.addEventListener('mousemove', handleMouseMove, { passive: true });
-      targetElement.addEventListener('mouseleave', handleMouseLeave, { passive: true });
+    if (targetElement) {
+      targetElement.addEventListener('pointermove', handlePointerMove, { passive: true });
+      targetElement.addEventListener('pointerleave', handlePointerLeave, { passive: true });
     }
 
-    // IntersectionObserver to pause when off-screen
+    const resizeObserver = new ResizeObserver(() => {
+      resize();
+    });
+
+    if (targetElement) {
+      resizeObserver.observe(targetElement);
+    }
+
     const io = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {
           isVisible = entry.isIntersecting;
           if (isVisible) {
-            requestFrame();
+            if (activeList.length > 0) {
+              startLoop();
+            }
           } else if (rafId) {
             cancelAnimationFrame(rafId);
             rafId = null;
@@ -278,11 +231,10 @@ export const HeroDots: React.FC<HeroDotsProps> = ({ containerRef }) => {
       { threshold: 0.05 }
     );
 
-    if (canvas.parentElement) {
-      io.observe(canvas.parentElement);
+    if (targetElement) {
+      io.observe(targetElement);
     }
 
-    // Initial setup
     resize();
 
     return () => {
@@ -290,8 +242,8 @@ export const HeroDots: React.FC<HeroDotsProps> = ({ containerRef }) => {
       resizeObserver.disconnect();
       io.disconnect();
       if (targetElement) {
-        targetElement.removeEventListener('mousemove', handleMouseMove);
-        targetElement.removeEventListener('mouseleave', handleMouseLeave);
+        targetElement.removeEventListener('pointermove', handlePointerMove);
+        targetElement.removeEventListener('pointerleave', handlePointerLeave);
       }
     };
   }, [containerRef]);
@@ -299,13 +251,7 @@ export const HeroDots: React.FC<HeroDotsProps> = ({ containerRef }) => {
   return (
     <canvas
       ref={canvasRef}
-      className="absolute inset-0 pointer-events-none select-none z-0"
-      style={{
-        WebkitMaskImage:
-          'radial-gradient(ellipse 62% 58% at 50% 46%, rgba(0,0,0,0.25) 0%, rgba(0,0,0,0.35) 50%, #000 100%)',
-        maskImage:
-          'radial-gradient(ellipse 62% 58% at 50% 46%, rgba(0,0,0,0.25) 0%, rgba(0,0,0,0.35) 50%, #000 100%)',
-      }}
+      className="absolute inset-0 pointer-events-none select-none z-2"
       aria-hidden="true"
     />
   );
