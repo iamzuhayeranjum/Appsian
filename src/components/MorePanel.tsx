@@ -33,10 +33,10 @@ export const MorePanel = forwardRef<HTMLDivElement, MorePanelProps>(
         href: '#why-appsian',
       },
       {
-        id: 'testimonials',
-        label: 'Reviews & Results',
+        id: 'results',
+        label: 'Results & Metrics',
         description: 'Real revenue metrics from plumbing, HVAC & electrical pros',
-        href: '#testimonials',
+        href: '#results',
       },
       {
         id: 'calculator',

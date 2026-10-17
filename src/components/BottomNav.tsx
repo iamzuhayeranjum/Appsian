@@ -178,14 +178,14 @@ export const BottomNav: React.FC<BottomNavProps> = ({ onCtaClick, pastHero: prop
   // Secondary links under "More"
   const moreLinks: NavItem[] = [
     { id: 'why-appsian', label: 'Why Appsian', href: '#why-appsian' },
-    { id: 'testimonials', label: 'Reviews', href: '#testimonials' },
+    { id: 'results', label: 'Results', href: '#results' },
     { id: 'faq', label: 'FAQ', href: '#faq' },
     { id: 'login', label: 'Log In', href: '#pricing' },
   ];
 
   // IntersectionObserver for scroll-spy
   useEffect(() => {
-    const observedIds = ['features', 'how-it-works', 'pricing', 'why-appsian', 'testimonials', 'faq'];
+    const observedIds = ['features', 'how-it-works', 'pricing', 'why-appsian', 'results', 'faq'];
     const elements = observedIds
       .map((id) => document.getElementById(id))
       .filter((el): el is HTMLElement => el !== null);
