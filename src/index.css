@@ -366,7 +366,7 @@
 }
 
 /* ==========================================================================
-   Shared SectionTag Component Styles
+   Shared SectionTag Component Styles - Upgraded Multi-Layered Glass
    ========================================================================== */
 .section-tag {
   display: inline-flex;
@@ -376,6 +376,7 @@
   padding: 0 14px 0 6px;
   border-radius: 10px;
   position: relative;
+  isolation: isolate;
   white-space: nowrap;
   width: fit-content;
   user-select: none;
@@ -385,11 +386,18 @@
   text-transform: uppercase;
   letter-spacing: 0.06em;
   line-height: 1;
-  backdrop-filter: blur(12px) saturate(1.2);
-  -webkit-backdrop-filter: blur(12px) saturate(1.2);
-  background: linear-gradient(180deg, rgba(255,255,255,0.95) 0%, rgba(255,255,255,0.7) 100%);
-  border: 1px solid rgba(255,255,255,0.9);
-  box-shadow: 0 0 0 1px rgba(15,23,42,0.05), 0 4px 14px rgba(15,23,42,0.07), inset 0 1px 0 rgba(255,255,255,1);
+  border: none;
+  backdrop-filter: blur(14px) saturate(1.3);
+  -webkit-backdrop-filter: blur(14px) saturate(1.3);
+  background: linear-gradient(180deg, rgba(255,255,255,0.92) 0%, rgba(244,246,251,0.7) 100%);
+  box-shadow:
+    0 1px 1px rgba(15,23,42,0.04),
+    0 4px 10px rgba(15,23,42,0.05),
+    0 12px 28px rgba(15,23,42,0.06),
+    0 0 0 4px rgba(255,255,255,0.35),
+    inset 0 1px 1px rgba(255,255,255,1),
+    inset 0 0 0 1px rgba(255,255,255,0.6),
+    inset 0 -1px 2px rgba(15,23,42,0.04);
   color: #475569;
 }
 
@@ -397,7 +405,42 @@
   .section-tag {
     height: 30px;
     font-size: 11px;
+    padding: 0 12px 0 5px;
   }
+}
+
+/* Base pseudo layers for gradient border and gloss highlight */
+.section-tag::before,
+.section-tag::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  border-radius: inherit;
+}
+
+/* ::before: Gradient border layer */
+.section-tag::before {
+  padding: 1px;
+  background: linear-gradient(180deg, rgba(255,255,255,0.95) 0%, rgba(255,255,255,0.35) 60%, rgba(203,213,225,0.4) 100%);
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  mask-composite: exclude;
+  z-index: 0;
+}
+
+/* ::after: Gloss and sheen highlight layer */
+.section-tag::after {
+  background: linear-gradient(180deg, rgba(255,255,255,0.6) 0%, rgba(255,255,255,0.12) 38%, rgba(255,255,255,0) 70%);
+  z-index: 0;
+}
+
+/* Inner content elevated above background layers */
+.section-tag .section-tag-label,
+.section-tag .section-tag-icon-circle {
+  position: relative;
+  z-index: 1;
 }
 
 .section-tag .section-tag-label {
@@ -415,8 +458,9 @@
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
-  background: #0B0F19;
+  background: linear-gradient(180deg, #1A202C 0%, #0B0F19 100%);
   color: #FFFFFF;
+  box-shadow: 0 1px 2px rgba(15,23,42,0.35), inset 0 1px 0 rgba(255,255,255,0.25), inset 0 -1px 0 rgba(0,0,0,0.5);
 }
 
 .section-tag .section-tag-icon-circle svg {
@@ -426,29 +470,62 @@
 /* Dark variant: triggered either via :where([data-theme="dark"]) .section-tag or explicit .section-tag--dark */
 :where([data-theme="dark"]) .section-tag:not(.section-tag--light),
 .section-tag--dark {
-  background: linear-gradient(180deg, rgba(28,28,32,0.92) 0%, rgba(8,8,10,0.92) 100%);
-  border: 1px solid rgba(255,255,255,0.28);
-  box-shadow: 0 0 0 1px rgba(255,255,255,0.05), inset 0 1px 0 rgba(255,255,255,0.18), 0 0 18px rgba(255,255,255,0.06);
+  background: linear-gradient(180deg, rgba(28,30,38,0.88) 0%, rgba(10,12,16,0.92) 100%);
+  border: none;
+  box-shadow:
+    0 2px 8px rgba(0,0,0,0.5),
+    0 8px 24px rgba(0,0,0,0.4),
+    0 0 0 1px rgba(255,255,255,0.1),
+    0 0 18px rgba(255,255,255,0.05),
+    inset 0 1px 0 rgba(255,255,255,0.25),
+    inset 0 -1px 0 rgba(0,0,0,0.7);
   color: #FFFFFF;
+}
+
+:where([data-theme="dark"]) .section-tag:not(.section-tag--light)::before,
+.section-tag--dark::before {
+  background: linear-gradient(180deg, rgba(255,255,255,0.45) 0%, rgba(255,255,255,0.12) 45%, rgba(255,255,255,0.02) 100%);
+}
+
+:where([data-theme="dark"]) .section-tag:not(.section-tag--light)::after,
+.section-tag--dark::after {
+  background: linear-gradient(180deg, rgba(255,255,255,0.14) 0%, rgba(255,255,255,0.03) 40%, rgba(255,255,255,0) 75%);
 }
 
 :where([data-theme="dark"]) .section-tag:not(.section-tag--light) .section-tag-icon-circle,
 .section-tag--dark .section-tag-icon-circle {
   background: rgba(255,255,255,0.14);
   color: #FFFFFF;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.3), 0 1px 3px rgba(0,0,0,0.5);
 }
 
-/* Explicit light variant override */
+/* Explicit light variant override (when forced light in dark sections) */
 .section-tag--light {
-  background: linear-gradient(180deg, rgba(255,255,255,0.95) 0%, rgba(255,255,255,0.7) 100%) !important;
-  border: 1px solid rgba(255,255,255,0.9) !important;
-  box-shadow: 0 0 0 1px rgba(15,23,42,0.05), 0 4px 14px rgba(15,23,42,0.07), inset 0 1px 0 rgba(255,255,255,1) !important;
+  background: linear-gradient(180deg, rgba(255,255,255,0.92) 0%, rgba(244,246,251,0.7) 100%) !important;
+  border: none !important;
+  box-shadow:
+    0 1px 1px rgba(15,23,42,0.04),
+    0 4px 10px rgba(15,23,42,0.05),
+    0 12px 28px rgba(15,23,42,0.06),
+    0 0 0 4px rgba(255,255,255,0.35),
+    inset 0 1px 1px rgba(255,255,255,1),
+    inset 0 0 0 1px rgba(255,255,255,0.6),
+    inset 0 -1px 2px rgba(15,23,42,0.04) !important;
   color: #475569 !important;
 }
 
+.section-tag--light::before {
+  background: linear-gradient(180deg, rgba(255,255,255,0.95) 0%, rgba(255,255,255,0.35) 60%, rgba(203,213,225,0.4) 100%) !important;
+}
+
+.section-tag--light::after {
+  background: linear-gradient(180deg, rgba(255,255,255,0.6) 0%, rgba(255,255,255,0.12) 38%, rgba(255,255,255,0) 70%) !important;
+}
+
 .section-tag--light .section-tag-icon-circle {
-  background: #0B0F19 !important;
+  background: linear-gradient(180deg, #1A202C 0%, #0B0F19 100%) !important;
   color: #FFFFFF !important;
+  box-shadow: 0 1px 2px rgba(15,23,42,0.35), inset 0 1px 0 rgba(255,255,255,0.25), inset 0 -1px 0 rgba(0,0,0,0.5) !important;
 }
 
 
