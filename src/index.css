@@ -275,13 +275,32 @@
     --btn-glow: rgba(110, 237, 194, 0.5);
     text-shadow: 0 1px 0 rgba(255, 255, 255, 0.4);
   }
-  /* black / near-black pills (white text) */
+  /* black / near-black buttons (white text) */
   .btn-premium--dark {
-    --btn-base: #15161b;
+    --btn-base: #1c1d24;
     --btn-fg: #ffffff;
-    --btn-top: #08080b;
-    --btn-bottom: #2b2c34;
-    --btn-glow: rgba(10, 10, 20, 0.45);
+    --btn-top: #2E2E34;
+    --btn-bottom: #0B0B0E;
+    --btn-glow: rgba(0, 0, 0, 0.35);
+    border: 1px solid rgba(255, 255, 255, 0.22);
+    box-shadow:
+      0 8px 20px rgba(0, 0, 0, 0.22),
+      inset 0 1px 0 rgba(255, 255, 255, 0.28);
+    transition:
+      transform 180ms ease-out,
+      filter 180ms ease-out,
+      box-shadow 180ms ease-out,
+      background-image 180ms ease-out;
+  }
+  .btn-premium--dark:hover {
+    --btn-top: #3A3A42;
+    transform: translateY(-1px);
+    box-shadow:
+      0 12px 26px rgba(0, 0, 0, 0.28),
+      inset 0 1px 0 rgba(255, 255, 255, 0.28);
+  }
+  .btn-premium--dark:active {
+    transform: translateY(0);
   }
   /* white / light buttons (dark text) */
   .btn-premium--light {

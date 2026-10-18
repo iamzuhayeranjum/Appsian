@@ -430,10 +430,10 @@ export const ResultsSection: React.FC<ResultsSectionProps> = ({ onSuccessDemo })
                   <button
                     type="button"
                     onClick={handleCtaClick}
-                    className="btn-premium btn-premium--dark group inline-flex items-center gap-3 h-11 px-6 rounded-full text-[14px] font-medium"
+                    className="btn-premium btn-premium--dark group w-full md:w-auto h-[52px] md:h-[48px] px-7 rounded-[12px] text-[16px] font-semibold text-white inline-flex items-center justify-center gap-[10px] cursor-pointer select-none focus-visible:outline-2 focus-visible:outline-[rgba(124,92,255,0.6)] focus-visible:outline-offset-[2px]"
                   >
-                    Get Free Demo
-                    <ArrowRight className="btn-arrow w-4 h-4" strokeWidth={2} />
+                    <span>Get Free Demo</span>
+                    <ArrowRight className="btn-arrow w-[18px] h-[18px]" strokeWidth={2} />
                   </button>
                 </div>
               </motion.div>
