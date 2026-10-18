@@ -108,7 +108,7 @@ export const Navbar: React.FC<NavbarProps> = ({ onBookDemoClick, pastHero = fals
       {/* Plain full-width bar (72px desktop, 64px mobile, transparent background) */}
       <div className="w-full h-[64px] lg:h-[72px] px-5 lg:px-[clamp(20px,2.4vw,40px)] flex items-center justify-between relative pointer-events-auto">
         
-        {/* LEFT: Logo Lockup */}
+        {/* LEFT: Logo Lockup (white wordmark and white/bfe0ff gradient logo) */}
         <button
           type="button"
           onClick={handleLogoClick}
@@ -116,41 +116,67 @@ export const Navbar: React.FC<NavbarProps> = ({ onBookDemoClick, pastHero = fals
           aria-label="Appsian Home - Scroll to top"
         >
           <div className="transition-transform duration-200 group-hover:scale-105">
-            <AppsianMark width={28} height={23} />
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="260 296 694 569"
+              fill="none"
+              aria-label="Appsian"
+              width={28}
+              height={23}
+              className="block shrink-0"
+            >
+              <defs>
+                <linearGradient id="appsian-nav-logo-white-grad" x1="0" y1="0" x2="1" y2="1">
+                  <stop offset="0%" stopColor="#ffffff" />
+                  <stop offset="100%" stopColor="#bfe0ff" />
+                </linearGradient>
+              </defs>
+              <path
+                fill="url(#appsian-nav-logo-white-grad)"
+                d="M633 301 949 860H698L536 568C516 532 510 497 523 468 530 452 538 442 546 431Z"
+              />
+              <path
+                fill="url(#appsian-nav-logo-white-grad)"
+                d="M265 860 323 766C345 732 366 708 395 690 430 666 490 656 534 687 562 708 574 732 576 752 579 780 575 797 567 815 562 826 556 834 552 842 548 852 544 857 538 860Z"
+              />
+            </svg>
           </div>
-          <span className="text-[20px] font-semibold tracking-[-0.01em] text-[#0B0F19] leading-none">
+          <span className="text-[20px] font-semibold tracking-[-0.01em] text-white leading-none">
             Appsian
           </span>
         </button>
 
-        {/* CENTER: The three links centered on the PAGE (Desktop) */}
+        {/* CENTER: The three links centered in one frosted pill (Desktop) */}
         <nav
           aria-label="Main Navigation"
-          className="hidden lg:flex items-center gap-[40px] absolute left-1/2 -translate-x-1/2"
+          className="hidden lg:flex items-center h-[44px] px-2 rounded-[14px] absolute left-1/2 -translate-x-1/2"
+          style={{
+            background: 'rgba(255, 255, 255, 0.10)',
+            border: '1px solid rgba(255, 255, 255, 0.22)',
+            backdropFilter: 'blur(18px) saturate(160%)',
+            WebkitBackdropFilter: 'blur(18px) saturate(160%)',
+            boxShadow: 'inset 0 1px 0 rgba(255, 255, 255, 0.30)',
+          }}
         >
           {navLinks.map((link) => (
             <a
               key={link.href}
               href={link.href}
               onClick={(e) => handleScrollTo(e, link.href)}
-              className="group relative py-1 text-[15px] font-normal text-[#1F2937] hover:text-[#0B0F19] transition-colors duration-200 select-none whitespace-nowrap"
+              className="px-4 h-[34px] flex items-center rounded-[10px] text-[14px] font-medium transition-colors select-none whitespace-nowrap hover:bg-[rgba(255,255,255,0.14)]"
+              style={{ color: 'rgba(255, 255, 255, 0.92)' }}
             >
               <span>{link.label}</span>
-              {/* 1px underline that animates in from the left on hover */}
-              <span
-                className="absolute left-0 bottom-[-2px] w-full h-[1px] bg-[#0B0F19] origin-left scale-x-0 group-hover:scale-x-100 transition-transform duration-200 ease-out pointer-events-none"
-                aria-hidden="true"
-              />
             </a>
           ))}
         </nav>
 
-        {/* RIGHT: Desktop CTA (underlined text link + 40px mint arrow button) */}
+        {/* RIGHT: Desktop CTA (underlined text link in white with 70% underline + 40px blue premium arrow button) */}
         <div className="hidden lg:flex items-center gap-[12px]">
           <button
             type="button"
             onClick={handleCtaClick}
-            className="text-[15px] font-normal text-[#0B0F19] underline underline-offset-[5px] decoration-1 decoration-[#0B0F19] hover:opacity-75 transition-opacity cursor-pointer border-0 bg-transparent p-0 select-none"
+            className="text-[15px] font-normal text-white underline underline-offset-[5px] decoration-1 decoration-[rgba(255,255,255,0.7)] hover:opacity-85 transition-opacity cursor-pointer border-0 bg-transparent p-0 select-none"
           >
             Get Free Demo
           </button>
@@ -158,22 +184,22 @@ export const Navbar: React.FC<NavbarProps> = ({ onBookDemoClick, pastHero = fals
           <button
             type="button"
             onClick={handleCtaClick}
-            className="w-[40px] h-[40px] min-w-[40px] rounded-[10px] bg-[#6EEDC2] flex items-center justify-center cursor-pointer border-0 shadow-none transition-transform duration-160 ease-out hover:-translate-y-[2px] hover:translate-x-[2px] active:scale-95 select-none"
+            className="btn-premium btn-premium--blue w-[40px] h-[40px] min-w-[40px] rounded-[10px] flex items-center justify-center cursor-pointer select-none text-white shadow-sm"
             aria-label="Get Free Demo"
           >
-            <ArrowUpRight className="w-[18px] h-[18px] stroke-[2] text-[#0B0F19]" />
+            <ArrowUpRight className="btn-arrow-diag w-[18px] h-[18px] stroke-[2.2] text-white" />
           </button>
         </div>
 
-        {/* RIGHT: Tablet & Mobile controls (Mint button + 2-line menu button) */}
+        {/* RIGHT: Tablet & Mobile controls (Blue premium button + 2-line menu button) */}
         <div className="flex lg:hidden items-center gap-2.5">
           <button
             type="button"
             onClick={handleCtaClick}
-            className="w-[40px] h-[40px] min-w-[40px] rounded-[10px] bg-[#6EEDC2] flex items-center justify-center cursor-pointer border-0 shadow-none active:scale-95"
+            className="btn-premium btn-premium--blue w-[40px] h-[40px] min-w-[40px] rounded-[10px] flex items-center justify-center cursor-pointer text-white shadow-sm"
             aria-label="Get Free Demo"
           >
-            <ArrowUpRight className="w-[18px] h-[18px] stroke-[2] text-[#0B0F19]" />
+            <ArrowUpRight className="btn-arrow-diag w-[18px] h-[18px] stroke-[2.2] text-white" />
           </button>
 
           <button
@@ -182,14 +208,14 @@ export const Navbar: React.FC<NavbarProps> = ({ onBookDemoClick, pastHero = fals
             onClick={() => setMobileMenuOpen((prev) => !prev)}
             aria-expanded={mobileMenuOpen}
             aria-label={mobileMenuOpen ? 'Close navigation menu' : 'Open navigation menu'}
-            className="w-[40px] h-[40px] min-w-[40px] rounded-[10px] border border-[rgba(15,23,42,0.12)] bg-transparent flex items-center justify-center cursor-pointer transition-colors hover:bg-slate-50 active:scale-95"
+            className="w-[40px] h-[40px] min-w-[40px] rounded-[10px] border border-[rgba(255,255,255,0.28)] bg-[rgba(255,255,255,0.12)] backdrop-blur-md flex items-center justify-center cursor-pointer transition-colors hover:bg-[rgba(255,255,255,0.2)] active:scale-95"
           >
             <svg
               width="18"
               height="18"
               viewBox="0 0 18 18"
               fill="none"
-              stroke="#0B0F19"
+              stroke="#ffffff"
               strokeWidth="2"
               strokeLinecap="round"
             >
@@ -235,10 +261,10 @@ export const Navbar: React.FC<NavbarProps> = ({ onBookDemoClick, pastHero = fals
               <button
                 type="button"
                 onClick={handleCtaClick}
-                className="w-full px-4 py-3 rounded-[10px] text-[15px] font-semibold text-[#0B0F19] bg-[#6EEDC2] hover:bg-[#5FE2B5] transition-colors flex items-center justify-between cursor-pointer border-0 mt-0.5"
+                className="btn-premium btn-premium--blue w-full px-4 py-3 rounded-[10px] text-[15px] font-semibold text-white flex items-center justify-between cursor-pointer border-0 mt-0.5"
               >
                 <span>Get Free Demo</span>
-                <ArrowUpRight className="w-4 h-4 stroke-[2]" />
+                <ArrowUpRight className="btn-arrow-diag w-4 h-4 stroke-[2.2] text-white" />
               </button>
             </motion.div>
           )}

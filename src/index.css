@@ -340,11 +340,11 @@
 .hero-gradient-text {
   background-image: linear-gradient(
     90deg,
-    #8e9bf8 0%,
-    #a66cff 24%,
-    #f06bd0 50%,
-    #4a7ff0 76%,
-    #6eedc2 100%
+    #1e40af 0%,
+    #2563eb 30%,
+    #3b82f6 55%,
+    #38bdf8 85%,
+    #22b8f0 100%
   );
   background-size: 200% 100%;
   -webkit-background-clip: text;
@@ -546,6 +546,245 @@
   color: #FFFFFF !important;
   box-shadow: 0 1px 2px rgba(15,23,42,0.35), inset 0 1px 0 rgba(255,255,255,0.25), inset 0 -1px 0 rgba(0,0,0,0.5) !important;
 }
+
+/* =====================================================================
+   HERO BLUE UPGRADE SYSTEM
+   ===================================================================== */
+
+:root {
+  --b-50: #eff6ff;
+  --b-100: #dbeafe;
+  --b-200: #bfdbfe;
+  --b-300: #93c5fd;
+  --b-400: #60a5fa;
+  --b-500: #3b82f6;
+  --b-600: #2563eb;
+  --b-700: #1d4ed8;
+  --b-800: #1e40af;
+  --b-900: #1e3a8a;
+  --b-sky: #38bdf8;
+  --b-ink: #0b1530;   /* near-black navy for headline text */
+  --b-slate: #51607f; /* secondary text, blue-grey */
+}
+
+/* Blue Glossy Premium Button Variant */
+.btn-premium--blue {
+  --btn-base: #2f6bff;
+  --btn-fg: #ffffff;
+  --btn-top: #1e4fd8;
+  --btn-bottom: #62a0ff;
+  --btn-glow: rgba(47, 107, 255, 0.55);
+}
+
+/* Glassmorphism System */
+.glass-blue {
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.80), rgba(255, 255, 255, 0.58));
+  -webkit-backdrop-filter: blur(20px) saturate(180%);
+  backdrop-filter: blur(20px) saturate(180%);
+  border: 1px solid rgba(255, 255, 255, 0.85);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.95),
+    inset 0 -1px 0 rgba(59, 130, 246, 0.06),
+    0 18px 50px -20px rgba(37, 99, 235, 0.26),
+    0 2px 8px rgba(37, 99, 235, 0.06);
+}
+
+.glass-blue-strong {
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.88), rgba(255, 255, 255, 0.68));
+  -webkit-backdrop-filter: blur(26px) saturate(190%);
+  backdrop-filter: blur(26px) saturate(190%);
+  border: 1px solid rgba(255, 255, 255, 0.95);
+  box-shadow:
+    inset 0 1px 0 #fff,
+    inset 0 -1px 0 rgba(59, 130, 246, 0.08),
+    0 30px 70px -28px rgba(37, 99, 235, 0.33),
+    0 3px 10px rgba(37, 99, 235, 0.08);
+}
+
+@supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+  .glass-blue { background: rgba(255, 255, 255, 0.88); }
+  .glass-blue-strong { background: rgba(255, 255, 255, 0.94); }
+}
+
+@media (max-width: 767px) {
+  .glass-blue {
+    -webkit-backdrop-filter: blur(14px) saturate(180%);
+    backdrop-filter: blur(14px) saturate(180%);
+  }
+  .glass-blue-strong {
+    -webkit-backdrop-filter: blur(14px) saturate(190%);
+    backdrop-filter: blur(14px) saturate(190%);
+  }
+}
+
+/* Form Bar Border Beam Light Animation */
+@property --beam-angle {
+  syntax: '<angle>';
+  inherits: false;
+  initial-value: 0deg;
+}
+
+@keyframes heroBeamSpin {
+  to {
+    --beam-angle: 360deg;
+  }
+}
+
+/* Aurora Blobs Drift Animations */
+@keyframes auroraDriftA {
+  0%, 100% {
+    transform: translate(0, 0) scale(1);
+  }
+  50% {
+    transform: translate(35px, 25px) scale(1.08);
+  }
+}
+
+@keyframes auroraDriftB {
+  0%, 100% {
+    transform: translate(0, 0) scale(1);
+  }
+  50% {
+    transform: translate(-30px, 35px) scale(1.06);
+  }
+}
+
+@keyframes auroraDriftC {
+  0%, 100% {
+    transform: translate(0, 0) scale(1);
+  }
+  50% {
+    transform: translate(25px, -30px) scale(1.05);
+  }
+}
+
+@keyframes auroraDriftD {
+  0%, 100% {
+    transform: translate(0, 0) scale(1);
+  }
+  50% {
+    transform: translate(-25px, -20px) scale(1.07);
+  }
+}
+
+.animate-aurora-a {
+  animation: auroraDriftA 18s ease-in-out infinite;
+}
+
+.animate-aurora-b {
+  animation: auroraDriftB 22s ease-in-out infinite;
+}
+
+.animate-aurora-c {
+  animation: auroraDriftC 26s ease-in-out infinite;
+}
+
+.animate-aurora-d {
+  animation: auroraDriftD 20s ease-in-out infinite;
+}
+
+/* "See how it works" down arrow bounce loop */
+@keyframes heroBobDown {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(3px);
+  }
+}
+
+.animate-hero-bob {
+  animation: heroBobDown 1.6s ease-in-out infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-aurora-a,
+  .animate-aurora-b,
+  .animate-aurora-c,
+  .animate-aurora-d,
+  .animate-hero-bob {
+    animation: none !important;
+  }
+}
+
+/* =====================================================================
+   GLITTERING HEADLINE SYSTEM (Calm, Soft Shimmer)
+   ===================================================================== */
+
+@property --gl-shine { syntax: '<percentage>'; inherits: false; initial-value: 170%; }
+@property --gl-gx { syntax: '<percentage>'; inherits: false; initial-value: 0%; }
+@property --gl-ax { syntax: '<length>'; inherits: false; initial-value: 0px; }
+@property --gl-ay { syntax: '<length>'; inherits: false; initial-value: 0px; }
+@property --gl-bx { syntax: '<length>'; inherits: false; initial-value: 0px; }
+@property --gl-by { syntax: '<length>'; inherits: false; initial-value: 0px; }
+
+@keyframes glShine { 0% { --gl-shine: 170%; } 35% { --gl-shine: -70%; } 100% { --gl-shine: -70%; } }
+@keyframes glSparkA { to { --gl-ax: 260px; --gl-ay: -140px; } }
+@keyframes glSparkB { to { --gl-bx: -260px; --gl-by: 140px; } }
+@keyframes glGradient { from { --gl-gx: 0%; } to { --gl-gx: 100%; } }
+@keyframes glStar {
+  0%, 100% { transform: scale(0.4) rotate(0deg); opacity: 0; }
+  50% { transform: scale(1) rotate(45deg); opacity: 0.55; }
+}
+
+/* white words of the headline */
+.glitter-text {
+  color: #ffffff;
+  background-image:
+    var(--gl-a, none),
+    var(--gl-b, none),
+    linear-gradient(105deg, rgba(255,255,255,0) 40%, rgba(255,255,255,0.65) 50%, rgba(255,255,255,0) 60%),
+    linear-gradient(180deg, #f2f8ff 0%, #cfe5ff 100%);
+  background-size: 260px 140px, 260px 140px, 250% 100%, 100% 100%;
+  background-repeat: repeat, repeat, no-repeat, no-repeat;
+  background-position: var(--gl-ax) var(--gl-ay), var(--gl-bx) var(--gl-by), var(--gl-shine) 0, 0 0;
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation:
+    glShine 10s ease-in-out infinite,
+    glSparkA 26s linear infinite,
+    glSparkB 34s linear infinite reverse;
+}
+
+/* the word "Revenue." */
+.glitter-blue {
+  color: #cfe9ff;
+  background-image:
+    var(--gl-a, none),
+    var(--gl-b, none),
+    linear-gradient(105deg, rgba(255,255,255,0) 40%, rgba(255,255,255,0.6) 50%, rgba(255,255,255,0) 60%),
+    linear-gradient(90deg, #ffffff 0%, #cfe9ff 35%, #9fd8ff 70%, #7fd3ff 100%);
+  background-size: 260px 140px, 260px 140px, 250% 100%, 200% 100%;
+  background-repeat: repeat, repeat, no-repeat, no-repeat;
+  background-position: var(--gl-ax) var(--gl-ay), var(--gl-bx) var(--gl-by), var(--gl-shine) 0, var(--gl-gx) 0;
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  padding-bottom: 0.08em;
+  animation:
+    glShine 10s ease-in-out infinite,
+    glSparkA 26s linear infinite,
+    glSparkB 34s linear infinite reverse,
+    glGradient 12s ease-in-out infinite alternate;
+}
+
+.hero-paused .glitter-text,
+.hero-paused .glitter-blue,
+.hero-paused .gl-star { animation-play-state: paused; }
+
+.gl-star { position: absolute; pointer-events: none; opacity: 0; animation: glStar 4.8s ease-in-out infinite; }
+
+@media (prefers-reduced-motion: reduce) {
+  .glitter-text, .glitter-blue { animation: none; }
+  .gl-star { display: none; }
+}
+@supports not ((-webkit-background-clip: text) or (background-clip: text)) {
+  .glitter-text { background: none; color: #ffffff; -webkit-text-fill-color: currentColor; }
+  .glitter-blue { background: none; color: #cfe9ff; -webkit-text-fill-color: currentColor; }
+}
+
+
 
 
 
