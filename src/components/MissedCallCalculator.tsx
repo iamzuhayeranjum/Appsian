@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { motion } from 'motion/react';
 import { Phone, Calculator, ArrowRight, ArrowUpRight, Check } from 'lucide-react';
+import { SectionTag } from './SectionTag';
 
 export const MissedCallCalculator: React.FC = () => {
   // Input states with specified defaults: 10 calls/wk, $750/job, 30% close rate
@@ -162,19 +163,7 @@ export const MissedCallCalculator: React.FC = () => {
           className="flex flex-col items-center text-center"
         >
           {/* Eyebrow Pill: "THE COST OF SILENCE" */}
-          <div
-            className="h-[32px] px-3.5 rounded-[10px] bg-white flex items-center gap-2 select-none"
-            style={{
-              boxShadow: '0 1px 2px rgba(10,10,20,.05), 0 6px 16px rgba(10,10,20,.05)',
-            }}
-          >
-            <div className="w-4 h-4 rounded-full bg-[#2D283C] flex items-center justify-center text-white shrink-0">
-              <Phone className="w-2.5 h-2.5 fill-white stroke-none" />
-            </div>
-            <span className="text-[11px] font-sans font-medium uppercase tracking-[0.05em] text-[#2D283C]">
-              The Cost Of Silence
-            </span>
-          </div>
+          <SectionTag label="The Cost Of Silence" icon="phone-missed" />
 
           {/* Headline: mixed weight (44px/1.15, letter-spacing -0.03em) */}
           <h2 className="mt-[28px] mb-[46px] text-3xl sm:text-4xl md:text-[44px] font-display leading-[1.15] tracking-[-0.03em] max-w-3xl text-balance">

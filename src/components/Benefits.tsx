@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Check, ArrowUpRight, Moon, Calendar, MessageSquare, PhoneCall } from 'lucide-react';
 import { AppsianIcon } from './AppsianLogo';
+import { SectionTag } from './SectionTag';
 
 interface BenefitsProps {
   onBookDemoClick?: () => void;
@@ -198,14 +199,7 @@ export const Benefits: React.FC<BenefitsProps> = ({ onBookDemoClick }) => {
       {/* 1) SECTION HEADER */}
       <div className="max-w-[1100px] mx-auto px-4 sm:px-6 flex flex-col items-center text-center mb-[56px]">
         {/* Eyebrow Pill: "BENEFITS" */}
-        <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#EAE8F0] border border-[#2D283C]/10 text-[11px] font-sans font-medium uppercase tracking-[0.05em] text-[#2D283C] mb-4 select-none">
-          <div className="w-4 h-4 rounded-full bg-[#2D283C] flex items-center justify-center text-white shrink-0">
-            <svg className="w-2.5 h-2.5 fill-current" viewBox="0 0 24 24">
-              <path d="M12 2L14.2 9.8L22 12L14.2 14.2L12 22L9.8 14.2L2 12L9.8 9.8L12 2Z" />
-            </svg>
-          </div>
-          <span>Benefits</span>
-        </div>
+        <SectionTag label="Benefits" icon="sparkles" className="mb-4" />
 
         {/* Heading: "What changes when Appsian picks up" */}
         <h2 className="text-3xl sm:text-4xl md:text-[44px] lg:text-[48px] font-display font-light text-[#2D283C] tracking-[-0.03em] leading-[1.15] text-balance">

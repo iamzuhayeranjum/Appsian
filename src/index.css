@@ -350,4 +350,106 @@
   letter-spacing: -0.02em;
 }
 
+@property --beam-angle {
+  syntax: '<angle>';
+  inherits: false;
+  initial-value: 0deg;
+}
+@keyframes beamSpin {
+  to { --beam-angle: 360deg; }
+}
+.card-beam {
+  animation: beamSpin 6s linear infinite;
+}
+@media (prefers-reduced-motion: reduce) {
+  .card-beam { animation: none; }
+}
+
+/* ==========================================================================
+   Shared SectionTag Component Styles
+   ========================================================================== */
+.section-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  height: 32px;
+  padding: 0 14px 0 6px;
+  border-radius: 10px;
+  position: relative;
+  white-space: nowrap;
+  width: fit-content;
+  user-select: none;
+  font-family: 'Inter', sans-serif;
+  font-size: 12px;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  line-height: 1;
+  backdrop-filter: blur(12px) saturate(1.2);
+  -webkit-backdrop-filter: blur(12px) saturate(1.2);
+  background: linear-gradient(180deg, rgba(255,255,255,0.95) 0%, rgba(255,255,255,0.7) 100%);
+  border: 1px solid rgba(255,255,255,0.9);
+  box-shadow: 0 0 0 1px rgba(15,23,42,0.05), 0 4px 14px rgba(15,23,42,0.07), inset 0 1px 0 rgba(255,255,255,1);
+  color: #475569;
+}
+
+@media (max-width: 639px) {
+  .section-tag {
+    height: 30px;
+    font-size: 11px;
+  }
+}
+
+.section-tag .section-tag-label {
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  line-height: 1;
+  font-weight: 500;
+}
+
+.section-tag .section-tag-icon-circle {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  background: #0B0F19;
+  color: #FFFFFF;
+}
+
+.section-tag .section-tag-icon-circle svg {
+  stroke-width: 2px;
+}
+
+/* Dark variant: triggered either via :where([data-theme="dark"]) .section-tag or explicit .section-tag--dark */
+:where([data-theme="dark"]) .section-tag:not(.section-tag--light),
+.section-tag--dark {
+  background: linear-gradient(180deg, rgba(28,28,32,0.92) 0%, rgba(8,8,10,0.92) 100%);
+  border: 1px solid rgba(255,255,255,0.28);
+  box-shadow: 0 0 0 1px rgba(255,255,255,0.05), inset 0 1px 0 rgba(255,255,255,0.18), 0 0 18px rgba(255,255,255,0.06);
+  color: #FFFFFF;
+}
+
+:where([data-theme="dark"]) .section-tag:not(.section-tag--light) .section-tag-icon-circle,
+.section-tag--dark .section-tag-icon-circle {
+  background: rgba(255,255,255,0.14);
+  color: #FFFFFF;
+}
+
+/* Explicit light variant override */
+.section-tag--light {
+  background: linear-gradient(180deg, rgba(255,255,255,0.95) 0%, rgba(255,255,255,0.7) 100%) !important;
+  border: 1px solid rgba(255,255,255,0.9) !important;
+  box-shadow: 0 0 0 1px rgba(15,23,42,0.05), 0 4px 14px rgba(15,23,42,0.07), inset 0 1px 0 rgba(255,255,255,1) !important;
+  color: #475569 !important;
+}
+
+.section-tag--light .section-tag-icon-circle {
+  background: #0B0F19 !important;
+  color: #FFFFFF !important;
+}
+
+
 

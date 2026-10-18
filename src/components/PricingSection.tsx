@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { motion, useScroll, useTransform } from 'motion/react';
 import { ArrowUpRight, Check, Phone } from 'lucide-react';
+import { SectionTag } from './SectionTag';
 import { content, PricingPlan } from '../content';
 
 interface PricingSectionProps {
@@ -125,6 +126,7 @@ export const PricingSection: React.FC<PricingSectionProps> = ({ onPlanSelect }) 
     <motion.section
       ref={sectionRef}
       id="pricing"
+      data-theme="dark"
       className="pr-sec w-full pt-[110px] pb-[110px] overflow-clip relative flex flex-col items-center px-4 sm:px-6"
       style={{ '--d': darkness } as any}
     >
@@ -133,10 +135,12 @@ export const PricingSection: React.FC<PricingSectionProps> = ({ onPlanSelect }) 
       <div className="w-full max-w-[1180px] flex flex-col items-center">
         {/* SECTION HEADER */}
         <div className="flex flex-col items-center text-center pt-2 sm:pt-4 mb-[56px]">
-          <div className="pr-pill inline-flex items-center gap-2 px-3.5 py-1.5 rounded-[10px] border uppercase text-[11px] font-sans font-medium tracking-[0.08em] mb-4 select-none">
-            <span className="w-1.5 h-1.5 rounded-full bg-[#6EEDC2]" />
-            <span>TRANSPARENT PRICING</span>
-          </div>
+          <SectionTag
+            label="TRANSPARENT PRICING"
+            icon="badge-dollar-sign"
+            variant="dark"
+            className="mb-4"
+          />
 
           <h2 className="pr-text text-3xl sm:text-4xl md:text-[44px] leading-[1.1] font-display font-[300] tracking-[-0.02em] text-center">
             {pricing.h2 || 'Plans to suit the way you work'}

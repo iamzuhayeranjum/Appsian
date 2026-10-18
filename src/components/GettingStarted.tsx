@@ -15,6 +15,7 @@ import {
   User,
 } from 'lucide-react';
 import { AppsianMark } from './AppsianLogo';
+import { SectionTag } from './SectionTag';
 
 interface GettingStartedProps {
   onSuccessDemo?: () => void;
@@ -54,7 +55,7 @@ const STEPS_DATA: StepItem[] = [
 ];
 
 // ---------------------------------------------------------------------------
-// Card 1: Discovery Visual (interactive / Q&A chat)
+// Card 1: Discovery Visual (Light Chat)
 // ---------------------------------------------------------------------------
 const DiscoveryVisual: React.FC<{ reduceMotion: boolean | null }> = ({ reduceMotion }) => {
   return (
@@ -64,47 +65,47 @@ const DiscoveryVisual: React.FC<{ reduceMotion: boolean | null }> = ({ reduceMot
     >
       {/* Q1: Appsian */}
       <div className="flex items-center justify-end gap-2">
-        <div className="px-3.5 py-2 rounded-[14px] bg-gradient-to-r from-[#5B6CF0] to-[#4A7FF0] text-white text-[12px] leading-tight shadow-xs">
+        <div className="px-3.5 py-2 rounded-[14px] bg-gradient-to-r from-[#4F5BD6] to-[#6366F1] text-white text-[12px] leading-tight shadow-xs">
           Which services do you offer?
         </div>
-        <div className="w-[30px] h-[30px] rounded-full bg-[#4A57D6] flex items-center justify-center shrink-0 shadow-xs">
+        <div className="w-[30px] h-[30px] rounded-full bg-[#4F5BD6] flex items-center justify-center shrink-0 shadow-xs">
           <AppsianMark size={16} />
         </div>
       </div>
 
       {/* A1: User */}
       <div className="flex items-center justify-start gap-2">
-        <div className="w-[30px] h-[30px] rounded-full bg-[#94A3B8] text-white flex items-center justify-center shrink-0 shadow-xs">
+        <div className="w-[30px] h-[30px] rounded-full bg-[#F1F5F9] text-[#475569] flex items-center justify-center shrink-0 shadow-xs border border-[#CBD5E1]">
           <User className="w-3.5 h-3.5 stroke-[2.2]" />
         </div>
-        <div className="px-3.5 py-2 rounded-[14px] bg-white/95 border border-[rgba(15,16,32,0.06)] shadow-[0_4px_16px_rgba(40,50,150,0.08)] text-[#0B0B0F] text-[12px] leading-tight">
+        <div className="px-3.5 py-2 rounded-[14px] bg-white border border-[#E2E8F0] shadow-xs text-[#1E293B] text-[12px] leading-tight">
           Plumbing, heating and emergency repairs
         </div>
       </div>
 
       {/* Q2: Appsian */}
       <div className="flex items-center justify-end gap-2">
-        <div className="px-3.5 py-2 rounded-[14px] bg-gradient-to-r from-[#5B6CF0] to-[#4A7FF0] text-white text-[12px] leading-tight shadow-xs">
+        <div className="px-3.5 py-2 rounded-[14px] bg-gradient-to-r from-[#4F5BD6] to-[#6366F1] text-white text-[12px] leading-tight shadow-xs">
           When should calls be answered?
         </div>
-        <div className="w-[30px] h-[30px] rounded-full bg-[#4A57D6] flex items-center justify-center shrink-0 shadow-xs">
+        <div className="w-[30px] h-[30px] rounded-full bg-[#4F5BD6] flex items-center justify-center shrink-0 shadow-xs">
           <AppsianMark size={16} />
         </div>
       </div>
 
       {/* A2: User */}
       <div className="flex items-center justify-start gap-2">
-        <div className="w-[30px] h-[30px] rounded-full bg-[#94A3B8] text-white flex items-center justify-center shrink-0 shadow-xs">
+        <div className="w-[30px] h-[30px] rounded-full bg-[#F1F5F9] text-[#475569] flex items-center justify-center shrink-0 shadow-xs border border-[#CBD5E1]">
           <User className="w-3.5 h-3.5 stroke-[2.2]" />
         </div>
-        <div className="px-3.5 py-2 rounded-[14px] bg-white/95 border border-[rgba(15,16,32,0.06)] shadow-[0_4px_16px_rgba(40,50,150,0.08)] text-[#0B0B0F] text-[12px] leading-tight">
+        <div className="px-3.5 py-2 rounded-[14px] bg-white border border-[#E2E8F0] shadow-xs text-[#1E293B] text-[12px] leading-tight">
           Weekdays 8 to 6, plus emergencies at night
         </div>
       </div>
 
       {/* Typing indicator row */}
       <div className="flex items-center justify-end gap-2 mt-0.5">
-        <div className="h-[24px] px-2.5 rounded-[12px] bg-gradient-to-r from-[#5B6CF0] to-[#4A7FF0] flex items-center gap-1 shadow-xs">
+        <div className="h-[24px] px-2.5 rounded-[12px] bg-gradient-to-r from-[#4F5BD6] to-[#6366F1] flex items-center gap-1 shadow-xs">
           <span
             className={`w-1.5 h-1.5 rounded-full bg-white/90 ${reduceMotion ? '' : 'animate-bounce'}`}
             style={{ animationDelay: '0ms' }}
@@ -125,7 +126,7 @@ const DiscoveryVisual: React.FC<{ reduceMotion: boolean | null }> = ({ reduceMot
 };
 
 // ---------------------------------------------------------------------------
-// Card 2: Setup Visual (floating overlapping cards)
+// Card 2: Setup Visual (Light Floating Cards)
 // ---------------------------------------------------------------------------
 const SetupVisual: React.FC<{ reduceMotion: boolean | null }> = ({ reduceMotion }) => {
   const waveformHeights = [8, 14, 20, 12, 18, 10, 16, 22, 14, 8, 16, 12, 18, 10];
@@ -136,21 +137,21 @@ const SetupVisual: React.FC<{ reduceMotion: boolean | null }> = ({ reduceMotion 
       <motion.div
         animate={reduceMotion ? {} : { y: [-3, 3, -3] }}
         transition={{ duration: 6, repeat: Infinity, ease: 'easeInOut' }}
-        className="absolute top-1 left-1/2 -translate-x-1/2 w-[220px] rounded-[14px] bg-white/95 border border-[rgba(15,16,32,0.06)] shadow-[0_10px_28px_-10px_rgba(40,50,150,0.22)] p-2.5 z-10 -rotate-[1.5deg]"
+        className="absolute top-1 left-1/2 -translate-x-1/2 w-[220px] rounded-[14px] bg-white/95 border border-[#E2E8F0] shadow-[0_12px_28px_-10px_rgba(0,0,0,0.10)] p-2.5 z-10 -rotate-[1.5deg]"
       >
         <div className="text-[10.5px] font-medium text-[#64748B] mb-1.5">Call flow</div>
         <div className="flex items-center justify-between gap-1.5">
-          <div className="px-2 py-0.5 rounded-[6px] bg-[#F1F4FD] text-[11px] font-medium text-[#1E293B]">
+          <div className="px-2 py-0.5 rounded-[6px] bg-[#F8FAFC] border border-[#CBD5E1] text-[11px] font-medium text-[#1E293B]">
             Answer
           </div>
           <div className="w-3.5 h-[1.5px] bg-[#CBD5E1]" />
-          <div className="px-2 py-0.5 rounded-[6px] bg-[#F1F4FD] text-[11px] font-medium text-[#1E293B]">
+          <div className="px-2 py-0.5 rounded-[6px] bg-[#F8FAFC] border border-[#CBD5E1] text-[11px] font-medium text-[#1E293B]">
             Qualify
           </div>
           <div className="w-3.5 h-[1.5px] bg-[#CBD5E1]" />
-          <div className="px-2 py-0.5 rounded-[6px] bg-[#EEF1FF] text-[11px] font-semibold text-[#4A57D6] border border-[#DDE3FF] flex items-center gap-1">
+          <div className="px-2 py-0.5 rounded-[6px] bg-[#EEF2FF] border border-[#818CF8] text-[11px] font-semibold text-[#4F5BD6] flex items-center gap-1">
             <span>Book</span>
-            <Check className="w-3 h-3 text-[#4A57D6] stroke-[2.5]" />
+            <Check className="w-3 h-3 text-[#4F5BD6] stroke-[2.5]" />
           </div>
         </div>
       </motion.div>
@@ -159,17 +160,17 @@ const SetupVisual: React.FC<{ reduceMotion: boolean | null }> = ({ reduceMotion 
       <motion.div
         animate={reduceMotion ? {} : { y: [3, -3, 3] }}
         transition={{ duration: 6, delay: 0.5, repeat: Infinity, ease: 'easeInOut' }}
-        className="absolute bottom-5 left-1 w-[165px] rounded-[14px] bg-white/95 border border-[rgba(15,16,32,0.06)] shadow-[0_10px_28px_-10px_rgba(40,50,150,0.22)] p-2.5 z-20 -rotate-[3deg]"
+        className="absolute bottom-5 left-1 w-[165px] rounded-[14px] bg-white/95 border border-[#E2E8F0] shadow-[0_12px_28px_-10px_rgba(0,0,0,0.10)] p-2.5 z-20 -rotate-[3deg]"
       >
         <div className="text-[10px] font-medium text-[#64748B]">Greeting</div>
-        <div className="text-[10.5px] text-[#0B0B0F] mt-0.5 italic leading-snug">
+        <div className="text-[10.5px] text-[#1E293B] mt-0.5 italic leading-snug">
           &ldquo;Thanks for calling! How can I help?&rdquo;
         </div>
         <div className="flex items-end gap-[2px] h-[18px] mt-2">
           {waveformHeights.map((h, i) => (
             <div
               key={i}
-              className="w-[2px] rounded-full bg-[#6F7CF0]"
+              className="w-[2px] rounded-full bg-gradient-to-t from-[#4F5BD6] to-[#818CF8]"
               style={{ height: `${h * 0.75}px` }}
             />
           ))}
@@ -180,15 +181,15 @@ const SetupVisual: React.FC<{ reduceMotion: boolean | null }> = ({ reduceMotion 
       <motion.div
         animate={reduceMotion ? {} : { y: [-2, 4, -2] }}
         transition={{ duration: 6, delay: 1, repeat: Infinity, ease: 'easeInOut' }}
-        className="absolute bottom-3 right-1 w-[160px] rounded-[14px] bg-white/95 border border-[rgba(15,16,32,0.06)] shadow-[0_10px_28px_-10px_rgba(40,50,150,0.22)] p-2.5 z-20 rotate-[3deg]"
+        className="absolute bottom-3 right-1 w-[160px] rounded-[14px] bg-white/95 border border-[#E2E8F0] shadow-[0_12px_28px_-10px_rgba(0,0,0,0.10)] p-2.5 z-20 rotate-[3deg]"
       >
         <div className="text-[10px] font-medium text-[#64748B] mb-1.5">Booking rules</div>
         <div className="flex flex-col gap-1.5">
           {['Emergencies', 'After hours', 'Service area'].map((rule) => (
-            <div key={rule} className="flex items-center justify-between text-[10.5px] text-[#0B0B0F]">
+            <div key={rule} className="flex items-center justify-between text-[10.5px] text-[#1E293B]">
               <span>{rule}</span>
-              <div className="w-6 h-3.5 rounded-full bg-[#4A7FF0] relative p-0.5 flex items-center justify-end">
-                <div className="w-2.5 h-2.5 rounded-full bg-white shadow-xs" />
+              <div className="w-6 h-3.5 rounded-full bg-[#EEF2FF] border border-[#E0E7FF] relative p-0.5 flex items-center justify-end">
+                <div className="w-2.5 h-2.5 rounded-full bg-[#4F5BD6] shadow-xs" />
               </div>
             </div>
           ))}
@@ -196,26 +197,26 @@ const SetupVisual: React.FC<{ reduceMotion: boolean | null }> = ({ reduceMotion 
       </motion.div>
 
       {/* Test call passed overlapping pill */}
-      <div className="absolute -bottom-1 z-30 px-3 py-1 rounded-full bg-white border border-[#A7F3D0] shadow-[0_6px_20px_rgba(16,185,129,0.18)] flex items-center gap-1.5 text-[11px] font-medium text-[#065F46]">
-        <Check className="w-3.5 h-3.5 text-[#10B981] stroke-[2.5]" />
-        <span>Test call passed</span>
+      <div className="absolute -bottom-1 z-30 px-3 py-1 rounded-full bg-white border border-[#34D399] shadow-[0_4px_16px_rgba(16,185,129,0.15)] flex items-center gap-1.5 text-[11px] font-medium text-[#059669]">
+        <Check className="w-3.5 h-3.5 text-[#059669] stroke-[2.5]" />
+        <span className="text-[#059669]">Test call passed</span>
       </div>
     </div>
   );
 };
 
 // ---------------------------------------------------------------------------
-// Card 3: Go Live Visual (active call answered)
+// Card 3: Go Live Visual (Light Incoming Call)
 // ---------------------------------------------------------------------------
 const GoLiveVisual: React.FC<{ reduceMotion: boolean | null }> = ({ reduceMotion }) => {
   const bars = [6, 12, 18, 24, 16, 10, 20, 26, 14, 8, 22, 18, 12, 26, 20, 14, 24, 18, 10, 16, 12, 8];
 
   return (
-    <div aria-hidden="true" className="w-[84%] max-w-[340px] rounded-[16px] bg-white/95 border border-[rgba(15,16,32,0.06)] shadow-[0_12px_32px_-10px_rgba(40,50,150,0.25)] p-3.5">
+    <div aria-hidden="true" className="w-[84%] max-w-[340px] rounded-[16px] bg-white/95 border border-[#E2E8F0] shadow-[0_14px_32px_-10px_rgba(0,0,0,0.10)] p-3.5">
       {/* Header */}
       <div className="flex items-center justify-between mb-3">
-        <span className="text-[12.5px] font-semibold text-[#0B0B0F]">Incoming call</span>
-        <span className="px-2 py-0.5 rounded-full bg-[#F1F5F9] text-[10px] font-medium text-[#475569] border border-slate-200">
+        <span className="text-[12.5px] font-semibold text-[#0F172A]">Incoming call</span>
+        <span className="px-2 py-0.5 rounded-full bg-[#F1F5F9] text-[10px] font-medium text-[#64748B] border border-[#E2E8F0]">
           After hours
         </span>
       </div>
@@ -223,19 +224,19 @@ const GoLiveVisual: React.FC<{ reduceMotion: boolean | null }> = ({ reduceMotion
       {/* Caller info */}
       <div className="flex items-center justify-between gap-3">
         <div className="flex items-center gap-2.5 min-w-0">
-          <div className="relative w-9 h-9 rounded-full bg-gradient-to-br from-[#6F7CF0] to-[#4A7FF0] text-white flex items-center justify-center shrink-0 shadow-xs">
+          <div className="relative w-9 h-9 rounded-full bg-gradient-to-br from-[#4F5BD6] to-[#6366F1] text-white flex items-center justify-center shrink-0 shadow-xs">
             <PhoneIncoming className="w-4 h-4 stroke-[2]" />
             {/* Pulsing ring */}
             {!reduceMotion && (
               <motion.div
                 animate={{ scale: [1, 1.5, 1], opacity: [0.5, 0, 0.5] }}
                 transition={{ duration: 2, repeat: Infinity, ease: 'easeOut' }}
-                className="absolute inset-0 rounded-full border-2 border-[#4A7FF0] pointer-events-none"
+                className="absolute inset-0 rounded-full border-2 border-[#6366F1] pointer-events-none"
               />
             )}
           </div>
           <div className="min-w-0">
-            <div className="text-[13px] font-semibold text-[#0B0B0F] leading-tight truncate">
+            <div className="text-[13px] font-semibold text-[#0F172A] leading-tight truncate">
               Zach P.
             </div>
             <div className="text-[10.5px] text-[#64748B] leading-tight truncate mt-0.5">
@@ -243,7 +244,7 @@ const GoLiveVisual: React.FC<{ reduceMotion: boolean | null }> = ({ reduceMotion
             </div>
           </div>
         </div>
-        <div className="tabular-nums font-mono text-[11.5px] font-semibold text-[#4A7FF0] shrink-0">
+        <div className="tabular-nums font-mono text-[11.5px] font-semibold text-[#4F5BD6] shrink-0">
           0:12
         </div>
       </div>
@@ -266,15 +267,18 @@ const GoLiveVisual: React.FC<{ reduceMotion: boolean | null }> = ({ reduceMotion
               delay: (i % 6) * 0.12,
               ease: 'easeInOut',
             }}
-            className="w-[2.5px] rounded-full bg-[#6F7CF0]"
-            style={{ height: `${h * 0.8}px` }}
+            className="w-[2.5px] rounded-full bg-[#6366F1]"
+            style={{
+              height: `${h * 0.8}px`,
+              opacity: i % 3 === 0 ? 0.45 : 0.95,
+            }}
           />
         ))}
       </div>
 
       {/* Status pills */}
-      <div className="flex items-center gap-2 mt-3 pt-2 border-t border-slate-100">
-        <span className="px-2 py-0.5 rounded-full bg-[#EEF1FF] text-[10.5px] font-medium text-[#4A57D6] border border-[#DDE3FF]">
+      <div className="flex items-center gap-2 mt-3 pt-2 border-t border-[#F1F5F9]">
+        <span className="px-2 py-0.5 rounded-full bg-[#EEF2FF] text-[10.5px] font-medium text-[#4338CA] border border-[#C7D2FE]">
           Qualified
         </span>
         <span className="px-2 py-0.5 rounded-full bg-[#FEF3C7] text-[10.5px] font-medium text-[#B45309] border border-[#FDE68A]">
@@ -286,17 +290,17 @@ const GoLiveVisual: React.FC<{ reduceMotion: boolean | null }> = ({ reduceMotion
 };
 
 // ---------------------------------------------------------------------------
-// Card 4: Ongoing Visual (mini dashboard + summary)
+// Card 4: Ongoing Visual (Light Dashboard)
 // ---------------------------------------------------------------------------
 const OngoingVisual: React.FC<{ reduceMotion: boolean | null }> = () => {
   return (
     <div aria-hidden="true" className="w-[88%] max-w-[340px] relative">
-      <div className="rounded-[16px] bg-white/95 border border-[rgba(15,16,32,0.06)] shadow-[0_12px_32px_-10px_rgba(40,50,150,0.25)] p-3.5">
+      <div className="rounded-[16px] bg-white/95 border border-[#E2E8F0] shadow-[0_14px_32px_-10px_rgba(0,0,0,0.10)] p-3.5">
         {/* Header */}
         <div className="flex items-center justify-between mb-2.5">
-          <span className="text-[12px] font-semibold text-[#0B0B0F]">Booked estimates</span>
-          <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-[#EEF1FF] text-[10px] font-medium text-[#4A57D6] border border-[#DDE3FF]">
-            <Bell className="w-2.5 h-2.5" />
+          <span className="text-[12px] font-semibold text-[#0F172A]">Booked estimates</span>
+          <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-[#EEF2FF] text-[10px] font-medium text-[#4338CA] border border-[#C7D2FE]">
+            <Bell className="w-2.5 h-2.5 text-[#4F5BD6]" />
             <span>Team alert sent</span>
           </span>
         </div>
@@ -305,12 +309,12 @@ const OngoingVisual: React.FC<{ reduceMotion: boolean | null }> = () => {
         <div className="flex flex-col gap-1.5">
           {[
             { initials: 'MR', name: 'Mark R.', time: 'Tomorrow, 10:00 AM', bg: 'bg-[#EEF2FF]', color: 'text-[#4338CA]' },
-            { initials: 'SK', name: 'Sarah K.', time: 'Thu, 2:30 PM', bg: 'bg-[#F5F3FF]', color: 'text-[#6D28D9]' },
-            { initials: 'DL', name: 'David L.', time: 'Fri, 9:00 AM', bg: 'bg-[#F0FDF4]', color: 'text-[#15803D]' },
+            { initials: 'SK', name: 'Sarah K.', time: 'Thu, 2:30 PM', bg: 'bg-[#ECFDF5]', color: 'text-[#059669]' },
+            { initials: 'DL', name: 'David L.', time: 'Fri, 9:00 AM', bg: 'bg-[#FEF3C7]', color: 'text-[#B45309]' },
           ].map((item) => (
             <div
               key={item.name}
-              className="flex items-center justify-between gap-2 p-1.5 rounded-[8px] bg-[#F8FAFC]"
+              className="flex items-center justify-between gap-2 p-1.5 rounded-[8px] bg-[#F8FAFC] border border-[#F1F5F9]"
             >
               <div className="flex items-center gap-2 min-w-0">
                 <div
@@ -319,7 +323,7 @@ const OngoingVisual: React.FC<{ reduceMotion: boolean | null }> = () => {
                   {item.initials}
                 </div>
                 <div className="min-w-0">
-                  <div className="text-[11.5px] font-medium text-[#0B0B0F] leading-tight truncate">
+                  <div className="text-[11.5px] font-medium text-[#0F172A] leading-tight truncate">
                     {item.name}
                   </div>
                   <div className="text-[10px] text-[#64748B] leading-tight truncate">
@@ -336,12 +340,12 @@ const OngoingVisual: React.FC<{ reduceMotion: boolean | null }> = () => {
       </div>
 
       {/* Floating AI summary overlapping bottom right */}
-      <div className="absolute -bottom-2 -right-1.5 w-[190px] rounded-[12px] bg-white border border-[rgba(15,16,32,0.08)] shadow-[0_8px_22px_rgba(40,50,150,0.18)] p-2 z-10">
-        <div className="flex items-center gap-1 text-[10.5px] font-semibold text-[#0B0B0F]">
-          <Sparkles className="w-3 h-3 text-[#4A7FF0]" />
+      <div className="absolute -bottom-2 -right-1.5 w-[190px] rounded-[12px] bg-white border border-[#E2E8F0] shadow-[0_8px_24px_rgba(0,0,0,0.10)] p-2 z-10">
+        <div className="flex items-center gap-1 text-[10.5px] font-semibold text-[#4F5BD6]">
+          <Sparkles className="w-3 h-3 text-[#4F5BD6]" />
           <span>AI summary</span>
         </div>
-        <p className="text-[10px] text-[#475569] leading-snug mt-1">
+        <p className="text-[10px] text-[#334155] leading-snug mt-1">
           Burst pipe, urgent. Booked for tomorrow.
         </p>
       </div>
@@ -436,46 +440,25 @@ export const GettingStarted: React.FC<GettingStartedProps> = ({ onSuccessDemo })
   return (
     <section
       id="getting-started"
-      className="w-full bg-[#F5F6F8] px-2 md:px-[14px] py-16 md:py-24 font-sans select-none"
+      className="w-full bg-[#F5F6F8] pt-0 px-0 pb-16 md:pb-24 font-sans select-none"
     >
-      {/* INNER PANEL */}
-      <div className="w-full rounded-[28px] md:rounded-[48px] bg-[#FFFFFF] border border-[rgba(15,16,32,0.06)] py-16 px-5 md:py-[112px] md:px-10 relative overflow-hidden shadow-[0_2px_8px_rgba(15,16,32,0.02)]">
-        {/* Soft atmosphere glows */}
-        <div
-          aria-hidden="true"
-          className="absolute -top-[120px] left-1/2 -translate-x-1/2 w-[800px] h-[500px] rounded-full pointer-events-none"
-          style={{
-            background:
-              'radial-gradient(closest-side, rgba(111,124,240,0.10), rgba(111,124,240,0))',
-          }}
-        />
-        <div
-          aria-hidden="true"
-          className="absolute -bottom-[100px] -right-[100px] w-[600px] h-[500px] rounded-full pointer-events-none"
-          style={{
-            background:
-              'radial-gradient(closest-side, rgba(74,127,240,0.08), rgba(74,127,240,0))',
-          }}
-        />
-
+      {/* INNER PANEL (LIGHT, EDGE-TO-EDGE, SQUARE TOP, CURVED BOTTOM, NO BACKGROUND GLOWS) */}
+      <div className="w-full rounded-t-none rounded-b-[28px] md:rounded-b-[48px] bg-white border-b border-[#E5E7EB] py-16 px-5 md:py-[112px] md:px-10 relative overflow-hidden">
         {/* CONTENT WRAPPER */}
         <div className="max-w-[1040px] mx-auto w-full relative z-10 flex flex-col items-center">
           {/* HEADER BLOCK */}
           <div className="flex flex-col items-center text-center mb-[72px] md:mb-[96px]">
             {/* Badge */}
-            <div className="h-[28px] px-3 rounded-full bg-[#EEF1FF] border border-[#DDE3FF] text-[#4A57D6] text-[12px] font-semibold inline-flex items-center gap-1.5 select-none mb-6">
-              <span className="w-1.5 h-1.5 rounded-full bg-[#6F7CF0]" />
-              <span>Getting Started</span>
-            </div>
+            <SectionTag label="Getting Started" icon="rocket" className="mb-6" />
 
             {/* Heading */}
             <h2 className="text-[clamp(36px,4.2vw,56px)] tracking-[-0.035em] leading-[1.05] text-center font-display mb-4">
-              <span className="font-light text-[#7B8296]">From signup to</span>
-              <span className="font-semibold text-[#0B0B0F]"> booked jobs</span>
+              <span className="font-light text-[#555C6D]">From signup to</span>
+              <span className="font-semibold text-[#0E1118]"> booked jobs</span>
             </h2>
 
             {/* Subline */}
-            <p className="text-[16px] text-[#64748B] max-w-[440px] text-center mt-4 font-normal leading-[1.6]">
+            <p className="text-[16px] text-[#555C6D] max-w-[440px] text-center mt-4 font-normal leading-[1.6]">
               Four simple steps from first conversation to a receptionist that never misses a call.
             </p>
           </div>
@@ -485,20 +468,22 @@ export const GettingStarted: React.FC<GettingStartedProps> = ({ onSuccessDemo })
             {/* Track Line */}
             <div
               aria-hidden="true"
-              className="absolute left-[7px] top-[18px] bottom-0 w-[2px] rounded-[2px] bg-[rgba(15,16,32,0.10)] pointer-events-none"
+              className="absolute left-[7px] top-[18px] bottom-0 w-[2px] rounded-[2px] bg-[#E5E7EB] pointer-events-none"
             />
 
             {/* Fill Line */}
             <motion.div
               aria-hidden="true"
               style={{ scaleY }}
-              className="absolute left-[7px] top-[18px] bottom-0 w-[2px] rounded-[2px] origin-top bg-gradient-to-b from-[#6F7CF0] to-[#4A7FF0] shadow-[0_0_12px_rgba(74,127,240,0.45)] pointer-events-none z-10"
+              className="absolute left-[7px] top-[18px] bottom-0 w-[2px] rounded-[2px] origin-top bg-gradient-to-b from-[#4F5BD6] to-[#6366F1] shadow-[0_0_10px_rgba(79,91,214,0.35)] pointer-events-none z-10"
             />
 
             {/* Steps Rows */}
             <div className="flex flex-col gap-y-[56px] md:gap-y-[72px]">
               {STEPS_DATA.map((step, index) => {
                 const isActive = activeStepIndex >= index;
+                const isCurrentActive = activeStepIndex === index;
+                const isFuture = index > activeStepIndex;
 
                 return (
                   <div
@@ -513,8 +498,8 @@ export const GettingStarted: React.FC<GettingStartedProps> = ({ onSuccessDemo })
                       <div
                         className={`step-node w-4 h-4 rounded-[5px] transition-all duration-300 ${
                           isActive
-                            ? 'bg-gradient-to-br from-[#8793FF] to-[#4A7FF0] border-[1.5px] border-white shadow-[0_0_0_4px_rgba(111,124,240,0.18),0_4px_12px_rgba(74,127,240,0.45),inset_0_1px_0_rgba(255,255,255,0.7)]'
-                            : 'bg-white border-[1.5px] border-[rgba(15,16,32,0.18)] shadow-none'
+                            ? 'bg-[#4F5BD6] border-[2px] border-white shadow-[0_0_0_3px_rgba(79,91,214,0.25)]'
+                            : 'bg-[#F1F5F9] border-[1.5px] border-[#CBD5E1] shadow-none'
                         }`}
                       />
                     </div>
@@ -525,12 +510,18 @@ export const GettingStarted: React.FC<GettingStartedProps> = ({ onSuccessDemo })
                       <div className="flex items-center gap-2.5">
                         <h3
                           className={`font-display text-[clamp(24px,2.4vw,30px)] font-[500] tracking-[-0.02em] leading-tight transition-colors duration-300 ${
-                            isActive ? 'text-[#0B0B0F]' : 'text-[#8A91A5]'
+                            isActive ? 'text-[#0E1118]' : 'text-[#94A3B8]'
                           }`}
                         >
                           {step.title}
                         </h3>
-                        <span className="h-[22px] px-2 rounded-full bg-[#EEF1FF] border border-[#DDE3FF] text-[12px] font-semibold text-[#6F7CF0] inline-flex items-center justify-center">
+                        <span
+                          className={`h-[22px] px-2 rounded-full border text-[12px] font-semibold inline-flex items-center justify-center transition-colors duration-300 ${
+                            isActive
+                              ? 'bg-[#EEF2FF] border-[#D5DDFF] text-[#4F5BD6]'
+                              : 'bg-[#F1F5F9] border-[#E2E8F0] text-[#94A3B8]'
+                          }`}
+                        >
                           {step.number}
                         </span>
                       </div>
@@ -538,7 +529,7 @@ export const GettingStarted: React.FC<GettingStartedProps> = ({ onSuccessDemo })
                       {/* Description */}
                       <p
                         className={`mt-3.5 md:mt-10 text-[15.5px] leading-[1.6] max-w-[360px] transition-colors duration-300 ${
-                          isActive ? 'text-[#64748B]' : 'text-[#A7ADBD]'
+                          isActive ? 'text-[#4B5563]' : 'text-[#94A3B8]'
                         }`}
                       >
                         {step.description}
@@ -551,41 +542,24 @@ export const GettingStarted: React.FC<GettingStartedProps> = ({ onSuccessDemo })
                       whileInView={{ opacity: 1, y: 0 }}
                       viewport={{ once: true, amount: 0.2 }}
                       transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
-                      className="mt-6 md:mt-0 w-full max-w-[420px] md:max-w-[400px] h-[260px] md:h-[300px] rounded-[28px] overflow-hidden relative select-none flex items-center justify-center border border-[rgba(111,124,240,0.20)] shadow-[0_30px_60px_-30px_rgba(60,70,200,0.35),inset_0_1px_0_rgba(255,255,255,0.9)]"
+                      className={`mt-6 md:mt-0 w-full max-w-[420px] md:max-w-[400px] h-[260px] md:h-[300px] rounded-[28px] overflow-hidden relative select-none flex items-center justify-center border transition-all duration-500 ${
+                        isCurrentActive
+                          ? 'border-[#C7D2FE] shadow-[0_24px_50px_-20px_rgba(79,91,214,0.22)]'
+                          : 'border-[#E2E8F0] shadow-[0_16px_40px_-24px_rgba(0,0,0,0.08)]'
+                      }`}
                       style={{
-                        background: 'linear-gradient(180deg, #F7F9FF 0%, #E9EEFF 100%)',
+                        background: 'linear-gradient(180deg, #FFFFFF 0%, #F8FAFC 100%)',
+                        opacity: isFuture ? 0.7 : 1,
                       }}
                     >
-                      {/* Faint dot texture */}
+                      {/* Soft rising glow from bottom edge of card */}
                       <div
                         aria-hidden="true"
-                        className="absolute inset-0 pointer-events-none opacity-50"
+                        className="absolute inset-0 pointer-events-none transition-opacity duration-500"
                         style={{
-                          backgroundImage:
-                            'radial-gradient(rgba(111,124,240,0.14) 1px, transparent 1px)',
-                          backgroundSize: '18px 18px',
-                          maskImage: 'linear-gradient(to bottom, #000, transparent 80%)',
-                          WebkitMaskImage: 'linear-gradient(to bottom, #000, transparent 80%)',
-                        }}
-                      />
-
-                      {/* Bottom glow */}
-                      <div
-                        aria-hidden="true"
-                        className="absolute inset-0 pointer-events-none"
-                        style={{
+                          opacity: isCurrentActive ? 1 : 0.6,
                           background:
-                            'radial-gradient(70% 55% at 50% 112%, rgba(86,108,255,0.55), rgba(86,108,255,0) 70%)',
-                        }}
-                      />
-
-                      {/* Horizon highlight */}
-                      <div
-                        aria-hidden="true"
-                        className="absolute inset-0 pointer-events-none"
-                        style={{
-                          background:
-                            'radial-gradient(45% 14px at 50% 100%, rgba(255,255,255,0.95), rgba(255,255,255,0) 100%)',
+                            'radial-gradient(75% 60% at 50% 118%, rgba(99,102,241,0.20), rgba(99,102,241,0) 70%)',
                         }}
                       />
 

@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from 'motion/react';
 import { content, FaqItem } from '../content';
 import { Plus, Minus } from 'lucide-react';
 import { SectionHeader, EyebrowPill, Reveal } from './design-system';
+import { SectionTag } from './SectionTag';
 
 export const FaqSection: React.FC = () => {
   const { faq } = content;
@@ -58,7 +59,7 @@ export const FaqSection: React.FC = () => {
       <div className="w-full max-w-[1187px]">
         {/* Section Header */}
         <SectionHeader
-          eyebrow={<EyebrowPill>Common Inquiries</EyebrowPill>}
+          eyebrow={<SectionTag label="Common Inquiries" icon="circle-help" />}
           headline={[
             { text: 'Questions', weight: 'light' },
             { text: 'You May Have', weight: 'strong' },

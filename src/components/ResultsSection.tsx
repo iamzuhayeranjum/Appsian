@@ -12,6 +12,7 @@ import {
   ArrowRight,
 } from 'lucide-react';
 import { SectionHeader, EyebrowPill } from './design-system';
+import { SectionTag } from './SectionTag';
 
 interface ResultsSectionProps {
   onSuccessDemo?: () => void;
@@ -336,7 +337,7 @@ export const ResultsSection: React.FC<ResultsSectionProps> = ({ onSuccessDemo })
       <div className="max-w-[1320px] mx-auto px-2 md:px-[14px] pt-[100px]">
         <div className="px-2 sm:px-6">
           <SectionHeader
-            eyebrow={<EyebrowPill>Results</EyebrowPill>}
+            eyebrow={<SectionTag label="Results" icon="trending-up" />}
             headline={[
               { text: 'What changes when', weight: 'light' },
               { text: 'every call is answered.', weight: 'strong' },

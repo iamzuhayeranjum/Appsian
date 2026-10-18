@@ -1,6 +1,7 @@
 import React from 'react';
 import { motion } from 'motion/react';
 import { ArrowUpRight, Mail } from 'lucide-react';
+import { SectionTag } from '../SectionTag';
 
 // 1. Eyebrow Pill
 export interface EyebrowPillProps {
@@ -16,18 +17,13 @@ export const EyebrowPill: React.FC<EyebrowPillProps> = ({
   className = '',
   icon,
 }) => {
-  const isDark = theme === 'dark';
   return (
-    <div
-      className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-[10px] text-[11px] font-medium tracking-[0.05em] uppercase font-sans mb-3 select-none ${
-        isDark
-          ? 'bg-white/10 text-white/90 border border-white/15'
-          : 'bg-white text-[#0B0B0F] border border-[rgba(11,11,15,0.08)] shadow-xs'
-      } ${className}`}
-    >
-      {icon}
-      <span>{children}</span>
-    </div>
+    <SectionTag
+      label={typeof children === 'string' ? children : ''}
+      variant={theme === 'dark' ? 'dark' : 'light'}
+      icon={icon}
+      className={className}
+    />
   );
 };
 

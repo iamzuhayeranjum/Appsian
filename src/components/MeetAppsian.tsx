@@ -1,4 +1,5 @@
 import { AppsianMark, AppsianIcon } from './AppsianLogo';
+import { SectionTag } from './SectionTag';
 import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import {
@@ -206,14 +207,7 @@ export const MeetAppsian: React.FC = () => {
           className="flex flex-col items-center text-center max-w-[850px] mx-auto"
         >
           {/* Eyebrow Pill */}
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#EAE8F0] border border-[#2D283C]/10 text-[11px] font-sans font-medium uppercase tracking-[0.05em] text-[#2D283C] mb-4 select-none">
-            <div className="w-4 h-4 rounded-full bg-[#2D283C] flex items-center justify-center text-white shrink-0">
-              <svg className="w-2.5 h-2.5 fill-current" viewBox="0 0 24 24">
-                <path d="M12 2L14.2 9.8L22 12L14.2 14.2L12 22L9.8 14.2L2 12L9.8 9.8L12 2Z" />
-              </svg>
-            </div>
-            <span>Product Overview</span>
-          </div>
+          <SectionTag label="Product Overview" icon="layout-grid" className="mb-4" />
 
           {/* Headline: Solid #2D283C, font-display, font-light (300), matching site section headers */}
           <h2 className="text-3xl sm:text-4xl md:text-[44px] lg:text-[48px] font-display font-light text-[#2D283C] tracking-[-0.03em] leading-[1.15] text-balance">

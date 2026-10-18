@@ -1,6 +1,7 @@
 import React from 'react';
 import { content } from '../content';
 import { SectionHeader, Reveal, EyebrowPill } from './design-system';
+import { SectionTag } from './SectionTag';
 
 // ---------------------------------------------------------------------------
 // Glossy "glass" icons (inline SVG, 96x96). Each has a soft shadow, a coloured
@@ -125,7 +126,7 @@ export const TrustRow: React.FC = () => {
     <section className="w-full pb-[120px] md:pb-[152px] bg-[var(--page-gray,#F5F6F8)]">
       <div className="max-w-[1200px] mx-auto px-4 sm:px-6">
         <SectionHeader
-          eyebrow={<EyebrowPill>Principles</EyebrowPill>}
+          eyebrow={<SectionTag label="Principles" icon="compass" />}
           headline={[
             { text: trustRow.h2Line1, weight: 'light' },
             { text: trustRow.h2Line2, weight: 'strong' },

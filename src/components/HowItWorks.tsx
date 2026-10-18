@@ -1,4 +1,5 @@
 import { AppsianIcon } from './AppsianLogo';
+import { SectionTag } from './SectionTag';
 import React, { useRef, useState, useEffect } from 'react';
 import { motion, useScroll, useMotionValueEvent } from 'motion/react';
 
@@ -107,6 +108,7 @@ export const HowItWorks: React.FC = () => {
       {/* SECTION SHELL: Full-width black section with crisp, straight top and bottom edges (overflow: clip) */}
       <section
         id="how-it-works"
+        data-theme="dark"
         ref={sectionRef}
         className="relative w-full bg-[#040506] pt-[120px] pb-[140px] text-white"
         style={{
@@ -186,18 +188,9 @@ export const HowItWorks: React.FC = () => {
                     border: '1px solid rgba(255, 255, 255, 0.08)',
                   }}
                 >
-                  {/* Eyebrow pill: "THE PROBLEM", 32px tall, full pill, border: 1px solid rgba(255,255,255,0.2) */}
+                  {/* Eyebrow: "THE PROBLEM" */}
                   <div className="flex justify-center">
-                    <div
-                      className="h-8 px-3.5 rounded-full flex items-center gap-2 text-[11px] font-semibold tracking-wider text-white uppercase"
-                      style={{
-                        border: '1px solid rgba(255, 255, 255, 0.20)',
-                        background: 'rgba(255, 255, 255, 0.03)',
-                      }}
-                    >
-                      <span className="w-1.5 h-1.5 rounded-full bg-white shrink-0" />
-                      <span>THE PROBLEM</span>
-                    </div>
+                    <SectionTag label="THE PROBLEM" icon="triangle-alert" variant="dark" />
                   </div>
 
                   {/* Heading: 44px/1.1, lightest available weight of display font, letter-spacing +0.01em */}
@@ -306,16 +299,7 @@ export const HowItWorks: React.FC = () => {
               className="text-center mb-10"
             >
               <div className="flex justify-center mb-4">
-                <div
-                  className="h-8 px-3.5 rounded-full flex items-center gap-2 text-[11px] font-semibold tracking-wider text-white uppercase"
-                  style={{
-                    border: '1px solid rgba(255, 255, 255, 0.20)',
-                    background: 'rgba(255, 255, 255, 0.03)',
-                  }}
-                >
-                  <span className="w-1.5 h-1.5 rounded-full bg-white shrink-0" />
-                  <span>THE SOLUTION</span>
-                </div>
+                <SectionTag label="THE SOLUTION" icon="lightbulb" variant="dark" />
               </div>
 
               <h3 className="text-[28px] sm:text-[40px] leading-[1.1] font-display font-normal text-white tracking-[0.01em]">

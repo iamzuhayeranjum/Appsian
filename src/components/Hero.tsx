@@ -10,6 +10,7 @@ import {
 import { HeroDots } from './HeroDots';
 import { useAppReady } from './Preloader';
 import { submitDemoRequest } from '../lib/submitDemoRequest';
+import { SectionTag } from './SectionTag';
 
 const EASE: [number, number, number, number] = [0.22, 1, 0.36, 1];
 
@@ -251,30 +252,9 @@ export const Hero: React.FC<HeroProps> = ({ onBookDemoClick }) => {
             delay: reduceMotion ? 0 : 0.05,
             ease: EASE,
           }}
-          className="hero-tag-glass mb-7 h-[36px] pl-1.5 pr-3.5 rounded-full flex items-center gap-2.5 cursor-default select-none"
+          className="mb-7 cursor-default select-none"
         >
-          {/* 24px dark circle with mint Appsian mark */}
-          <div className="w-6 h-6 rounded-full bg-[#0B0F19] flex items-center justify-center shrink-0 shadow-xs">
-            <svg
-              viewBox="260 296 694 569"
-              fill="none"
-              className="w-[13px] h-[13px]"
-              xmlns="http://www.w3.org/2000/svg"
-              aria-hidden="true"
-            >
-              <path
-                fill="#6EEDC2"
-                d="M633 301 949 860H698L536 568C516 532 510 497 523 468 530 452 538 442 546 431Z"
-              />
-              <path
-                fill="#6EEDC2"
-                d="M265 860 323 766C345 732 366 708 395 690 430 666 490 656 534 687 562 708 574 732 576 752 579 780 575 797 567 815 562 826 556 834 552 842 548 852 544 857 538 860Z"
-              />
-            </svg>
-          </div>
-          <span className="text-[11px] font-sans font-medium uppercase tracking-[0.06em] text-[#334155] whitespace-nowrap">
-            FOR LOCAL TRADES
-          </span>
+          <SectionTag label="FOR LOCAL TRADES" icon="appsian" />
         </motion.div>
 
         {/* Centered Headline */}

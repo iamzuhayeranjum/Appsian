@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { motion, useInView } from 'motion/react';
 import { Phone, Volume2, Check, Clock, CheckCircle2 } from 'lucide-react';
+import { SectionTag } from './SectionTag';
 
 export const FeaturesSection: React.FC = () => {
   const sectionRef = useRef<HTMLElement>(null);
@@ -366,25 +367,15 @@ export const FeaturesSection: React.FC = () => {
       />
 
       <div className="max-w-[1187px] mx-auto px-4 relative z-10 flex flex-col items-center">
-        {/* Eyebrow Pill: "WHAT YOU GET", 32px tall, soft white with soft shadow, dark circle sparkle glyph */}
+        {/* Eyebrow Pill: "WHAT YOU GET" */}
         <motion.div
           initial={{ opacity: 0, filter: 'blur(10px)', y: 16 }}
           whileInView={{ opacity: 1, filter: 'blur(0px)', y: 0 }}
           viewport={{ once: true, amount: 0.2 }}
           transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
-          className="h-[32px] px-3.5 rounded-[10px] bg-white flex items-center gap-2 select-none"
-          style={{
-            boxShadow: '0 1px 2px rgba(10,10,20,.05), 0 6px 16px rgba(10,10,20,.05)',
-          }}
+          className="select-none"
         >
-          <div className="w-4 h-4 rounded-full bg-[#2D283C] flex items-center justify-center text-white shrink-0">
-            <svg className="w-2.5 h-2.5 fill-current" viewBox="0 0 24 24">
-              <path d="M12 2L14.2 9.8L22 12L14.2 14.2L12 22L9.8 14.2L2 12L9.8 9.8L12 2Z" />
-            </svg>
-          </div>
-          <span className="text-[11px] font-sans font-medium uppercase tracking-[0.05em] text-[#2D283C]">
-            What You Get
-          </span>
+          <SectionTag label="What You Get" icon="gift" />
         </motion.div>
 
         {/* Headline: 52px, light weight of display font, ink, letter-spacing -0.03em */}

@@ -15,6 +15,7 @@ import {
   ArrowRight,
 } from 'lucide-react';
 import { AppsianIcon } from './AppsianLogo';
+import { SectionTag } from './SectionTag';
 
 interface LiveDemoProps {
   onBookDemoClick?: () => void;
@@ -163,10 +164,7 @@ export const LiveDemo: React.FC<LiveDemoProps> = ({ onBookDemoClick }) => {
       {/* 1. SECTION HEADER */}
       <div className="flex flex-col items-center text-center max-w-[850px] mx-auto px-5 mb-12">
         {/* Eyebrow Pill */}
-        <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#EAE8F0] border border-[#2D283C]/10 text-[11px] font-sans font-medium uppercase tracking-[0.05em] text-[#2D283C] mb-4 select-none">
-          <span className="w-1.5 h-1.5 rounded-full bg-[#6EEDC2] animate-pulse" />
-          <span>LIVE DEMO</span>
-        </div>
+        <SectionTag label="LIVE DEMO" icon="play" className="mb-4" />
 
         {/* Section Heading */}
         <h2 className="text-3xl sm:text-4xl md:text-[44px] lg:text-[48px] font-display font-light text-[#2D283C] tracking-[-0.03em] leading-[1.15] text-balance">

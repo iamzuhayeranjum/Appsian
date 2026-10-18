@@ -11,6 +11,7 @@ import {
   Sparkles,
   ArrowRight,
 } from 'lucide-react';
+import { SectionTag } from './SectionTag';
 
 export interface ComparisonRowData {
   id: string;
@@ -298,17 +299,9 @@ export const WhyAppsian: React.FC = () => {
           whileInView={{ opacity: 1, filter: 'blur(0px)', y: 0 }}
           viewport={{ once: true, amount: 0.2 }}
           transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
-          className="h-[32px] px-3.5 rounded-[10px] bg-white flex items-center gap-2 select-none"
-          style={{
-            boxShadow: '0 1px 2px rgba(10,10,20,.05), 0 6px 16px rgba(10,10,20,.05)',
-          }}
+          className="select-none"
         >
-          <div className="w-4 h-4 rounded-full bg-[#2D283C] flex items-center justify-center text-white shrink-0">
-            <Sparkles className="w-2.5 h-2.5 fill-white stroke-none" />
-          </div>
-          <span className="text-[11px] font-sans font-medium uppercase tracking-[0.05em] text-[#2D283C]">
-            Why Appsian
-          </span>
+          <SectionTag label="Why Appsian" icon="shield-check" />
         </motion.div>
 
         {/* Headline: 2 lines, 52px/1.1, lightest display weight */}

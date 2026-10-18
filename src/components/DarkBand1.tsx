@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { motion, useReducedMotion } from 'motion/react';
 import { Calendar, UserCheck, Headphones, Check, Sparkles } from 'lucide-react';
+import { SectionTag } from './SectionTag';
 import { content } from '../content';
 
 export const DarkBand1: React.FC = () => {
@@ -45,9 +46,7 @@ export const DarkBand1: React.FC = () => {
     <section className="w-full bg-[#F5F6F8] py-[72px] md:py-[120px] px-4 md:px-10 flex justify-center font-sans">
       <div className="w-full max-w-[1080px] mx-auto flex flex-col items-center">
         {/* 1. BADGE */}
-        <div className="h-[30px] px-3.5 rounded-full bg-[#FFFFFF] border border-[#6EEDC2] text-[#0F7A5A] text-[13px] font-medium inline-flex items-center justify-center select-none shadow-xs">
-          Automated Qualification
-        </div>
+        <SectionTag label="Automated Qualification" icon="list-checks" />
 
         {/* 2. HEADLINE */}
         <h2 className="mt-[22px] mb-12 md:mb-[56px] text-center font-display tracking-[-0.03em] leading-[1.15] text-3xl sm:text-4xl md:text-[44px] max-w-3xl">
