@@ -76,12 +76,14 @@ void main() {
   float lightCols = 0.5 + 0.5 * sin(TAU * (x * 3.0 - t * u_drift));
   col += vec3(0.025, 0.045, 0.075) * lightCols * (1.0 - smoothstep(0.15, 0.75, y));
 
-  // thin bright vertical hairlines (drifting with the folds)
-  for (int j = 0; j < 4; j++) {
+  // thin soft vertical hairlines (subtle)
+  for (int j = 0; j < 3; j++) {
     float fj = float(j);
-    float xj = fract(0.16 + 0.27 * fj + 0.04 * sin(fj * 3.0) + t * u_drift);
-    float line = (1.0 - smoothstep(0.0, 0.0018, pdist(x, xj))) * (1.0 - smoothstep(0.35, 0.95, y)) * 0.25;
-    col += vec3(line);
+    float xj = fract(0.16 + 0.31 * fj + 0.04 * sin(fj * 3.0) + t * u_drift);
+    float dd = pdist(x, xj);
+    float line = exp(-(dd * dd) / (0.0011 * 0.0011));
+    float vis = smoothstep(0.06, 0.18, y) * (1.0 - smoothstep(0.30, 0.62, y));
+    col += vec3(line * vis * 0.10);
   }
 
   col += (hash(gl_FragCoord.xy + fract(t)) - 0.5) / 255.0;   // dither, no banding
@@ -331,8 +333,12 @@ export const HeroCurtainBackground: React.FC<HeroCurtainBackgroundProps> = ({
     >
       <canvas
         ref={canvasRef}
-        className="absolute inset-0 w-full h-full pointer-events-none"
+        className="absolute pointer-events-none"
         style={{
+          top: '-2px',
+          left: '-2px',
+          width: 'calc(100% + 4px)',
+          height: 'calc(100% + 4px)',
           opacity: canvasReady ? 1 : 0,
           transition: 'opacity 0.6s ease-out',
         }}

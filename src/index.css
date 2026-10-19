@@ -754,7 +754,7 @@
     var(--gl-a, none),
     var(--gl-b, none),
     linear-gradient(105deg, rgba(255,255,255,0) 40%, rgba(255,255,255,0.6) 50%, rgba(255,255,255,0) 60%),
-    linear-gradient(90deg, #ffffff 0%, #cfe9ff 35%, #9fd8ff 70%, #7fd3ff 100%);
+    linear-gradient(90deg, #ffffff 0%, #ddf3ff 30%, #a8e4ff 60%, #ffffff 100%);
   background-size: 260px 140px, 260px 140px, 250% 100%, 200% 100%;
   background-repeat: repeat, repeat, no-repeat, no-repeat;
   background-position: var(--gl-ax) var(--gl-ay), var(--gl-bx) var(--gl-by), var(--gl-shine) 0, var(--gl-gx) 0;
@@ -783,6 +783,147 @@
   .glitter-text { background: none; color: #ffffff; -webkit-text-fill-color: currentColor; }
   .glitter-blue { background: none; color: #cfe9ff; -webkit-text-fill-color: currentColor; }
 }
+
+/* =====================================================================
+   UNIFIED GLASS LANGUAGE (glass-dark & glass-form)
+   ===================================================================== */
+
+.glass-dark {
+  background: linear-gradient(180deg, rgba(255,255,255,0.22) 0%, rgba(255,255,255,0.10) 100%);
+  -webkit-backdrop-filter: blur(18px) saturate(170%);
+  backdrop-filter: blur(18px) saturate(170%);
+  border: 1px solid rgba(255,255,255,0.34);
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,0.50),
+    inset 0 -1px 0 rgba(255,255,255,0.08),
+    0 14px 36px -14px rgba(4,30,100,0.55),
+    0 2px 6px rgba(4,30,100,0.12);
+}
+
+.glass-dark--hover {
+  transition: background 200ms ease, transform 200ms ease;
+}
+
+.glass-dark--hover:hover {
+  background: linear-gradient(180deg, rgba(255,255,255,0.30) 0%, rgba(255,255,255,0.14) 100%);
+}
+
+@keyframes glassSheen {
+  0% { background-position: 160% 0; }
+  30% { background-position: -60% 0; }
+  100% { background-position: -60% 0; }
+}
+
+.glass-sheen::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  background: linear-gradient(105deg, rgba(255,255,255,0) 35%, rgba(255,255,255,0.32) 50%, rgba(255,255,255,0) 65%);
+  background-size: 250% 100%;
+  background-position: 160% 0;
+  animation: glassSheen 9s ease-in-out infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .glass-sheen::after {
+    animation: none;
+  }
+}
+
+@supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+  .glass-dark {
+    background: rgba(255,255,255,0.20);
+  }
+}
+
+.glass-form {
+  background: linear-gradient(180deg, rgba(255,255,255,0.62) 0%, rgba(255,255,255,0.44) 100%);
+  -webkit-backdrop-filter: blur(26px) saturate(180%);
+  backdrop-filter: blur(26px) saturate(180%);
+  border: 1px solid rgba(255,255,255,0.75);
+  box-shadow:
+    inset 0 1px 0 #ffffff,
+    inset 0 -1px 0 rgba(255,255,255,0.25),
+    0 30px 70px -28px rgba(4,30,100,0.55);
+}
+
+@supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+  .glass-form {
+    background: rgba(255,255,255,0.85);
+  }
+}
+
+/* =====================================================================
+   PHONE STAGE: PROGRESSIVE BLUR & BOTTOM FADE MASK
+   ===================================================================== */
+
+.phone-fade-mask {
+  -webkit-mask-image: linear-gradient(to bottom, #000 0%, #000 calc(100% - var(--phone-fade, 7%)), rgba(0,0,0,0) 100%);
+  mask-image: linear-gradient(to bottom, #000 0%, #000 calc(100% - var(--phone-fade, 7%)), rgba(0,0,0,0) 100%);
+}
+
+.progressive-blur-phone {
+  position: absolute;
+  left: 24px;
+  right: 24px;
+  bottom: 0;
+  height: 12%;
+  pointer-events: none;
+  z-index: 25;
+  border-bottom-left-radius: 40px;
+  border-bottom-right-radius: 40px;
+  overflow: hidden;
+}
+
+.progressive-blur-phone > i {
+  position: absolute;
+  inset: 0;
+}
+
+.progressive-blur-phone > i:nth-child(1) {
+  -webkit-backdrop-filter: blur(0.5px);
+  backdrop-filter: blur(0.5px);
+  -webkit-mask-image: linear-gradient(to bottom, transparent 0%, #000 20%);
+  mask-image: linear-gradient(to bottom, transparent 0%, #000 20%);
+}
+
+.progressive-blur-phone > i:nth-child(2) {
+  -webkit-backdrop-filter: blur(1.5px);
+  backdrop-filter: blur(1.5px);
+  -webkit-mask-image: linear-gradient(to bottom, transparent 20%, #000 40%);
+  mask-image: linear-gradient(to bottom, transparent 20%, #000 40%);
+}
+
+.progressive-blur-phone > i:nth-child(3) {
+  -webkit-backdrop-filter: blur(3px);
+  backdrop-filter: blur(3px);
+  -webkit-mask-image: linear-gradient(to bottom, transparent 40%, #000 60%);
+  mask-image: linear-gradient(to bottom, transparent 40%, #000 60%);
+}
+
+.progressive-blur-phone > i:nth-child(4) {
+  -webkit-backdrop-filter: blur(6px);
+  backdrop-filter: blur(6px);
+  -webkit-mask-image: linear-gradient(to bottom, transparent 60%, #000 80%);
+  mask-image: linear-gradient(to bottom, transparent 60%, #000 80%);
+}
+
+.progressive-blur-phone > i:nth-child(5) {
+  -webkit-backdrop-filter: blur(12px);
+  backdrop-filter: blur(12px);
+  -webkit-mask-image: linear-gradient(to bottom, transparent 75%, #000 95%);
+  mask-image: linear-gradient(to bottom, transparent 75%, #000 95%);
+}
+
+@media (max-height: 740px) and (min-width: 768px) {
+  .hero-short-hide {
+    display: none !important;
+  }
+}
+
+
 
 
 

@@ -146,24 +146,17 @@ export const Navbar: React.FC<NavbarProps> = ({ onBookDemoClick, pastHero = fals
           </span>
         </button>
 
-        {/* CENTER: The three links centered in one frosted pill (Desktop) */}
+        {/* CENTER: The three links centered in one glass-dark pill (Desktop) */}
         <nav
           aria-label="Main Navigation"
-          className="hidden lg:flex items-center h-[44px] px-2 rounded-[14px] absolute left-1/2 -translate-x-1/2"
-          style={{
-            background: 'rgba(255, 255, 255, 0.10)',
-            border: '1px solid rgba(255, 255, 255, 0.22)',
-            backdropFilter: 'blur(18px) saturate(160%)',
-            WebkitBackdropFilter: 'blur(18px) saturate(160%)',
-            boxShadow: 'inset 0 1px 0 rgba(255, 255, 255, 0.30)',
-          }}
+          className="glass-dark hidden lg:flex items-center h-[44px] px-[8px] rounded-[16px] absolute left-1/2 -translate-x-1/2"
         >
           {navLinks.map((link) => (
             <a
               key={link.href}
               href={link.href}
               onClick={(e) => handleScrollTo(e, link.href)}
-              className="px-4 h-[34px] flex items-center rounded-[10px] text-[14px] font-medium transition-colors select-none whitespace-nowrap hover:bg-[rgba(255,255,255,0.14)]"
+              className="px-[16px] h-[34px] flex items-center rounded-[10px] text-[14px] font-medium transition-colors select-none whitespace-nowrap hover:bg-[rgba(255,255,255,0.16)]"
               style={{ color: 'rgba(255, 255, 255, 0.92)' }}
             >
               <span>{link.label}</span>
@@ -171,7 +164,7 @@ export const Navbar: React.FC<NavbarProps> = ({ onBookDemoClick, pastHero = fals
           ))}
         </nav>
 
-        {/* RIGHT: Desktop CTA (underlined text link in white with 70% underline + 40px blue premium arrow button) */}
+        {/* RIGHT: Desktop CTA (underlined text link in white with 70% underline + 40px light glossy arrow button) */}
         <div className="hidden lg:flex items-center gap-[12px]">
           <button
             type="button"
@@ -184,22 +177,24 @@ export const Navbar: React.FC<NavbarProps> = ({ onBookDemoClick, pastHero = fals
           <button
             type="button"
             onClick={handleCtaClick}
-            className="btn-premium btn-premium--blue w-[40px] h-[40px] min-w-[40px] rounded-[10px] flex items-center justify-center cursor-pointer select-none text-white shadow-sm"
+            className="btn-premium btn-premium--light w-[40px] h-[40px] min-w-[40px] rounded-[10px] flex items-center justify-center cursor-pointer select-none text-[#2f6bff] shadow-sm"
+            style={{ '--btn-fg': '#2f6bff' } as React.CSSProperties}
             aria-label="Get Free Demo"
           >
-            <ArrowUpRight className="btn-arrow-diag w-[18px] h-[18px] stroke-[2.2] text-white" />
+            <ArrowUpRight className="btn-arrow-diag w-[18px] h-[18px] stroke-[2.2] text-[#2f6bff]" />
           </button>
         </div>
 
-        {/* RIGHT: Tablet & Mobile controls (Blue premium button + 2-line menu button) */}
+        {/* RIGHT: Tablet & Mobile controls (Light glossy button + 2-line menu button) */}
         <div className="flex lg:hidden items-center gap-2.5">
           <button
             type="button"
             onClick={handleCtaClick}
-            className="btn-premium btn-premium--blue w-[40px] h-[40px] min-w-[40px] rounded-[10px] flex items-center justify-center cursor-pointer text-white shadow-sm"
+            className="btn-premium btn-premium--light w-[40px] h-[40px] min-w-[40px] rounded-[10px] flex items-center justify-center cursor-pointer text-[#2f6bff] shadow-sm"
+            style={{ '--btn-fg': '#2f6bff' } as React.CSSProperties}
             aria-label="Get Free Demo"
           >
-            <ArrowUpRight className="btn-arrow-diag w-[18px] h-[18px] stroke-[2.2] text-white" />
+            <ArrowUpRight className="btn-arrow-diag w-[18px] h-[18px] stroke-[2.2] text-[#2f6bff]" />
           </button>
 
           <button

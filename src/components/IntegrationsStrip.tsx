@@ -1,46 +1,39 @@
 import React from 'react';
-import { motion } from 'motion/react';
-import { content } from '../content';
+
+const INTEGRATIONS = [
+  { name: 'ServiceTitan', label: 'ServiceTitan' },
+  { name: 'Jobber', label: 'Jobber' },
+  { name: 'Housecall Pro', label: 'Housecall Pro' },
+  { name: 'Google Calendar', label: 'Google Calendar' },
+  { name: 'Zapier', label: 'Zapier' },
+  { name: 'Twilio', label: 'Twilio' },
+  { name: 'QuickBooks', label: 'QuickBooks' },
+  { name: 'Stripe', label: 'Stripe' },
+];
 
 export const IntegrationsStrip: React.FC = () => {
-  const { caption, tools } = content.integrations;
-
   return (
-    <section className="w-full bg-[#F5F6F7] overflow-hidden pt-[130px] pb-[150px]">
-      <div className="max-w-[1187px] mx-auto px-4 text-center">
-        {/* Caption starts 130px below the hero bottom edge */}
-        <motion.p
-          initial={{ opacity: 0, y: 16 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, amount: 0.2 }}
-          transition={{ duration: 0.6 }}
-          className="text-[13px] uppercase tracking-[0.06em] text-[#5B5F68] font-[500] mb-[56px]"
-        >
-          {caption}
-        </motion.p>
+    <section className="w-full bg-[#0B0F19] border-y border-white/[0.08] py-8 overflow-hidden">
+      <div className="max-w-[1248px] mx-auto px-6 flex flex-col md:flex-row items-center justify-between gap-6">
+        <div className="shrink-0 text-center md:text-left">
+          <p className="text-[12px] uppercase tracking-[0.14em] font-semibold text-white/50">
+            Works with your existing software
+          </p>
+          <p className="text-[14px] text-white/80 font-medium mt-0.5">
+            Zero setup changes to your phone number or CRM
+          </p>
+        </div>
 
-        {/* Logo row sits 56px below caption */}
-        {/* TODO: Swap in verified brand SVG logos when available */}
-        <motion.div
-          initial={{ opacity: 0, filter: 'blur(8px)', y: 16 }}
-          whileInView={{ opacity: 1, filter: 'blur(0px)', y: 0 }}
-          viewport={{ once: true, amount: 0.2 }}
-          transition={{ duration: 0.8, delay: 0.15 }}
-          className="flex flex-wrap items-center justify-center gap-y-4 gap-x-2 sm:gap-x-0 max-w-4xl mx-auto"
-        >
-          {tools.map((tool, idx) => (
-            <React.Fragment key={tool.name}>
-              <div className="px-4 sm:px-6 md:px-7 py-1 text-[#9A9EA8] hover:text-[#0B0B0F] transition-colors duration-200">
-                <span className="text-sm sm:text-base md:text-lg font-normal tracking-tight font-display select-none">
-                  {tool.name}
-                </span>
-              </div>
-              {idx < tools.length - 1 && (
-                <div className="hidden sm:block w-[1px] h-4 bg-[rgba(11,11,15,0.08)] shrink-0" />
-              )}
-            </React.Fragment>
+        <div className="flex flex-wrap items-center justify-center md:justify-end gap-x-6 gap-y-3">
+          {INTEGRATIONS.map((item) => (
+            <div
+              key={item.name}
+              className="px-3.5 py-1.5 rounded-[10px] bg-white/[0.04] border border-white/[0.08] hover:border-white/20 transition-all text-white/70 hover:text-white text-[13px] font-medium tracking-tight select-none"
+            >
+              {item.label}
+            </div>
           ))}
-        </motion.div>
+        </div>
       </div>
     </section>
   );
