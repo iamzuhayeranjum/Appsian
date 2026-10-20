@@ -33,6 +33,8 @@ export const AppsianMark: React.FC<AppsianMarkProps> = ({
   );
 };
 
+export const AppsianIcon = AppsianMark;
+
 export const AppsianLogo: React.FC<{
   size?: number;
   className?: string;
