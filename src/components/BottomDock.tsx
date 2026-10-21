@@ -30,7 +30,7 @@ export const BottomDock: React.FC<BottomDockProps> = ({
         <button
           type="button"
           onClick={onOpenCallSimulator}
-          className="px-3 sm:px-4 py-2 rounded-full bg-white/10 hover:bg-white/16 text-white text-[13px] sm:text-[14px] font-medium flex items-center gap-2 transition-all cursor-pointer select-none"
+          className="btn-glitter px-3 sm:px-4 py-2 rounded-full bg-white/10 hover:bg-white/16 text-white text-[13px] sm:text-[14px] font-medium flex items-center gap-2 transition-all cursor-pointer select-none"
         >
           <Phone size={14} className="text-[#6EEDC2]" />
           <span className="hidden xs:inline">Test Call</span>
@@ -41,7 +41,7 @@ export const BottomDock: React.FC<BottomDockProps> = ({
         <button
           type="button"
           onClick={onScrollToRoi}
-          className="px-3 sm:px-4 py-2 rounded-full hover:bg-white/10 text-white/80 hover:text-white text-[13px] sm:text-[14px] font-medium flex items-center gap-2 transition-all cursor-pointer select-none hidden sm:flex"
+          className="btn-glitter px-3 sm:px-4 py-2 rounded-full hover:bg-white/10 text-white/80 hover:text-white text-[13px] sm:text-[14px] font-medium flex items-center gap-2 transition-all cursor-pointer select-none hidden sm:flex"
         >
           <Calculator size={14} />
           <span>ROI Calc</span>
@@ -51,7 +51,7 @@ export const BottomDock: React.FC<BottomDockProps> = ({
         <button
           type="button"
           onClick={onBookDemo}
-          className="px-3.5 sm:px-5 py-2 rounded-full bg-[#6EEDC2] hover:bg-[#85f5cd] text-[#062B20] text-[13px] sm:text-[14px] font-semibold flex items-center gap-1.5 transition-all shadow-[0_2px_12px_rgba(110,237,194,0.35)] cursor-pointer select-none active:scale-95"
+          className="btn-glitter btn-glitter--light px-3.5 sm:px-5 py-2 rounded-full bg-[#6EEDC2] hover:bg-[#85f5cd] text-[#062B20] text-[13px] sm:text-[14px] font-semibold flex items-center gap-1.5 transition-all shadow-[0_2px_12px_rgba(110,237,194,0.35)] cursor-pointer select-none active:scale-95"
         >
           <span>Get Free Demo</span>
           <ArrowUpRight size={15} strokeWidth={2.5} />
@@ -66,7 +66,7 @@ export const BottomDock: React.FC<BottomDockProps> = ({
           onClick={onScrollToTop}
           aria-label="Back to top"
           title="Back to top"
-          className="w-9 h-9 rounded-full hover:bg-white/12 text-white/70 hover:text-white flex items-center justify-center transition-all cursor-pointer select-none"
+          className="btn-glitter w-9 h-9 rounded-full hover:bg-white/12 text-white/70 hover:text-white flex items-center justify-center transition-all cursor-pointer select-none"
         >
           <ArrowUp size={16} />
         </button>

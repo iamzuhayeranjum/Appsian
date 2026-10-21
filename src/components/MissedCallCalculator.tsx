@@ -219,7 +219,7 @@ export const MissedCallCalculator: React.FC = () => {
               <button
                 type="button"
                 onClick={handleScrollToHeroDemo}
-                className="btn-premium btn-premium--mint group h-[44px] rounded-[10px] px-4 sm:px-[22px] font-sans font-medium text-[13px] sm:text-[15px] flex items-center gap-3 cursor-pointer"
+                className="btn-premium btn-premium--mint btn-glitter group h-[44px] rounded-[10px] px-4 sm:px-[22px] font-sans font-medium text-[13px] sm:text-[15px] flex items-center gap-3 cursor-pointer"
               >
                 <span>Get Free Demo</span>
                 <ArrowRight className="btn-arrow w-4 h-4" strokeWidth={2} />

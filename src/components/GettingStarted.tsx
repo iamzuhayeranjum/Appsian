@@ -579,7 +579,7 @@ export const GettingStarted: React.FC<GettingStartedProps> = ({ onSuccessDemo })
             <button
               type="button"
               onClick={handleCtaClick}
-              className="btn-premium btn-premium--mint group relative h-[52px] px-7 rounded-[14px] font-sans font-semibold text-[15px] cursor-pointer select-none flex items-center justify-center gap-2.5"
+              className="btn-premium btn-premium--mint btn-glitter group relative h-[52px] px-7 rounded-[14px] font-sans font-semibold text-[15px] cursor-pointer select-none flex items-center justify-center gap-2.5"
             >
               <span>Get Free Demo</span>
               <ArrowRight className="btn-arrow w-4 h-4" strokeWidth={2} />

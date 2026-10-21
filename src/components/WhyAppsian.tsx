@@ -741,7 +741,7 @@ export const WhyAppsian: React.FC = () => {
           <button
             type="button"
             onClick={handleScrollToDemoBar}
-            className="btn-premium btn-premium--mint group relative inline-flex items-center justify-center gap-3 h-[48px] px-7 rounded-[12px] text-sm font-semibold tracking-tight cursor-pointer"
+            className="btn-premium btn-premium--mint btn-glitter group relative inline-flex items-center justify-center gap-3 h-[48px] px-7 rounded-[12px] text-sm font-semibold tracking-tight cursor-pointer"
           >
             <span>Get Free Demo</span>
             <ArrowRight className="btn-arrow w-4 h-4" strokeWidth={2} />

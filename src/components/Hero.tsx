@@ -216,7 +216,7 @@ export const Hero: React.FC<HeroProps> = ({ onBookDemoClick }) => {
             }}
             className="self-start cursor-default select-none"
           >
-            <div className="glass-dark glass-sheen glass-dark--hover h-[34px] pl-[6px] pr-[14px] rounded-[10px] inline-flex items-center gap-[8px] relative overflow-hidden">
+            <div className="glass-dark glass-dark--hover h-[34px] pl-[6px] pr-[14px] rounded-[10px] inline-flex items-center gap-[8px] relative overflow-hidden">
               <div
                 className="w-[22px] h-[22px] rounded-[6px] flex items-center justify-center shrink-0"
                 style={{
@@ -228,8 +228,12 @@ export const Hero: React.FC<HeroProps> = ({ onBookDemoClick }) => {
                 <AppsianMark size={12} className="text-white" />
               </div>
               <span
-                className="text-white text-[12px] font-semibold tracking-[0.08em] uppercase select-none leading-none"
-                style={{ textShadow: 'none' }}
+                className="text-[12px] font-semibold tracking-[0.08em] uppercase select-none leading-none"
+                style={{
+                  color: '#ffffff',
+                  WebkitTextFillColor: 'currentColor',
+                  textShadow: 'none',
+                }}
               >
                 FOR LOCAL TRADES
               </span>
@@ -306,8 +310,8 @@ export const Hero: React.FC<HeroProps> = ({ onBookDemoClick }) => {
               }}
               className="block"
             >
-              <span className="glitter-text inline-block whitespace-nowrap">
-                Bring Extra{' '}
+              <span className="inline-block whitespace-nowrap">
+                <span className="glitter-text inline-block">Bring Extra&nbsp;</span>
                 <span className="relative inline-block">
                   <GlitterStar size={20} style={{ right: -10, top: -8 }} delay="0s" />
                   <GlitterStar size={14} style={{ left: 4, top: -16 }} delay="1.6s" />
@@ -482,7 +486,7 @@ export const Hero: React.FC<HeroProps> = ({ onBookDemoClick }) => {
                     <button
                       type="submit"
                       disabled={status === 'loading'}
-                      className="btn-premium btn-premium--blue group/btn w-full lg:w-auto h-[58px] rounded-[16px] px-[30px] text-[16px] font-semibold text-white flex items-center justify-center gap-2.5 cursor-pointer select-none focus-visible:outline-2 focus-visible:outline-[#2563eb] focus-visible:outline-offset-[2px] disabled:opacity-75 disabled:cursor-not-allowed shadow-md"
+                      className="btn-premium btn-premium--blue btn-glitter group/btn w-full lg:w-auto h-[58px] rounded-[16px] px-[30px] text-[16px] font-semibold text-white flex items-center justify-center gap-2.5 cursor-pointer select-none focus-visible:outline-2 focus-visible:outline-[#2563eb] focus-visible:outline-offset-[2px] disabled:opacity-75 disabled:cursor-not-allowed shadow-md"
                     >
                       {status === 'loading' ? (
                         <>
@@ -564,7 +568,7 @@ export const Hero: React.FC<HeroProps> = ({ onBookDemoClick }) => {
               <button
                 type="button"
                 onClick={handleSeeHowItWorks}
-                className="btn-premium btn-premium--light w-8 h-8 rounded-[8px] flex items-center justify-center cursor-pointer shadow-xs border-0 text-[#2f6bff] active:scale-95 animate-hero-bob group-hover/see:animate-none"
+                className="btn-premium btn-premium--light btn-glitter btn-glitter--light w-8 h-8 rounded-[8px] flex items-center justify-center cursor-pointer shadow-xs border-0 text-[#2f6bff] active:scale-95 animate-hero-bob group-hover/see:animate-none"
                 style={{ '--btn-fg': '#2f6bff' } as React.CSSProperties}
                 aria-label="Scroll to how it works"
               >

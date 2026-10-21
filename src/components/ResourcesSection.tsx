@@ -117,7 +117,7 @@ export const ResourcesSection: React.FC<ResourcesSectionProps> = ({ onCtaClick }
             <button
               type="button"
               onClick={onCtaClick}
-              className="px-5 py-3 rounded-[12px] bg-[#6EEDC2] hover:bg-[#85f5cd] text-[#062B20] font-semibold text-sm flex items-center gap-1.5 transition-all shadow-[0_4px_16px_rgba(110,237,194,0.3)] cursor-pointer select-none shrink-0"
+              className="btn-glitter btn-glitter--light px-5 py-3 rounded-[12px] bg-[#6EEDC2] hover:bg-[#85f5cd] text-[#062B20] font-semibold text-sm flex items-center gap-1.5 transition-all shadow-[0_4px_16px_rgba(110,237,194,0.3)] cursor-pointer select-none shrink-0"
             >
               <span>Capture This Revenue</span>
               <ArrowUpRight size={16} strokeWidth={2.5} />

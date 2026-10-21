@@ -180,7 +180,7 @@ export const DemoBar: React.FC<DemoBarProps> = ({ onSuccess }) => {
             <button
               type="submit"
               disabled={isSuccess}
-              className={`btn-premium btn-premium--mint group w-full sm:w-auto h-[52px] rounded-[10px] px-[22px] font-sans font-medium text-[15px] flex items-center justify-center gap-3 cursor-pointer ${
+              className={`btn-premium btn-premium--mint btn-glitter group w-full sm:w-auto h-[52px] rounded-[10px] px-[22px] font-sans font-medium text-[15px] flex items-center justify-center gap-3 cursor-pointer ${
                 isSuccess ? 'opacity-95 cursor-default' : ''
               }`}
             >

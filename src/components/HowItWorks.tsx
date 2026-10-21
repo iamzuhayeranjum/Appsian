@@ -1072,7 +1072,7 @@ export const HowItWorks: React.FC = () => {
               <button
                 type="button"
                 onClick={handleScrollToHeroDemo}
-                className="btn-premium btn-premium--mint group h-[44px] px-6 rounded-[10px] font-sans font-medium text-[15px] flex items-center justify-center gap-3 cursor-pointer"
+                className="btn-premium btn-premium--mint btn-glitter group h-[44px] px-6 rounded-[10px] font-sans font-medium text-[15px] flex items-center justify-center gap-3 cursor-pointer"
               >
                 <span>Get Free Demo</span>
                 <span className="btn-arrow font-bold inline-block">

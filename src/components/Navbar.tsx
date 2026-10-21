@@ -177,7 +177,7 @@ export const Navbar: React.FC<NavbarProps> = ({ onBookDemoClick, pastHero = fals
           <button
             type="button"
             onClick={handleCtaClick}
-            className="btn-premium btn-premium--light w-[40px] h-[40px] min-w-[40px] rounded-[10px] flex items-center justify-center cursor-pointer select-none text-[#2f6bff] shadow-sm"
+            className="btn-premium btn-premium--light btn-glitter btn-glitter--light w-[40px] h-[40px] min-w-[40px] rounded-[10px] flex items-center justify-center cursor-pointer select-none text-[#2f6bff] shadow-sm"
             style={{ '--btn-fg': '#2f6bff' } as React.CSSProperties}
             aria-label="Get Free Demo"
           >
@@ -190,7 +190,7 @@ export const Navbar: React.FC<NavbarProps> = ({ onBookDemoClick, pastHero = fals
           <button
             type="button"
             onClick={handleCtaClick}
-            className="btn-premium btn-premium--light w-[40px] h-[40px] min-w-[40px] rounded-[10px] flex items-center justify-center cursor-pointer text-[#2f6bff] shadow-sm"
+            className="btn-premium btn-premium--light btn-glitter btn-glitter--light w-[40px] h-[40px] min-w-[40px] rounded-[10px] flex items-center justify-center cursor-pointer text-[#2f6bff] shadow-sm"
             style={{ '--btn-fg': '#2f6bff' } as React.CSSProperties}
             aria-label="Get Free Demo"
           >
@@ -203,7 +203,7 @@ export const Navbar: React.FC<NavbarProps> = ({ onBookDemoClick, pastHero = fals
             onClick={() => setMobileMenuOpen((prev) => !prev)}
             aria-expanded={mobileMenuOpen}
             aria-label={mobileMenuOpen ? 'Close navigation menu' : 'Open navigation menu'}
-            className="w-[40px] h-[40px] min-w-[40px] rounded-[10px] border border-[rgba(255,255,255,0.28)] bg-[rgba(255,255,255,0.12)] backdrop-blur-md flex items-center justify-center cursor-pointer transition-colors hover:bg-[rgba(255,255,255,0.2)] active:scale-95"
+            className="btn-glitter w-[40px] h-[40px] min-w-[40px] rounded-[10px] border border-[rgba(255,255,255,0.28)] bg-[rgba(255,255,255,0.12)] backdrop-blur-md flex items-center justify-center cursor-pointer transition-colors hover:bg-[rgba(255,255,255,0.2)] active:scale-95"
           >
             <svg
               width="18"
@@ -256,7 +256,7 @@ export const Navbar: React.FC<NavbarProps> = ({ onBookDemoClick, pastHero = fals
               <button
                 type="button"
                 onClick={handleCtaClick}
-                className="btn-premium btn-premium--blue w-full px-4 py-3 rounded-[10px] text-[15px] font-semibold text-white flex items-center justify-between cursor-pointer border-0 mt-0.5"
+                className="btn-premium btn-premium--blue btn-glitter w-full px-4 py-3 rounded-[10px] text-[15px] font-semibold text-white flex items-center justify-between cursor-pointer border-0 mt-0.5"
               >
                 <span>Get Free Demo</span>
                 <ArrowUpRight className="btn-arrow-diag w-4 h-4 stroke-[2.2] text-white" />

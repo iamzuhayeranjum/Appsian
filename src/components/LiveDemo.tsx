@@ -385,7 +385,7 @@ export const LiveDemo: React.FC<LiveDemoProps> = ({ onBookDemoClick }) => {
                 <button
                   type="button"
                   onClick={resetCall}
-                  className="w-9 h-9 rounded-full flex items-center justify-center cursor-pointer border border-[rgba(255,255,255,0.9)] bg-white/75 hover:bg-white active:scale-95 transition-all text-[#334155] hover:text-[#0B0F19] shadow-xs"
+                  className="btn-glitter btn-glitter--light w-9 h-9 rounded-full flex items-center justify-center cursor-pointer border border-[rgba(255,255,255,0.9)] bg-white/75 hover:bg-white active:scale-95 transition-all text-[#334155] hover:text-[#0B0F19] shadow-xs"
                   aria-label="Replay call demo"
                   title="Replay call"
                 >
@@ -512,7 +512,7 @@ export const LiveDemo: React.FC<LiveDemoProps> = ({ onBookDemoClick }) => {
         <button
           type="button"
           onClick={onBookDemoClick}
-          className="btn-premium group h-[52px] px-7 rounded-[14px] text-[15px] font-semibold text-white flex items-center justify-center gap-2.5 cursor-pointer select-none focus-visible:outline-2 focus-visible:outline-[#4A7FF0] focus-visible:outline-offset-[2px]"
+          className="btn-premium btn-glitter group h-[52px] px-7 rounded-[14px] text-[15px] font-semibold text-white flex items-center justify-center gap-2.5 cursor-pointer select-none focus-visible:outline-2 focus-visible:outline-[#4A7FF0] focus-visible:outline-offset-[2px]"
         >
           <span>Get Free Demo</span>
           <ArrowRight className="btn-arrow w-[18px] h-[18px]" strokeWidth={2} />

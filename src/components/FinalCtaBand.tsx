@@ -203,7 +203,7 @@ export const FinalCtaBand: React.FC<FinalCtaBandProps> = ({ onSuccessDemo }) => 
                 {/* Button in mint token */}
                 <button
                   type="submit"
-                  className="btn-premium btn-premium--mint group relative h-[46px] px-6 rounded-[12px] font-sans font-semibold text-[14px] shrink-0 flex items-center justify-center gap-2 cursor-pointer transition-transform duration-150 active:scale-[0.98]"
+                  className="btn-premium btn-premium--mint btn-glitter group relative h-[46px] px-6 rounded-[12px] font-sans font-semibold text-[14px] shrink-0 flex items-center justify-center gap-2 cursor-pointer transition-transform duration-150 active:scale-[0.98]"
                 >
                   <span>{finalCta.buttonLabel}</span>
                 </button>

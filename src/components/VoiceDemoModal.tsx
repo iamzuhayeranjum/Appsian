@@ -146,9 +146,9 @@ export const VoiceDemoModal: React.FC<VoiceDemoModalProps> = ({ isOpen, onClose 
                 const el = document.querySelector('#pricing');
                 if (el) el.scrollIntoView({ behavior: 'smooth' });
               }}
-              className="btn-premium btn-premium--mint h-[38px] px-4 rounded-[8px] font-[500] text-xs tracking-tight cursor-pointer"
+              className="btn-premium btn-premium--mint btn-glitter h-[38px] px-4 rounded-[8px] font-[500] text-xs tracking-tight cursor-pointer"
             >
-              Start 30-Day Pilot
+              <span>Start 30-Day Pilot</span>
             </button>
           </div>
         </motion.div>

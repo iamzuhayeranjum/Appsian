@@ -188,7 +188,7 @@ export const PricingSection: React.FC<PricingSectionProps> = ({ onPlanSelect }) 
                     type="button"
                     onClick={() => onPlanSelect(plan.name)}
                     className={`btn-premium ${
-                      plan.popular ? 'btn-premium--mint' : 'btn-premium--light'
+                      plan.popular ? 'btn-premium--mint btn-glitter' : 'btn-premium--light btn-glitter btn-glitter--light'
                     } group relative mt-6 w-full h-[46px] rounded-[10px] text-[14px] font-[500] flex items-center justify-center cursor-pointer`}
                   >
                     <span>{plan.ctaLabel}</span>
@@ -264,9 +264,9 @@ export const PricingSection: React.FC<PricingSectionProps> = ({ onPlanSelect }) 
           <button
             type="button"
             onClick={() => onPlanSelect('Founding pilot')}
-            className="btn-premium btn-premium--light shrink-0 h-[34px] px-4 rounded-[8px] text-[13px] font-medium cursor-pointer whitespace-nowrap"
+            className="btn-premium btn-premium--light btn-glitter btn-glitter--light shrink-0 h-[34px] px-4 rounded-[8px] text-[13px] font-medium cursor-pointer whitespace-nowrap"
           >
-            Claim pilot spot
+            <span>Claim pilot spot</span>
           </button>
         </motion.div>
       </div>

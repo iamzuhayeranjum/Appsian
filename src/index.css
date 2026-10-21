@@ -218,7 +218,7 @@
   }
 
   /* specular top line + glossy upper half + soft top-right glow */
-  .btn-premium::after {
+  .btn-premium:not(.btn-glitter)::after {
     content: '';
     position: absolute;
     inset: 0;
@@ -733,8 +733,8 @@
   background-image:
     var(--gl-a, none),
     var(--gl-b, none),
-    linear-gradient(105deg, rgba(255,255,255,0) 40%, rgba(255,255,255,0.65) 50%, rgba(255,255,255,0) 60%),
-    linear-gradient(180deg, #f2f8ff 0%, #cfe5ff 100%);
+    linear-gradient(105deg, rgba(255,255,255,0) 40%, rgba(255,255,255,0.7) 50%, rgba(255,255,255,0) 60%),
+    linear-gradient(180deg, #ffffff 0%, #cfe5ff 100%);
   background-size: 260px 140px, 260px 140px, 250% 100%, 100% 100%;
   background-repeat: repeat, repeat, no-repeat, no-repeat;
   background-position: var(--gl-ax) var(--gl-ay), var(--gl-bx) var(--gl-by), var(--gl-shine) 0, 0 0;
@@ -753,8 +753,8 @@
   background-image:
     var(--gl-a, none),
     var(--gl-b, none),
-    linear-gradient(105deg, rgba(255,255,255,0) 40%, rgba(255,255,255,0.6) 50%, rgba(255,255,255,0) 60%),
-    linear-gradient(90deg, #ffffff 0%, #ddf3ff 30%, #a8e4ff 60%, #ffffff 100%);
+    linear-gradient(105deg, rgba(255,255,255,0) 40%, rgba(255,255,255,0.7) 50%, rgba(255,255,255,0) 60%),
+    linear-gradient(90deg, #ffffff 0%, #ddf3ff 25%, #70cbff 60%, #c4eeff 100%);
   background-size: 260px 140px, 260px 140px, 250% 100%, 200% 100%;
   background-repeat: repeat, repeat, no-repeat, no-repeat;
   background-position: var(--gl-ax) var(--gl-ay), var(--gl-bx) var(--gl-by), var(--gl-shine) 0, var(--gl-gx) 0;
@@ -782,6 +782,116 @@
 @supports not ((-webkit-background-clip: text) or (background-clip: text)) {
   .glitter-text { background: none; color: #ffffff; -webkit-text-fill-color: currentColor; }
   .glitter-blue { background: none; color: #cfe9ff; -webkit-text-fill-color: currentColor; }
+}
+
+/* =====================================================================
+   BUTTON HOVER GLITTER SYSTEM
+   ===================================================================== */
+
+@property --btn-shine { syntax: '<percentage>'; inherits: false; initial-value: 180%; }
+@property --btn-ax { syntax: '<length>'; inherits: false; initial-value: 0px; }
+@property --btn-ay { syntax: '<length>'; inherits: false; initial-value: 0px; }
+@property --btn-bx { syntax: '<length>'; inherits: false; initial-value: 0px; }
+@property --btn-by { syntax: '<length>'; inherits: false; initial-value: 0px; }
+
+@keyframes btnShine {
+  0% { --btn-shine: 180%; }
+  100% { --btn-shine: -80%; }
+}
+@keyframes btnSparkA {
+  to { --btn-ax: 96px; --btn-ay: -56px; }
+}
+@keyframes btnSparkB {
+  to { --btn-bx: -96px; --btn-by: 56px; }
+}
+
+.btn-glitter {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+}
+
+.btn-glitter > * {
+  position: relative;
+  z-index: 2;
+}
+
+.btn-glitter::after,
+.btn-glitter .btn-glitter-fx {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  z-index: 1;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  background-image:
+    linear-gradient(105deg, rgba(255,255,255,0) 35%, rgba(255,255,255,0.7) 50%, rgba(255,255,255,0) 65%),
+    var(--btn-gl-w-a, none),
+    var(--btn-gl-w-b, none);
+  background-size:
+    220% 100%,
+    96px 56px,
+    96px 56px;
+  background-repeat:
+    no-repeat,
+    repeat,
+    repeat;
+  background-position:
+    var(--btn-shine) 0,
+    var(--btn-ax) var(--btn-ay),
+    var(--btn-bx) var(--btn-by);
+}
+
+/* Light button variant (for white / pale buttons, e.g. white square arrow buttons) */
+.btn-glitter--light::after,
+.btn-glitter--light .btn-glitter-fx {
+  background-image:
+    linear-gradient(105deg, rgba(255,255,255,0) 35%, rgba(255,255,255,0.92) 50%, rgba(255,255,255,0) 65%),
+    var(--btn-gl-b-a, none),
+    var(--btn-gl-b-b, none);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .btn-glitter:not(:disabled):not([aria-disabled='true']):hover::after,
+  .btn-glitter:not(:disabled):not([aria-disabled='true']):hover .btn-glitter-fx {
+    opacity: 1;
+    animation:
+      btnShine 0.9s cubic-bezier(0.16, 1, 0.3, 1) 1 forwards,
+      btnSparkA 14s linear infinite,
+      btnSparkB 18s linear infinite reverse;
+  }
+}
+
+.btn-glitter:not(:disabled):not([aria-disabled='true']):focus-visible::after,
+.btn-glitter:not(:disabled):not([aria-disabled='true']):focus-visible .btn-glitter-fx {
+  opacity: 1;
+  animation:
+    btnShine 0.9s cubic-bezier(0.16, 1, 0.3, 1) 1 forwards,
+    btnSparkA 14s linear infinite,
+    btnSparkB 18s linear infinite reverse;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .btn-glitter::after,
+  .btn-glitter .btn-glitter-fx,
+  .btn-glitter:hover::after,
+  .btn-glitter:hover .btn-glitter-fx,
+  .btn-glitter:focus-visible::after,
+  .btn-glitter:focus-visible .btn-glitter-fx {
+    animation: none !important;
+  }
+  @media (hover: hover) and (pointer: fine) {
+    .btn-glitter:not(:disabled):not([aria-disabled='true']):hover::after,
+    .btn-glitter:not(:disabled):not([aria-disabled='true']):hover .btn-glitter-fx {
+      opacity: 0.7;
+    }
+  }
+  .btn-glitter:not(:disabled):not([aria-disabled='true']):focus-visible::after,
+  .btn-glitter:not(:disabled):not([aria-disabled='true']):focus-visible .btn-glitter-fx {
+    opacity: 0.7;
+  }
 }
 
 /* =====================================================================

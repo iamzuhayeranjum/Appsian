@@ -324,7 +324,7 @@ export const Benefits: React.FC<BenefitsProps> = ({ onBookDemoClick }) => {
                           type="button"
                           onClick={handleCtaClick}
                           style={{ fontFamily: 'inherit' }}
-                          className="btn-premium btn-premium--dark group h-[50px] px-5 rounded-[14px] text-[15px] font-medium flex items-center justify-center gap-3 cursor-pointer"
+                          className="btn-premium btn-premium--dark btn-glitter group h-[50px] px-5 rounded-[14px] text-[15px] font-medium flex items-center justify-center gap-3 cursor-pointer"
                         >
                           <span>Get Free Demo</span>
                           <ArrowUpRight
@@ -338,9 +338,9 @@ export const Benefits: React.FC<BenefitsProps> = ({ onBookDemoClick }) => {
                           href="#how-it-works"
                           onClick={handleSecondaryClick}
                           style={{ fontFamily: 'inherit' }}
-                          className="btn-premium btn-premium--light h-[50px] px-5 rounded-[14px] text-[15px] font-medium flex items-center justify-center cursor-pointer"
+                          className="btn-premium btn-premium--light btn-glitter btn-glitter--light h-[50px] px-5 rounded-[14px] text-[15px] font-medium flex items-center justify-center cursor-pointer"
                         >
-                          See how it works
+                          <span>See how it works</span>
                         </a>
                       </div>
                     </div>

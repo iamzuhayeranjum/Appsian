@@ -430,7 +430,7 @@ export const BottomNav: React.FC<BottomNavProps> = ({ onCtaClick, pastHero: prop
             <button
               type="button"
               onClick={handleCtaClick}
-              className="btn-premium btn-premium--mint group relative w-[132px] md:w-[164px] h-[46px] md:h-[54px] rounded-[10px] flex items-center justify-center gap-2 md:gap-3 font-sans font-[600] text-[13px] md:text-[15px] cursor-pointer select-none"
+              className="btn-premium btn-premium--mint btn-glitter group relative w-[132px] md:w-[164px] h-[46px] md:h-[54px] rounded-[10px] flex items-center justify-center gap-2 md:gap-3 font-sans font-[600] text-[13px] md:text-[15px] cursor-pointer select-none"
             >
               <span className="relative z-10 whitespace-nowrap">Get Free Demo</span>
               <ArrowRight
