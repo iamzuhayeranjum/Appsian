@@ -70,6 +70,7 @@ export const HeroPhoneStage: React.FC<HeroPhoneStageProps> = () => {
   const [audioPlayFailed, setAudioPlayFailed] = useState(false);
   const [audioStatus, setAudioStatus] = useState<'checking' | 'ok' | 'missing' | 'wrong-type'>('checking');
   const [reduceMotion, setReduceMotion] = useState(false);
+  const [isScrolled, setIsScrolled] = useState(false);
 
   useEffect(() => {
     const mq = window.matchMedia('(prefers-reduced-motion: reduce)');
@@ -127,6 +128,7 @@ export const HeroPhoneStage: React.FC<HeroPhoneStageProps> = () => {
       callTimeRef.current = 0;
       setAudioPlayFailed(false);
       fallbackStartRef.current = null;
+      setIsScrolled(false);
       setCallState('ringing');
       callStateRef.current = 'ringing';
       acceptBtnRef.current?.focus();
@@ -140,15 +142,27 @@ export const HeroPhoneStage: React.FC<HeroPhoneStageProps> = () => {
     if (!audioInstanceRef.current) {
       const audioUrl = `${DEMO_AUDIO_SRC}?${DEMO_AUDIO_VERSION}`;
       console.log('[demo-call] Initializing Audio singleton with URL:', audioUrl);
+      console.log('[demo-call] Audio elements in memory:', 1);
       const audio = new Audio(audioUrl);
       audio.preload = 'auto';
+      audio.playbackRate = 1;
+      audio.defaultPlaybackRate = 1;
+      (audio as any).preservesPitch = true;
+      if ('webkitPreservesPitch' in audio) (audio as any).webkitPreservesPitch = true;
+      if ('mozPreservesPitch' in audio) (audio as any).mozPreservesPitch = true;
       audio.volume = 1;
       audio.muted = false;
       audio.setAttribute('playsinline', 'true');
       audio.setAttribute('webkit-playsinline', 'true');
 
       audio.addEventListener('loadedmetadata', () => {
-        console.log('[demo-call] Event: loadedmetadata (duration:', audio.duration, ')');
+        console.log('[demo-call] Event: loadedmetadata', {
+          duration: audio.duration,
+          playbackRate: audio.playbackRate,
+          defaultPlaybackRate: audio.defaultPlaybackRate,
+          preservesPitch: (audio as any).preservesPitch,
+          volume: audio.volume,
+        });
       });
       audio.addEventListener('canplay', () => {
         console.log('[demo-call] Event: canplay');
@@ -158,6 +172,15 @@ export const HeroPhoneStage: React.FC<HeroPhoneStageProps> = () => {
       });
       audio.addEventListener('pause', () => {
         console.log('[demo-call] Event: pause');
+      });
+      audio.addEventListener('ratechange', () => {
+        console.log('[demo-call] Event: ratechange, rate is', audio.playbackRate);
+        if (audio.playbackRate !== 1) {
+          console.warn(
+            `[demo-call] playbackRate is not 1 (was ${audio.playbackRate}), resetting to 1`
+          );
+          audio.playbackRate = 1;
+        }
       });
       audio.addEventListener('ended', () => {
         console.log('[demo-call] Event: ended');
@@ -201,6 +224,11 @@ export const HeroPhoneStage: React.FC<HeroPhoneStageProps> = () => {
         console.log(`[demo-call] HEAD check status: ${res.status}, content-type: "${contentType}"`);
 
         if (!res.ok) {
+          if (res.status === 0 || res.type === 'opaque' || url.startsWith('http')) {
+            console.warn('[demo-call] Cross-origin or restricted check response, allowing audio playback attempt:', res.status);
+            setAudioStatus('ok');
+            return;
+          }
           setAudioStatus('missing');
           return;
         }
@@ -218,7 +246,7 @@ export const HeroPhoneStage: React.FC<HeroPhoneStageProps> = () => {
           setAudioStatus('ok');
         }
       } catch (err) {
-        console.warn('[demo-call] Audio HEAD check failed:', err);
+        console.warn('[demo-call] Audio check failed (cross-origin or network), allowing audio playback attempt:', err);
         setAudioStatus('ok');
       }
     };
@@ -239,9 +267,15 @@ export const HeroPhoneStage: React.FC<HeroPhoneStageProps> = () => {
     console.log('[demo-call] Accept clicked');
     setNotAllowedHint(false);
     setAudioPlayFailed(false);
+    setIsScrolled(false);
 
     // Call audio.play() synchronously in the user tap call stack
     const audio = getAudio();
+    audio.playbackRate = 1;
+    audio.defaultPlaybackRate = 1;
+    (audio as any).preservesPitch = true;
+    if ('webkitPreservesPitch' in audio) (audio as any).webkitPreservesPitch = true;
+    if ('mozPreservesPitch' in audio) (audio as any).mozPreservesPitch = true;
     audio.currentTime = 0;
     audio.muted = false;
     audio.volume = 1;
@@ -250,6 +284,41 @@ export const HeroPhoneStage: React.FC<HeroPhoneStageProps> = () => {
     acceptTimestampRef.current = performance.now();
     setCallState('answered');
     callStateRef.current = 'answered';
+
+    console.log('[demo-call] State after play():', {
+      duration: audio.duration,
+      playbackRate: audio.playbackRate,
+      defaultPlaybackRate: audio.defaultPlaybackRate,
+      preservesPitch: (audio as any).preservesPitch,
+      volume: audio.volume,
+      paused: audio.paused,
+    });
+
+    // Speed check 3 seconds after playback starts
+    const acceptStartTime = performance.now();
+    setTimeout(() => {
+      if (
+        callStateRef.current === 'answered' &&
+        audioInstanceRef.current &&
+        !audioInstanceRef.current.paused
+      ) {
+        const elapsedWallClock = (performance.now() - acceptStartTime) / 1000;
+        const audioTime = audioInstanceRef.current.currentTime;
+        const ratio = audioTime / elapsedWallClock;
+        console.log(
+          `[demo-call] Speed check at 3s: elapsed wall-clock=${elapsedWallClock.toFixed(
+            2
+          )}s, audio.currentTime=${audioTime.toFixed(2)}s, ratio=${ratio.toFixed(2)}`
+        );
+        if (ratio < 0.8 || ratio > 1.2) {
+          console.warn(
+            `[demo-call] playback speed mismatch: wall-clock=${elapsedWallClock.toFixed(
+              2
+            )}s, audio.currentTime=${audioTime.toFixed(2)}s`
+          );
+        }
+      }
+    }, 3000);
 
     if (playPromise !== undefined) {
       playPromise
@@ -328,6 +397,13 @@ export const HeroPhoneStage: React.FC<HeroPhoneStageProps> = () => {
     return () => cancelAnimationFrame(rafId);
   }, [callState, audioPlayFailed]);
 
+  const handleListScroll = (e: React.UIEvent<HTMLDivElement>) => {
+    const scrolled = e.currentTarget.scrollTop > 2;
+    if (scrolled !== isScrolled) {
+      setIsScrolled(scrolled);
+    }
+  };
+
   // Auto-scroll transcript list to bottom as lines arrive
   useEffect(() => {
     if (callState === 'answered' && transcriptListRef.current) {
@@ -335,6 +411,9 @@ export const HeroPhoneStage: React.FC<HeroPhoneStageProps> = () => {
         top: transcriptListRef.current.scrollHeight,
         behavior: reduceMotion ? 'auto' : 'smooth',
       });
+      if (transcriptListRef.current.scrollTop > 2) {
+        setIsScrolled(true);
+      }
     }
   }, [callTime, callState, reduceMotion]);
 
@@ -426,7 +505,10 @@ export const HeroPhoneStage: React.FC<HeroPhoneStageProps> = () => {
             }}
           >
             {/* Inner Phone Screen */}
-            <div className="w-full h-full rounded-[40px] overflow-hidden relative flex flex-col justify-between p-3.5 bg-gradient-to-b from-[#E9EEFC] to-[#DCE4F7]">
+            <div
+              className="w-full h-full rounded-[40px] overflow-hidden relative flex flex-col justify-between py-3.5 px-0 bg-gradient-to-b from-[#E9EEFC] to-[#DCE4F7]"
+              style={{ '--screen-inset': '18px' } as React.CSSProperties}
+            >
               {/* Top Bar: Dynamic Island + Status Bar */}
               <div className="w-full flex flex-col items-center shrink-0">
                 {/* Dynamic Island */}
@@ -435,7 +517,7 @@ export const HeroPhoneStage: React.FC<HeroPhoneStageProps> = () => {
                 </div>
 
                 {/* Status Bar */}
-                <div className="w-full flex items-center justify-between text-[#0B0F19] text-[11px] font-semibold px-2.5 -mt-3.5">
+                <div className="w-full flex items-center justify-between text-[#0B0F19] text-[11px] font-semibold px-[28px] -mt-3.5">
                   <span>9:58</span>
                   <div className="flex items-center gap-1.5">
                     <span className="text-[10px]">5G</span>
@@ -446,7 +528,7 @@ export const HeroPhoneStage: React.FC<HeroPhoneStageProps> = () => {
                 </div>
 
                 {/* Caller Name & Subtitle / Timer */}
-                <div className="mt-3 text-center">
+                <div className="mt-3 text-center px-4">
                   <h3 className="text-[19px] font-medium text-[#0B0F19] leading-tight tracking-tight">
                     AI Sales Receptionist
                   </h3>
@@ -479,12 +561,16 @@ export const HeroPhoneStage: React.FC<HeroPhoneStageProps> = () => {
               {/* IN-CALL ELEMENTS: Step Tiles, Decorative Grid, Live Transcript & Hang-up */}
               {callState === 'answered' && (
                 <>
-                  {/* 3 Step Tiles Row */}
+                  {/* 3 Step Tiles Row (Equal columns, sharing exact horizontal edges with panel) */}
                   <motion.div
                     initial={reduceMotion ? false : { opacity: 0, y: -8 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ duration: 0.3, delay: 0.06 }}
-                    className="w-full flex items-center justify-between gap-1.5 px-0.5 mt-2 shrink-0 z-10"
+                    className="grid grid-cols-3 gap-2 mt-[14px] shrink-0 z-10"
+                    style={{
+                      marginLeft: 'var(--screen-inset, 18px)',
+                      marginRight: 'var(--screen-inset, 18px)',
+                    }}
                   >
                     {[
                       { time: '0:02', timeSec: 2, label: 'Answered', active: isAnswered },
@@ -495,7 +581,7 @@ export const HeroPhoneStage: React.FC<HeroPhoneStageProps> = () => {
                         key={tile.label}
                         type="button"
                         onClick={() => handleSeek(tile.timeSec)}
-                        className={`flex-1 h-[38px] rounded-[12px] flex flex-col justify-center items-center text-center relative transition-all duration-300 cursor-pointer ${
+                        className={`h-[38px] rounded-[12px] flex flex-col justify-center items-center text-center relative transition-all duration-300 cursor-pointer ${
                           tile.active ? 'border-[rgba(59,130,246,0.65)]' : 'border-[rgba(255,255,255,0.85)]'
                         }`}
                         style={{
@@ -532,7 +618,7 @@ export const HeroPhoneStage: React.FC<HeroPhoneStageProps> = () => {
                     initial={reduceMotion ? false : { opacity: 0 }}
                     animate={{ opacity: 0.7 }}
                     transition={{ duration: 0.3, delay: 0.12 }}
-                    className="grid grid-cols-3 gap-2.5 px-2 my-auto"
+                    className="grid grid-cols-3 gap-2.5 px-6 my-auto select-none pointer-events-none"
                   >
                     {[
                       { label: 'mute', icon: Mic },
@@ -565,8 +651,13 @@ export const HeroPhoneStage: React.FC<HeroPhoneStageProps> = () => {
                     initial={reduceMotion ? false : { opacity: 0, scale: 0.98 }}
                     animate={{ opacity: 1, scale: 1 }}
                     transition={{ duration: 0.3 }}
-                    className="absolute left-[12px] right-[12px] top-[146px] bottom-[86px] rounded-[20px] p-2.5 flex flex-col z-20 overflow-hidden"
+                    className="absolute rounded-[20px] flex flex-col z-20 overflow-hidden"
                     style={{
+                      top: '152px',
+                      bottom: '84px',
+                      left: 'var(--screen-inset, 18px)',
+                      right: 'var(--screen-inset, 18px)',
+                      padding: '12px 14px 14px 14px',
                       background: 'rgba(255, 255, 255, 0.58)',
                       border: '1px solid rgba(255, 255, 255, 0.85)',
                       backdropFilter: 'blur(16px) saturate(170%)',
@@ -575,12 +666,12 @@ export const HeroPhoneStage: React.FC<HeroPhoneStageProps> = () => {
                     }}
                   >
                     {/* Header Row */}
-                    <div className="flex items-center justify-between border-b border-[rgba(11,21,48,0.06)] pb-1.5 mb-1.5 px-1 shrink-0">
+                    <div className="w-full h-[40px] flex items-center justify-between pb-1.5 shrink-0 border-b border-[rgba(15,16,32,0.06)]">
                       <div>
                         <span className="text-[11px] font-semibold text-[#0b1530] block leading-none">
                           Live transcript
                         </span>
-                        <span className="text-[9.5px] text-[#64748B] block mt-0.5 leading-none">
+                        <span className="text-[9.5px] text-[#64748B] block mt-1 leading-none">
                           Live audio stream
                         </span>
                       </div>
@@ -589,14 +680,21 @@ export const HeroPhoneStage: React.FC<HeroPhoneStageProps> = () => {
                       </div>
                     </div>
 
-                    {/* Messages List */}
+                    {/* Messages List (Zero padding, full width to panel inner 14px edge, no scrollbar space) */}
                     <div
                       ref={transcriptListRef}
+                      onScroll={handleListScroll}
                       aria-live="polite"
-                      className="flex-1 overflow-y-auto no-scrollbar flex flex-col gap-1.5 pr-0.5 relative"
+                      className="flex-1 overflow-y-auto mt-[8px] p-0 flex flex-col gap-[8px] relative no-scrollbar"
                       style={{
-                        maskImage: 'linear-gradient(to bottom, transparent 0, #000 22px)',
-                        WebkitMaskImage: 'linear-gradient(to bottom, transparent 0, #000 22px)',
+                        scrollbarWidth: 'none',
+                        msOverflowStyle: 'none',
+                        maskImage: isScrolled
+                          ? 'linear-gradient(to bottom, transparent 0, #000 22px)'
+                          : 'none',
+                        WebkitMaskImage: isScrolled
+                          ? 'linear-gradient(to bottom, transparent 0, #000 22px)'
+                          : 'none',
                       }}
                     >
                       {visibleLines.map((line, idx) => {
@@ -604,7 +702,7 @@ export const HeroPhoneStage: React.FC<HeroPhoneStageProps> = () => {
                         return (
                           <motion.div
                             key={idx}
-                            initial={reduceMotion ? false : { opacity: 0, y: 12 }}
+                            initial={reduceMotion ? false : { opacity: 0, y: 10 }}
                             animate={{ opacity: 1, y: 0 }}
                             transition={{ duration: 0.35, ease: 'easeOut' }}
                             className={`flex flex-col max-w-[88%] text-left ${
@@ -612,14 +710,17 @@ export const HeroPhoneStage: React.FC<HeroPhoneStageProps> = () => {
                             }`}
                           >
                             <div
-                              className={`px-2.5 py-1.5 rounded-[14px] text-[12px] leading-[1.38] ${
+                              className={`rounded-[16px] text-[12px] leading-[1.4] ${
                                 isAppsian
-                                  ? 'bg-white text-[#0b1530] shadow-xs'
-                                  : 'bg-[#e6eeff] text-[#0b1530]'
+                                  ? 'bg-white text-[#0b1530] shadow-xs relative pt-[9px] pr-[14px] pb-[9px] pl-[24px]'
+                                  : 'bg-[#e6eeff] text-[#0b1530] px-[14px] py-[9px]'
                               }`}
                             >
                               {isAppsian && (
-                                <span className="inline-block w-1.5 h-1.5 rounded-full bg-[#3b82f6] mr-1.5 align-middle" />
+                                <span
+                                  className="absolute w-[6px] h-[6px] rounded-full bg-[#3b82f6] left-[10px] top-[15px] pointer-events-none"
+                                  aria-hidden="true"
+                                />
                               )}
                               <span>{line.text}</span>
                             </div>
@@ -655,13 +756,13 @@ export const HeroPhoneStage: React.FC<HeroPhoneStageProps> = () => {
                     </div>
                   </motion.div>
 
-                  {/* Red Hang-up Button */}
+                  {/* Red Hang-up Button (Bottom edge of panel is 14px above top of button) */}
                   <motion.div
                     initial={reduceMotion ? false : { opacity: 0, y: 16 }}
                     animate={{ opacity: 1, y: 0 }}
                     exit={{ opacity: 0, y: 16 }}
                     transition={{ duration: 0.25 }}
-                    className="w-full flex justify-center items-center pb-2 z-30 shrink-0"
+                    className="w-full flex justify-center items-center pb-3.5 z-30 shrink-0"
                   >
                     <button
                       ref={hangUpBtnRef}
@@ -686,10 +787,13 @@ export const HeroPhoneStage: React.FC<HeroPhoneStageProps> = () => {
                   transition={{ duration: 0.3 }}
                   className="flex-1 flex flex-col justify-between py-1 z-10"
                 >
-                  {/* Compact Idle Transcript Glass Card */}
+                  {/* Compact Idle Transcript Glass Card (Aligned with exact same screen inset) */}
                   <div
-                    className="w-full rounded-[20px] p-3 flex flex-col shrink-0 mt-2 relative z-10"
+                    className="rounded-[20px] flex flex-col shrink-0 mt-3 relative z-10"
                     style={{
+                      marginLeft: 'var(--screen-inset, 18px)',
+                      marginRight: 'var(--screen-inset, 18px)',
+                      padding: '12px 14px 14px 14px',
                       background: 'rgba(255, 255, 255, 0.58)',
                       border: '1px solid rgba(255, 255, 255, 0.85)',
                       backdropFilter: 'blur(16px) saturate(170%)',
@@ -697,7 +801,7 @@ export const HeroPhoneStage: React.FC<HeroPhoneStageProps> = () => {
                       boxShadow: 'inset 0 1px 0 #ffffff, 0 16px 40px -18px rgba(40, 60, 160, 0.35)',
                     }}
                   >
-                    <div className="flex items-center justify-between border-b border-[rgba(11,21,48,0.06)] pb-1.5 mb-1 px-0.5">
+                    <div className="w-full h-[40px] flex items-center justify-between border-b border-[rgba(11,21,48,0.06)] pb-1.5 shrink-0">
                       <div>
                         <span className="text-[11px] font-semibold text-[#0b1530] block leading-none">
                           Live transcript
@@ -708,7 +812,7 @@ export const HeroPhoneStage: React.FC<HeroPhoneStageProps> = () => {
                       </div>
                       <div className="w-2 h-2 rounded-full bg-slate-300" />
                     </div>
-                    <div className="py-2.5 px-1 text-center">
+                    <div className="pt-2.5 pb-1 text-center">
                       <p className="text-[11px] text-[#64748B] leading-relaxed">
                         Answer the call to hear the audio and follow along here.
                       </p>
