@@ -15,28 +15,18 @@ import {
   MessageSquare,
 } from 'lucide-react';
 import { DEMO_AUDIO_SRC, DEMO_AUDIO_VERSION } from '../config/demoCall';
+import {
+  lines,
+  jobDetails,
+  phases,
+  durationSeconds,
+  TRANSCRIPT_OFFSET,
+  TranscriptLine,
+} from '../config/demoTranscript';
 
 interface HeroPhoneStageProps {
   appReady?: boolean;
 }
-
-interface ScriptLine {
-  timeSec: number;
-  speaker: 'Appsian' | 'Caller';
-  text: string;
-}
-
-const SCRIPT: ScriptLine[] = [
-  { timeSec: 2, speaker: 'Appsian', text: 'Thanks for calling. This is Appsian. How can I help you today?' },
-  { timeSec: 8, speaker: 'Caller', text: "Hi, I've got a leak in my roof. Can someone take a look?" },
-  { timeSec: 14, speaker: 'Appsian', text: "I'm sorry to hear that. Is water coming in right now?" },
-  { timeSec: 22, speaker: 'Caller', text: "Yes, it's dripping in the hallway." },
-  { timeSec: 30, speaker: 'Appsian', text: 'Understood, that sounds urgent. Can I get your name and the best number?' },
-  { timeSec: 41, speaker: 'Caller', text: "It's Mark." },
-  { timeSec: 52, speaker: 'Appsian', text: 'Thanks, Mark. I can book an estimate tomorrow at 10:00 AM. Does that work?' },
-  { timeSec: 60, speaker: 'Caller', text: 'Yes, that works.' },
-  { timeSec: 66, speaker: 'Appsian', text: "You're all set. I've booked tomorrow at 10:00 AM and sent the details to the team." },
-];
 
 const NATURAL_WIDTH = 300;
 const NATURAL_HEIGHT = 610;
@@ -71,6 +61,14 @@ export const HeroPhoneStage: React.FC<HeroPhoneStageProps> = () => {
   const [audioStatus, setAudioStatus] = useState<'checking' | 'ok' | 'missing' | 'wrong-type'>('checking');
   const [reduceMotion, setReduceMotion] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
+  const [isDebugTime, setIsDebugTime] = useState(false);
+
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const params = new URLSearchParams(window.location.search);
+      setIsDebugTime(params.get('debugtime') === '1');
+    }
+  }, []);
 
   useEffect(() => {
     const mq = window.matchMedia('(prefers-reduced-motion: reduce)');
@@ -459,13 +457,48 @@ export const HeroPhoneStage: React.FC<HeroPhoneStageProps> = () => {
   }, [handleEndCall]);
 
   const visibleLines = reduceMotion
-    ? SCRIPT
-    : SCRIPT.filter((line) => line.timeSec <= callTime);
+    ? lines
+    : lines.filter((line) => callTime >= line.start + TRANSCRIPT_OFFSET - 0.1);
 
-  const isAnswered = (callState === 'answered' && callTime >= 2) || reduceMotion;
-  const isQualified = (callState === 'answered' && callTime >= 41) || reduceMotion;
-  const isBooked = (callState === 'answered' && callTime >= 52) || reduceMotion;
-  const showResultRow = (callState === 'answered' && callTime >= 52) || reduceMotion;
+  const isAnswered =
+    (callState === 'answered' && callTime >= phases.answered + TRANSCRIPT_OFFSET) || reduceMotion;
+  const isQualified =
+    (callState === 'answered' && callTime >= phases.qualified + TRANSCRIPT_OFFSET) || reduceMotion;
+  const isBooked =
+    (callState === 'answered' && callTime >= phases.booked + TRANSCRIPT_OFFSET) || reduceMotion;
+
+  const showIssue = Boolean(
+    jobDetails.issue?.value &&
+      (reduceMotion || callTime >= jobDetails.issue.time + TRANSCRIPT_OFFSET)
+  );
+  const showCaller = Boolean(
+    jobDetails.callerName?.value &&
+      (reduceMotion || callTime >= jobDetails.callerName.time + TRANSCRIPT_OFFSET)
+  );
+  const showAddress = Boolean(
+    jobDetails.address?.value &&
+      (reduceMotion || callTime >= jobDetails.address.time + TRANSCRIPT_OFFSET)
+  );
+  const showAppointment = Boolean(
+    jobDetails.appointment?.value &&
+      (reduceMotion || callTime >= jobDetails.appointment.time + TRANSCRIPT_OFFSET)
+  );
+  const showBooked = Boolean(
+    jobDetails.booked?.value &&
+      (reduceMotion || callTime >= jobDetails.booked.time + TRANSCRIPT_OFFSET)
+  );
+
+  const hasVisibleJobDetails =
+    callState === 'answered' &&
+    (showIssue || showCaller || showAddress || showAppointment || showBooked);
+
+  let latestVisibleLineIdx = -1;
+  for (let i = lines.length - 1; i >= 0; i--) {
+    if (callTime >= lines[i].start + TRANSCRIPT_OFFSET - 0.1) {
+      latestVisibleLineIdx = i;
+      break;
+    }
+  }
 
   return (
     <div
@@ -573,9 +606,24 @@ export const HeroPhoneStage: React.FC<HeroPhoneStageProps> = () => {
                     }}
                   >
                     {[
-                      { time: '0:02', timeSec: 2, label: 'Answered', active: isAnswered },
-                      { time: '0:41', timeSec: 41, label: 'Qualified', active: isQualified },
-                      { time: '1:06', timeSec: 52, label: 'Booked', active: isBooked },
+                      {
+                        time: formatTimer(Math.floor(phases.answered)),
+                        timeSec: phases.answered + TRANSCRIPT_OFFSET,
+                        label: 'Answered',
+                        active: isAnswered,
+                      },
+                      {
+                        time: formatTimer(Math.floor(phases.qualified)),
+                        timeSec: phases.qualified + TRANSCRIPT_OFFSET,
+                        label: 'Qualified',
+                        active: isQualified,
+                      },
+                      {
+                        time: formatTimer(Math.floor(phases.booked)),
+                        timeSec: phases.booked + TRANSCRIPT_OFFSET,
+                        label: 'Booked',
+                        active: isBooked,
+                      },
                     ].map((tile) => (
                       <button
                         key={tile.label}
@@ -698,7 +746,7 @@ export const HeroPhoneStage: React.FC<HeroPhoneStageProps> = () => {
                       }}
                     >
                       {visibleLines.map((line, idx) => {
-                        const isAppsian = line.speaker === 'Appsian';
+                        const isAi = line.speaker === 'ai';
                         return (
                           <motion.div
                             key={idx}
@@ -706,49 +754,155 @@ export const HeroPhoneStage: React.FC<HeroPhoneStageProps> = () => {
                             animate={{ opacity: 1, y: 0 }}
                             transition={{ duration: 0.35, ease: 'easeOut' }}
                             className={`flex flex-col max-w-[88%] text-left ${
-                              isAppsian ? 'self-start items-start' : 'self-end items-end'
+                              isAi ? 'self-start items-start' : 'self-end items-end'
                             }`}
                           >
                             <div
                               className={`rounded-[16px] text-[12px] leading-[1.4] ${
-                                isAppsian
+                                isAi
                                   ? 'bg-white text-[#0b1530] shadow-xs relative pt-[9px] pr-[14px] pb-[9px] pl-[24px]'
                                   : 'bg-[#e6eeff] text-[#0b1530] px-[14px] py-[9px]'
                               }`}
                             >
-                              {isAppsian && (
+                              {isAi && (
                                 <span
                                   className="absolute w-[6px] h-[6px] rounded-full bg-[#3b82f6] left-[10px] top-[15px] pointer-events-none"
                                   aria-hidden="true"
                                 />
                               )}
-                              <span>{line.text}</span>
+                              {/* Visually hidden text copy for screen readers */}
+                              <span className="sr-only">{line.text}</span>
+
+                              {/* Word-by-word highlight */}
+                              <span aria-hidden="true" className="select-none">
+                                {line.words && line.words.length > 0 ? (
+                                  line.words.map(([word, wStart], wIdx) => {
+                                    const isLit = callTime >= wStart + TRANSCRIPT_OFFSET || reduceMotion;
+                                    return (
+                                      <React.Fragment key={wIdx}>
+                                        {wIdx > 0 && ' '}
+                                        <span
+                                          className="transition-colors duration-[120ms] inline"
+                                          style={{ color: isLit ? '#0b1530' : '#94a3b8' }}
+                                        >
+                                          {word}
+                                        </span>
+                                      </React.Fragment>
+                                    );
+                                  })
+                                ) : (
+                                  (() => {
+                                    const wordsArr = line.text.split(' ');
+                                    const totalChars = Math.max(1, line.text.length);
+                                    let runningChars = 0;
+                                    return wordsArr.map((word, wIdx) => {
+                                      const wordCharStart = runningChars;
+                                      runningChars += word.length + 1;
+                                      const wordStartTime =
+                                        line.start + (wordCharStart / totalChars) * (line.end - line.start);
+                                      const isLit =
+                                        callTime >= wordStartTime + TRANSCRIPT_OFFSET || reduceMotion;
+                                      return (
+                                        <React.Fragment key={wIdx}>
+                                          {wIdx > 0 && ' '}
+                                          <span
+                                            className="transition-colors duration-[120ms] inline"
+                                            style={{ color: isLit ? '#0b1530' : '#94a3b8' }}
+                                          >
+                                            {word}
+                                          </span>
+                                        </React.Fragment>
+                                      );
+                                    });
+                                  })()
+                                )}
+                              </span>
                             </div>
                           </motion.div>
                         );
                       })}
 
-                      {/* Job Details Card (appears when booked) */}
+                      {/* Job Details Card (reveals fields as data arrives) */}
                       <AnimatePresence>
-                        {showResultRow && (
+                        {hasVisibleJobDetails && (
                           <motion.div
                             initial={reduceMotion ? false : { opacity: 0, y: 10, scale: 0.96 }}
                             animate={{ opacity: 1, y: 0, scale: 1 }}
                             exit={{ opacity: 0 }}
                             transition={{ duration: 0.35 }}
-                            className="w-full mt-1 p-2 rounded-[14px] bg-white/95 border border-[rgba(59,130,246,0.45)] shadow-xs flex items-center justify-between text-left"
+                            className="w-full mt-1 p-2.5 rounded-[14px] bg-white/95 border border-[rgba(59,130,246,0.45)] shadow-xs flex flex-col gap-1.5 text-left shrink-0"
                           >
-                            <div className="flex items-center gap-1.5">
-                              <div className="w-4 h-4 rounded-full bg-[#3b82f6] flex items-center justify-center text-white">
-                                <Check className="w-2.5 h-2.5 stroke-[3]" />
-                              </div>
-                              <span className="text-[11.5px] font-semibold text-[#0B0F19]">
-                                Job booked
+                            <div className="flex items-center justify-between pb-1 border-b border-black/[0.05]">
+                              <span className="text-[11px] font-semibold text-[#0B0F19]">
+                                Job details
                               </span>
+                              {showBooked ? (
+                                <motion.span
+                                  initial={reduceMotion ? false : { opacity: 0, scale: 0.9 }}
+                                  animate={{ opacity: 1, scale: 1 }}
+                                  className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-semibold bg-[#10B981]/15 text-[#059669]"
+                                >
+                                  <Check className="w-2.5 h-2.5 stroke-[3]" />
+                                  <span>{jobDetails.booked?.value || 'Booked'}</span>
+                                </motion.span>
+                              ) : (
+                                <span className="text-[9.5px] text-[#64748B]">In progress</span>
+                              )}
                             </div>
-                            <div className="flex items-center gap-1 text-[11px] text-[#64748B]">
-                              <Calendar className="w-3 h-3 stroke-[2]" />
-                              <span>Tomorrow, 10:00 AM</span>
+
+                            <div className="flex flex-col gap-1">
+                              {showIssue && (
+                                <motion.div
+                                  initial={reduceMotion ? false : { opacity: 0, y: 4 }}
+                                  animate={{ opacity: 1, y: 0 }}
+                                  transition={{ duration: 0.25 }}
+                                  className="flex items-center justify-between text-[10.5px]"
+                                >
+                                  <span className="text-[#64748B]">Issue</span>
+                                  <span className="font-medium text-[#0B0F19] text-right truncate max-w-[155px]">
+                                    {jobDetails.issue?.value}
+                                  </span>
+                                </motion.div>
+                              )}
+                              {showCaller && (
+                                <motion.div
+                                  initial={reduceMotion ? false : { opacity: 0, y: 4 }}
+                                  animate={{ opacity: 1, y: 0 }}
+                                  transition={{ duration: 0.25 }}
+                                  className="flex items-center justify-between text-[10.5px]"
+                                >
+                                  <span className="text-[#64748B]">Caller</span>
+                                  <span className="font-medium text-[#0B0F19] text-right">
+                                    {jobDetails.callerName?.value}
+                                  </span>
+                                </motion.div>
+                              )}
+                              {showAddress && (
+                                <motion.div
+                                  initial={reduceMotion ? false : { opacity: 0, y: 4 }}
+                                  animate={{ opacity: 1, y: 0 }}
+                                  transition={{ duration: 0.25 }}
+                                  className="flex items-center justify-between text-[10.5px]"
+                                >
+                                  <span className="text-[#64748B]">Address</span>
+                                  <span className="font-medium text-[#0B0F19] text-right truncate max-w-[155px]">
+                                    {jobDetails.address?.value}
+                                  </span>
+                                </motion.div>
+                              )}
+                              {showAppointment && (
+                                <motion.div
+                                  initial={reduceMotion ? false : { opacity: 0, y: 4 }}
+                                  animate={{ opacity: 1, y: 0 }}
+                                  transition={{ duration: 0.25 }}
+                                  className="flex items-center justify-between text-[10.5px]"
+                                >
+                                  <span className="text-[#64748B]">Appointment</span>
+                                  <span className="font-medium text-[#0B0F19] text-right">
+                                    {jobDetails.appointment?.value}
+                                  </span>
+                                </motion.div>
+                              )}
                             </div>
                           </motion.div>
                         )}
@@ -952,6 +1106,31 @@ export const HeroPhoneStage: React.FC<HeroPhoneStageProps> = () => {
           <i /><i /><i /><i /><i />
         </div>
       </div>
+
+      {/* Development Tuning Aid: Fixed HUD at bottom-left corner of viewport (?debugtime=1) */}
+      {isDebugTime && (
+        <div
+          style={{
+            position: 'fixed',
+            bottom: '16px',
+            left: '16px',
+            zIndex: 999999,
+          }}
+          className="bg-black/90 text-white font-mono text-[11px] px-3 py-2 rounded-lg pointer-events-none shadow-2xl border border-white/20 tabular-nums flex flex-col gap-0.5 select-none"
+        >
+          <div className="font-bold text-emerald-400">DEBUG TIME HUD</div>
+          <div>Audio currentTime: {callTime.toFixed(1)}s</div>
+          <div>
+            Latest line:{' '}
+            {latestVisibleLineIdx >= 0
+              ? `#${latestVisibleLineIdx} [${lines[latestVisibleLineIdx].speaker}] start=${lines[latestVisibleLineIdx].start.toFixed(2)}s`
+              : 'None'}
+          </div>
+          <div>
+            TRANSCRIPT_OFFSET: {TRANSCRIPT_OFFSET >= 0 ? `+${TRANSCRIPT_OFFSET}` : TRANSCRIPT_OFFSET}s
+          </div>
+        </div>
+      )}
     </div>
   );
 };
