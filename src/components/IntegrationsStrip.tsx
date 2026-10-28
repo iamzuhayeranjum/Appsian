@@ -8,14 +8,14 @@ interface IntegrationItem {
 }
 
 const INTEGRATIONS: IntegrationItem[] = [
-  { name: 'Salesforce', file: 'salesforce.svg', scale: 1 },
-  { name: 'Monday', file: 'monday.svg', scale: 1 },
-  { name: 'HubSpot', file: 'hubspot.svg', scale: 1 },
-  { name: 'Calendly', file: 'calendly.svg', scale: 1 },
-  { name: 'Google Calendar', file: 'google-calendar.svg', scale: 1 },
-  { name: 'Cal.com', file: 'cal-com.svg', scale: 1 },
-  { name: 'Zoho CRM', file: 'zoho-crm.svg', scale: 1 },
-  { name: 'Zendesk', file: 'zendesk.svg', scale: 1 },
+  { name: 'Salesforce', file: 'image-4.svg' },
+  { name: 'GoHighLevel', file: 'image-5.svg' },
+  { name: 'HubSpot', file: 'image-6.svg' },
+  { name: 'Calendly', file: 'image-7.svg' },
+  { name: 'Google Calendar', file: 'image-8.svg' },
+  { name: 'Cal.com', file: 'cal-com-logo.svg' },
+  { name: 'Zoho CRM', file: 'zoho-crm-logo.svg' },
+  { name: 'Zendesk', file: 'zendesk-mark.svg' },
 ];
 
 export const IntegrationsStrip: React.FC = () => {
