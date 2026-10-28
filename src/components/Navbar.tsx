@@ -106,13 +106,13 @@ export const Navbar: React.FC<NavbarProps> = ({ onBookDemoClick, pastHero = fals
       className="absolute top-0 left-0 right-0 w-full z-50 pointer-events-none"
     >
       {/* Plain full-width bar (72px desktop, 64px mobile, transparent background) */}
-      <div className="w-full h-[64px] lg:h-[72px] px-5 lg:px-[clamp(20px,2.4vw,40px)] flex items-center justify-between relative pointer-events-auto">
+      <div className="header-row">
         
         {/* LEFT: Logo Lockup (white wordmark and white/bfe0ff gradient logo) */}
         <button
           type="button"
           onClick={handleLogoClick}
-          className="flex items-center gap-[10px] cursor-pointer select-none border-0 bg-transparent p-0 text-left group"
+          className="header-logo-group flex items-center gap-[10px] cursor-pointer select-none border-0 bg-transparent p-0 text-left group"
           aria-label="Appsian Home - Scroll to top"
         >
           <div className="transition-transform duration-200 group-hover:scale-105">
@@ -146,26 +146,37 @@ export const Navbar: React.FC<NavbarProps> = ({ onBookDemoClick, pastHero = fals
           </span>
         </button>
 
-        {/* CENTER: The three links centered in one glass-dark pill (Desktop) */}
+        {/* CENTER: Plain text links floating directly on the hero (Desktop) */}
         <nav
           aria-label="Main Navigation"
-          className="glass-dark hidden lg:flex items-center h-[44px] px-[8px] rounded-[16px] absolute left-1/2 -translate-x-1/2"
+          className="header-nav"
         >
-          {navLinks.map((link) => (
-            <a
+          {navLinks.map((link, index) => (
+            <motion.a
               key={link.href}
               href={link.href}
               onClick={(e) => handleScrollTo(e, link.href)}
-              className="px-[16px] h-[34px] flex items-center rounded-[10px] text-[14px] font-medium transition-colors select-none whitespace-nowrap hover:bg-[rgba(255,255,255,0.16)]"
-              style={{ color: 'rgba(255, 255, 255, 0.92)' }}
+              initial={isReducedMotion ? { opacity: 0 } : { opacity: 0, y: 8 }}
+              animate={
+                isVisible
+                  ? (isReducedMotion ? { opacity: 1 } : { opacity: 1, y: 0 })
+                  : (isReducedMotion ? { opacity: 0 } : { opacity: 0, y: 8 })
+              }
+              transition={{
+                duration: isReducedMotion ? 0.15 : 0.4,
+                delay: isReducedMotion ? 0 : 0.1 + index * 0.06,
+                ease: EASE_OUT,
+              }}
+              whileTap={!isReducedMotion ? { y: 1, transition: { duration: 0.1 } } : undefined}
+              className="header-nav-link"
             >
-              <span>{link.label}</span>
-            </a>
+              {link.label}
+            </motion.a>
           ))}
         </nav>
 
         {/* RIGHT: Desktop CTA (underlined text link in white with 70% underline + 40px light glossy arrow button) */}
-        <div className="hidden lg:flex items-center gap-[12px]">
+        <div className="header-desktop-cta">
           <button
             type="button"
             onClick={handleCtaClick}
@@ -186,7 +197,7 @@ export const Navbar: React.FC<NavbarProps> = ({ onBookDemoClick, pastHero = fals
         </div>
 
         {/* RIGHT: Tablet & Mobile controls (Light glossy button + 2-line menu button) */}
-        <div className="flex lg:hidden items-center gap-2.5">
+        <div className="header-mobile-controls">
           <button
             type="button"
             onClick={handleCtaClick}
