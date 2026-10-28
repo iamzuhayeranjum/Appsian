@@ -1074,3 +1074,66 @@
   -ms-overflow-style: none !important;
   scrollbar-width: none !important;
 }
+
+/* Integrations Strip Traveling Light Animation */
+@keyframes travelingLight {
+  0% {
+    transform: translateX(-140px);
+    opacity: 0;
+  }
+  1.5% {
+    opacity: 1;
+  }
+  73.5% {
+    opacity: 1;
+  }
+  75% {
+    transform: translateX(100vw);
+    opacity: 0;
+  }
+  100% {
+    transform: translateX(100vw);
+    opacity: 0;
+  }
+}
+
+.integrations-traveling-light {
+  animation: travelingLight 12s linear infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .integrations-traveling-light {
+    animation: none !important;
+    display: none !important;
+  }
+}
+
+/* Integrations Strip Mobile Marquee Animation (36s linear infinite) */
+@keyframes integrationsMarquee {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(-50%);
+  }
+}
+
+.integrations-marquee-track {
+  display: flex;
+  width: max-content;
+  animation: integrationsMarquee 36s linear infinite;
+}
+
+.integrations-marquee-track:hover,
+.integrations-marquee-track:active,
+.integrations-marquee-track.is-paused {
+  animation-play-state: paused;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .integrations-marquee-track {
+    animation: none !important;
+    transform: none !important;
+  }
+}
+
