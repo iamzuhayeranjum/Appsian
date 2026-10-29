@@ -169,7 +169,7 @@ export const Hero: React.FC<HeroProps> = ({ onBookDemoClick }) => {
     <section
       id="hero"
       ref={heroRef}
-      className={`relative w-full overflow-hidden h-auto md:h-[100svh] min-h-[640px] max-h-none md:max-h-[1100px] flex flex-col justify-center select-none ${
+      className={`relative z-20 w-full overflow-x-clip overflow-y-visible h-auto md:h-[100svh] min-h-[640px] max-h-none md:max-h-[1100px] flex flex-col justify-center select-none ${
         !isHeroIntersecting ? 'hero-paused' : ''
       }`}
       style={{
@@ -195,7 +195,7 @@ export const Hero: React.FC<HeroProps> = ({ onBookDemoClick }) => {
          ================================================================= */}
       <div
         id="hero-box"
-        className="w-full max-w-[1280px] mx-auto px-5 md:px-10 h-full relative z-10 flex flex-col md:grid md:grid-cols-[1.08fr_0.92fr] gap-6"
+        className="w-full max-w-[1280px] mx-auto px-5 md:px-10 h-full relative z-10 flex flex-col md:grid md:grid-cols-[1.08fr_0.92fr] gap-6 overflow-visible"
       >
         {/* LEFT COLUMN: text + form + chips (all left-aligned) */}
         <div className="flex flex-col justify-center text-left pt-[88px] pb-10">
@@ -593,7 +593,7 @@ export const Hero: React.FC<HeroProps> = ({ onBookDemoClick }) => {
             delay: reduceMotion ? 0 : 0.25,
             ease: EASE,
           }}
-          className="relative w-full h-[560px] md:h-full md:pt-[84px] flex items-start justify-center xl:justify-end"
+          className="relative w-full h-[560px] md:h-full md:pt-[84px] flex items-start justify-center xl:justify-end z-30 overflow-visible"
         >
           <HeroPhoneStage appReady={appReady} />
         </motion.div>

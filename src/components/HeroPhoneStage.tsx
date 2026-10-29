@@ -44,6 +44,10 @@ export const HeroPhoneStage: React.FC<HeroPhoneStageProps> = () => {
   const audioInstanceRef = useRef<HTMLAudioElement | null>(null);
   const acceptBtnRef = useRef<HTMLButtonElement | null>(null);
   const hangUpBtnRef = useRef<HTMLButtonElement | null>(null);
+  const phoneInnerRef = useRef<HTMLDivElement>(null);
+  const buttonsRowRef = useRef<HTMLDivElement>(null);
+  const hangUpRowRef = useRef<HTMLDivElement>(null);
+  const scaleRef = useRef<number>(1);
   const fallbackStartRef = useRef<number | null>(null);
   const callTimeRef = useRef<number>(0);
   const callStateRef = useRef<'ringing' | 'answered' | 'ended'>('ringing');
@@ -78,33 +82,62 @@ export const HeroPhoneStage: React.FC<HeroPhoneStageProps> = () => {
     return () => mq.removeEventListener('change', handler);
   }, []);
 
-  // Compute scale based on stage container dimensions
-  useEffect(() => {
+  // Compute scale based on stage container dimensions and button row position (at least 24px above hero bottom)
+  const updateScale = useCallback(() => {
     const stage = stageRef.current;
     if (!stage) return;
 
-    const updateScale = () => {
-      const h = stage.clientHeight;
-      const w = stage.clientWidth;
-      if (h <= 0 || w <= 0) return;
+    const h = stage.clientHeight;
+    const w = stage.clientWidth;
+    if (h <= 0 || w <= 0) return;
 
-      // Scale so that 92% of phone fits stage height
-      let s = h / (NATURAL_HEIGHT * VISIBLE_FRACTION);
-      // Limit width to 380px maximum
-      s = Math.min(s, 380 / NATURAL_WIDTH);
-      // Fit in container width (accounting for 48px padding)
-      s = Math.min(s, Math.max(0.4, (w - 48) / NATURAL_WIDTH));
-      // Max scale 1.25
-      s = Math.min(s, 1.25);
-      s = Math.max(s, 0.55);
-      setScale(s);
-    };
+    const isDesktop = typeof window !== 'undefined' ? window.innerWidth >= 768 : true;
+    const overhang = isDesktop ? 72 : 0;
+    const heroInsideHeight = Math.max(200, h - overhang);
 
+    // Measure the lowest buttons row & labels in unscaled natural coordinates
+    let naturalButtonsBottom = callStateRef.current === 'answered' ? 540 : 565;
+    const phone = phoneInnerRef.current;
+    const target =
+      callStateRef.current === 'answered' ? hangUpRowRef.current : buttonsRowRef.current || acceptBtnRef.current;
+    if (phone && target) {
+      const phoneRect = phone.getBoundingClientRect();
+      const targetRect = target.getBoundingClientRect();
+      const curScale = scaleRef.current || 1;
+      const measured = (targetRect.bottom - phoneRect.top) / curScale;
+      if (measured > 400 && measured <= NATURAL_HEIGHT) {
+        naturalButtonsBottom = measured;
+      }
+    }
+
+    // Required clearance: at least 24px above hero bottom edge
+    const maxAllowedButtonsBottom = heroInsideHeight - 24;
+    let s = maxAllowedButtonsBottom / naturalButtonsBottom;
+
+    // Limit width to 380px maximum
+    s = Math.min(s, 380 / NATURAL_WIDTH);
+    // Fit in container width (accounting for 48px padding for free space on both sides)
+    s = Math.min(s, Math.max(0.4, (w - 48) / NATURAL_WIDTH));
+    // Max scale 1.25
+    s = Math.min(s, 1.25);
+    // Floor at 0.55
+    s = Math.max(s, 0.55);
+
+    scaleRef.current = s;
+    setScale(s);
+  }, []);
+
+  useEffect(() => {
     updateScale();
-    const ro = new ResizeObserver(updateScale);
+    const stage = stageRef.current;
+    if (!stage) return;
+
+    const ro = new ResizeObserver(() => {
+      updateScale();
+    });
     ro.observe(stage);
     return () => ro.disconnect();
-  }, []);
+  }, [updateScale, callState]);
 
   // Stable End call handler - reads refs so dependency array is empty and never triggers re-creation
   const handleEndCall = useCallback((reason: string = 'hang-up') => {
@@ -503,23 +536,22 @@ export const HeroPhoneStage: React.FC<HeroPhoneStageProps> = () => {
   return (
     <div
       ref={stageRef}
-      className="w-full h-full relative flex items-start justify-center xl:justify-end overflow-visible"
+      className="w-full h-full md:h-[calc(100%+72px)] relative flex items-start justify-center xl:justify-end overflow-visible pointer-events-none"
     >
-      {/* Phone Sized Outer Wrapper with Fade Mask */}
+      {/* Phone Sized Outer Wrapper with Fade Mask (100% height matches stage) */}
       <div
-        className="relative phone-fade-mask shrink-0"
+        className="relative phone-fade-mask shrink-0 h-full"
         style={
           {
             width: `${NATURAL_WIDTH * scale + 48}px`,
-            height: `${NATURAL_HEIGHT * scale}px`,
             paddingLeft: '24px',
             paddingRight: '24px',
-            '--phone-fade': '10%',
           } as React.CSSProperties
         }
       >
         {/* Natural Size Phone Scaled from Top Left (starts cleanly at left padding 24px) */}
         <div
+          ref={phoneInnerRef}
           style={{
             width: `${NATURAL_WIDTH}px`,
             height: `${NATURAL_HEIGHT}px`,
@@ -912,6 +944,7 @@ export const HeroPhoneStage: React.FC<HeroPhoneStageProps> = () => {
 
                   {/* Red Hang-up Button (Bottom edge of panel is 14px above top of button) */}
                   <motion.div
+                    ref={hangUpRowRef}
                     initial={reduceMotion ? false : { opacity: 0, y: 16 }}
                     animate={{ opacity: 1, y: 0 }}
                     exit={{ opacity: 0, y: 16 }}
@@ -1019,7 +1052,10 @@ export const HeroPhoneStage: React.FC<HeroPhoneStageProps> = () => {
                   </div>
 
                   {/* Decline and Accept Buttons Row */}
-                  <div className="w-full flex items-center justify-between px-7 pb-2 shrink-0 z-20">
+                  <div
+                    ref={buttonsRowRef}
+                    className="w-full flex items-center justify-between px-7 pb-2 shrink-0 z-20"
+                  >
                     {/* Decline button */}
                     <button
                       type="button"
@@ -1100,11 +1136,11 @@ export const HeroPhoneStage: React.FC<HeroPhoneStageProps> = () => {
             </div>
           </div>
         </div>
+      </div>
 
-        {/* Progressive Blur Layer Scoped Directly to Phone Screen Bottom */}
-        <div className="progressive-blur-phone" aria-hidden="true">
-          <i /><i /><i /><i /><i />
-        </div>
+      {/* Progressive Blur Layer Anchored Directly to Stage Bottom Overhang */}
+      <div className="progressive-blur-phone" aria-hidden="true">
+        <i /><i /><i /><i /><i />
       </div>
 
       {/* Development Tuning Aid: Fixed HUD at bottom-left corner of viewport (?debugtime=1) */}

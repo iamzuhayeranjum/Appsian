@@ -1150,21 +1150,34 @@
    ===================================================================== */
 
 .phone-fade-mask {
-  -webkit-mask-image: linear-gradient(to bottom, #000 0%, #000 calc(100% - var(--phone-fade, 7%)), rgba(0,0,0,0) 100%);
-  mask-image: linear-gradient(to bottom, #000 0%, #000 calc(100% - var(--phone-fade, 7%)), rgba(0,0,0,0) 100%);
+  -webkit-mask-image: linear-gradient(to bottom, #000 0, #000 calc(100% - 72px), rgba(0,0,0,0) 100%);
+  mask-image: linear-gradient(to bottom, #000 0, #000 calc(100% - 72px), rgba(0,0,0,0) 100%);
+}
+
+@media (max-width: 767px) {
+  .phone-fade-mask {
+    -webkit-mask-image: linear-gradient(to bottom, #000 0%, #000 calc(100% - 24px), rgba(0,0,0,0) 100%);
+    mask-image: linear-gradient(to bottom, #000 0%, #000 calc(100% - 24px), rgba(0,0,0,0) 100%);
+  }
 }
 
 .progressive-blur-phone {
   position: absolute;
-  left: 24px;
-  right: 24px;
+  left: -40px;
+  right: -40px;
   bottom: 0;
-  height: 12%;
+  height: 72px;
   pointer-events: none;
-  z-index: 25;
-  border-bottom-left-radius: 40px;
-  border-bottom-right-radius: 40px;
+  z-index: 35;
   overflow: hidden;
+}
+
+@media (max-width: 767px) {
+  .progressive-blur-phone {
+    left: 0;
+    right: 0;
+    height: 36px;
+  }
 }
 
 .progressive-blur-phone > i {
