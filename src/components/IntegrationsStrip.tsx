@@ -1,13 +1,13 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { motion, useInView } from 'motion/react';
 
-interface IntegrationItem {
+export interface IntegrationItem {
   name: string;
   file: string;
   scale?: number;
 }
 
-const INTEGRATIONS: IntegrationItem[] = [
+export const INTEGRATIONS: IntegrationItem[] = [
   { name: 'Salesforce', file: 'image-4.svg' },
   { name: 'GoHighLevel', file: 'image-5.svg' },
   { name: 'HubSpot', file: 'image-6.svg' },
@@ -17,6 +17,10 @@ const INTEGRATIONS: IntegrationItem[] = [
   { name: 'Zoho CRM', file: 'zoho-crm-logo.svg' },
   { name: 'Zendesk', file: 'zendesk-mark.svg' },
 ];
+
+const rawBase = import.meta.env.BASE_URL || '/';
+const baseUrl = rawBase.endsWith('/') ? rawBase : `${rawBase}/`;
+export const getLogoSrc = (file: string) => `${baseUrl}logos/${file}`;
 
 export const IntegrationsStrip: React.FC = () => {
   const [reduceMotion, setReduceMotion] = useState(false);
@@ -33,10 +37,6 @@ export const IntegrationsStrip: React.FC = () => {
     mq.addEventListener('change', handler);
     return () => mq.removeEventListener('change', handler);
   }, []);
-
-  const rawBase = import.meta.env.BASE_URL || '/';
-  const baseUrl = rawBase.endsWith('/') ? rawBase : `${rawBase}/`;
-  const getLogoSrc = (file: string) => `${baseUrl}logos/${file}`;
 
   const handleImageError = (name: string, src: string) => {
     console.warn(`[Integrations] Logo failed to load: ${src}`);

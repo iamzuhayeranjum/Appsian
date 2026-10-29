@@ -1317,3 +1317,53 @@
   }
 }
 
+/* =====================================================================
+   MEET APPSIAN FEATURE CARDS & MINI-UI ANIMATIONS
+   ===================================================================== */
+
+@keyframes hubPulseDash {
+  0% {
+    stroke-dashoffset: 140;
+  }
+  100% {
+    stroke-dashoffset: 0;
+  }
+}
+
+.hub-pulse-line {
+  animation: hubPulseDash 2.6s linear infinite;
+}
+
+@keyframes truckPathMove {
+  0% {
+    offset-distance: 0%;
+  }
+  100% {
+    offset-distance: 100%;
+  }
+}
+
+.truck-travel-runner {
+  offset-path: path("M -30 35 Q 100 55 200 30 T 430 35");
+  animation: truckPathMove 5s linear infinite;
+}
+
+@media (max-width: 767px) {
+  .truck-travel-runner {
+    animation: none !important;
+    offset-distance: 82% !important;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hub-pulse-line {
+    animation: none !important;
+    display: none !important;
+  }
+  .truck-travel-runner {
+    animation: none !important;
+    offset-distance: 50% !important;
+  }
+}
+
+

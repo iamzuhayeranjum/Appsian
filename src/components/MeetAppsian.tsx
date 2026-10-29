@@ -2,14 +2,10 @@ import { AppsianMark } from './AppsianLogo';
 import { SectionTag } from './SectionTag';
 import React, { useState, useEffect, useRef } from 'react';
 import { motion } from 'motion/react';
-import { MeetAppsianProduct, TABS, type TabType } from './MeetAppsianProduct';
+import { MeetAppsianProduct } from './MeetAppsianProduct';
 
 export const MeetAppsian: React.FC = () => {
-  const [activeTab, setActiveTab] = useState<TabType>('Books the estimate');
-  const [hasUserInteracted, setHasUserInteracted] = useState(false);
-  const [isHovered, setIsHovered] = useState(false);
   const [isReducedMotion, setIsReducedMotion] = useState(false);
-
   const containerRef = useRef<HTMLElement>(null);
 
   useEffect(() => {
@@ -19,26 +15,6 @@ export const MeetAppsian: React.FC = () => {
     mq.addEventListener('change', handler);
     return () => mq.removeEventListener('change', handler);
   }, []);
-
-  // Auto-advance tabs every 4 seconds unless hovered or user clicked
-  useEffect(() => {
-    if (hasUserInteracted || isHovered) return;
-
-    const timer = setInterval(() => {
-      setActiveTab((prev) => {
-        const currentIndex = TABS.indexOf(prev);
-        const nextIndex = (currentIndex + 1) % TABS.length;
-        return TABS[nextIndex];
-      });
-    }, 4000);
-
-    return () => clearInterval(timer);
-  }, [hasUserInteracted, isHovered]);
-
-  const handleTabClick = (tab: TabType) => {
-    setHasUserInteracted(true);
-    setActiveTab(tab);
-  };
 
   return (
     <section
@@ -80,8 +56,8 @@ export const MeetAppsian: React.FC = () => {
         }}
       />
 
-        {/* Main content wrapper */}
-      <div className="relative z-10 max-w-[1100px] mx-auto px-4 sm:px-6">
+      {/* Main content wrapper */}
+      <div className="relative z-10 max-w-[1120px] mx-auto px-4 sm:px-6">
         {/* 2. TEXT BLOCK (Eyebrow, Headline, Subline) */}
         <motion.div
           initial={isReducedMotion ? false : { opacity: 0, y: 16, filter: 'blur(6px)' }}
@@ -118,61 +94,10 @@ export const MeetAppsian: React.FC = () => {
           </motion.p>
         </motion.div>
 
-        {/* 4. TAB PILLS ROW */}
-        <div
-          className="mt-10 relative flex justify-center"
-          onMouseEnter={() => setIsHovered(true)}
-          onMouseLeave={() => setIsHovered(false)}
-        >
-          {/* Mask container: Row only has linear-gradient mask fading both edges */}
-          <div
-            className="w-full max-w-[860px] overflow-x-auto no-scrollbar py-2"
-            style={{
-              maskImage: 'linear-gradient(to right, transparent, black 12%, black 88%, transparent)',
-              WebkitMaskImage:
-                'linear-gradient(to right, transparent, black 12%, black 88%, transparent)',
-            }}
-          >
-            <div className="flex items-center justify-center gap-2 sm:gap-2.5 min-w-max px-8">
-              {TABS.map((tab, idx) => {
-                const isActive = activeTab === tab;
-                return (
-                  <motion.button
-                    key={tab}
-                    type="button"
-                    onClick={() => handleTabClick(tab)}
-                    initial={isReducedMotion ? false : { opacity: 0, y: 8 }}
-                    whileInView={{ opacity: 1, y: 0 }}
-                    viewport={{ once: true, amount: 0.2 }}
-                    transition={{
-                      duration: 0.4,
-                      delay: isReducedMotion ? 0 : 0.2 + idx * 0.04,
-                      ease: 'easeOut',
-                    }}
-                    className={`h-[36px] px-4 rounded-full text-[14px] font-medium transition-all duration-200 cursor-pointer whitespace-nowrap select-none ${
-                      isActive
-                        ? 'bg-[#DBEAFE] text-[#1E3A8A] shadow-xs'
-                        : 'bg-[#F3F4F6] text-[#4B5563] hover:bg-[#E5E7EB] hover:text-[#1F2937]'
-                    }`}
-                    style={{
-                      fontFamily: 'inherit',
-                    }}
-                  >
-                    {tab}
-                  </motion.button>
-                );
-              })}
-            </div>
-          </div>
-        </div>
-
-        {/* 5. PRODUCT MOCKUP (dashboard + Appsian's work) lives in MeetAppsianProduct.tsx */}
-        <MeetAppsianProduct
-          activeTab={activeTab}
-          isReducedMotion={isReducedMotion}
-          onHover={setIsHovered}
-        />
+        {/* 3. 4-CARD NUMBERED FEATURE GRID */}
+        <MeetAppsianProduct isReducedMotion={isReducedMotion} />
       </div>
     </section>
   );
 };
+
