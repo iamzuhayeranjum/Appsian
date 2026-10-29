@@ -1161,22 +1161,37 @@
   }
 }
 
-.progressive-blur-phone {
+.progressive-blur-wrapper {
   position: absolute;
-  left: -40px;
-  right: -40px;
   bottom: 0;
   height: 72px;
   pointer-events: none;
   z-index: 35;
+  -webkit-mask-image: linear-gradient(to right, transparent 0, #000 60px, #000 calc(100% - 60px), transparent 100%);
+  mask-image: linear-gradient(to right, transparent 0, #000 60px, #000 calc(100% - 60px), transparent 100%);
+}
+
+@media (max-width: 767px) {
+  .progressive-blur-wrapper {
+    height: 36px;
+    width: 100% !important;
+    left: 0 !important;
+    transform: none !important;
+    -webkit-mask-image: none;
+    mask-image: none;
+  }
+}
+
+.progressive-blur-phone {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
   overflow: hidden;
 }
 
 @media (max-width: 767px) {
   .progressive-blur-phone {
-    left: 0;
-    right: 0;
-    height: 36px;
+    inset: 0;
   }
 }
 

@@ -538,37 +538,45 @@ export const HeroPhoneStage: React.FC<HeroPhoneStageProps> = () => {
       ref={stageRef}
       className="w-full h-full md:h-[calc(100%+72px)] relative flex items-start justify-center xl:justify-end overflow-visible pointer-events-none"
     >
-      {/* Phone Sized Outer Wrapper with Fade Mask (100% height matches stage) */}
-      <div
-        className="relative phone-fade-mask shrink-0 h-full"
-        style={
-          {
-            width: `${NATURAL_WIDTH * scale + 48}px`,
-            paddingLeft: '24px',
-            paddingRight: '24px',
-          } as React.CSSProperties
-        }
-      >
-        {/* Natural Size Phone Scaled from Top Left (starts cleanly at left padding 24px) */}
+      {/* Outer Anchor Container positioned in stage */}
+      <div className="relative shrink-0 flex flex-col items-center h-full">
+        {/* Phone Sized Outer Wrapper with Fade Mask (160px unclipped padding and matching negative margins) */}
         <div
-          ref={phoneInnerRef}
-          style={{
-            width: `${NATURAL_WIDTH}px`,
-            height: `${NATURAL_HEIGHT}px`,
-            transform: `scale(${scale})`,
-            transformOrigin: 'top left',
-          }}
-          className="relative pointer-events-auto"
+          className="relative phone-fade-mask shrink-0"
+          style={
+            {
+              width: `${NATURAL_WIDTH * scale + 320}px`,
+              height: 'calc(100% + 160px)',
+              marginTop: '-160px',
+              marginLeft: '-160px',
+              marginRight: '-160px',
+              paddingTop: '160px',
+              paddingLeft: '160px',
+              paddingRight: '160px',
+              paddingBottom: '0px',
+            } as React.CSSProperties
+          }
         >
-          {/* Frosted iPhone Outer Frame */}
+          {/* Natural Size Phone Scaled from Top Left (starts cleanly at left padding 160px) */}
           <div
-            className="w-full h-full rounded-[48px] p-[8px] relative select-none"
+            ref={phoneInnerRef}
             style={{
-              background: 'linear-gradient(145deg, #F4F5F8 0%, #C9CDD6 50%, #F1F2F6 100%)',
-              boxShadow:
-                '0 0 0 1px rgba(255, 255, 255, 0.9), 0 35px 80px -25px rgba(4, 30, 100, 0.45)',
+              width: `${NATURAL_WIDTH}px`,
+              height: `${NATURAL_HEIGHT}px`,
+              transform: `scale(${scale})`,
+              transformOrigin: 'top left',
             }}
+            className="relative pointer-events-auto"
           >
+            {/* Frosted iPhone Outer Frame */}
+            <div
+              className="w-full h-full rounded-[48px] p-[8px] relative select-none"
+              style={{
+                background: 'linear-gradient(145deg, #F4F5F8 0%, #C9CDD6 50%, #F1F2F6 100%)',
+                boxShadow:
+                  '0 0 0 1px rgba(255, 255, 255, 0.9), 0 36px 70px -34px rgba(4, 30, 100, 0.40), 0 8px 24px -12px rgba(4, 30, 100, 0.28)',
+              }}
+            >
             {/* Inner Phone Screen */}
             <div
               className="w-full h-full rounded-[40px] overflow-hidden relative flex flex-col justify-between py-3.5 px-0 bg-gradient-to-b from-[#E9EEFC] to-[#DCE4F7]"
@@ -1138,9 +1146,20 @@ export const HeroPhoneStage: React.FC<HeroPhoneStageProps> = () => {
         </div>
       </div>
 
-      {/* Progressive Blur Layer Anchored Directly to Stage Bottom Overhang */}
-      <div className="progressive-blur-phone" aria-hidden="true">
-        <i /><i /><i /><i /><i />
+        {/* Progressive Blur Layer Anchored Directly to Stage Bottom Overhang */}
+        <div
+          className="progressive-blur-wrapper"
+          style={{
+            width: `${NATURAL_WIDTH * scale + 240}px`,
+            left: '50%',
+            transform: 'translateX(-50%)',
+          }}
+          aria-hidden="true"
+        >
+          <div className="progressive-blur-phone">
+            <i /><i /><i /><i /><i />
+          </div>
+        </div>
       </div>
 
       {/* Development Tuning Aid: Fixed HUD at bottom-left corner of viewport (?debugtime=1) */}
