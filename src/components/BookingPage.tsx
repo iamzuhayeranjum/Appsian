@@ -15,68 +15,82 @@ export const BookingPage: React.FC = () => {
     window.scrollTo(0, 0);
   }, [submittedInfo]);
 
-  // Reusable simplified 3-step explainer card
+  // Reusable simplified 3-step explainer card that expands to fill the column
   const stepsCard = (
-    <div className="rounded-[22px] p-5 sm:p-5.5 relative overflow-hidden text-white shadow-md bg-gradient-to-br from-[#1b2a9e] via-[#2f6bf0] to-[#6aa8ff]">
+    <div className="rounded-[24px] p-6 sm:p-7 relative overflow-hidden text-white shadow-md bg-gradient-to-br from-[#1b2a9e] via-[#2f6bf0] to-[#6aa8ff] flex-1 flex flex-col justify-between h-full min-h-[280px]">
       {/* Soft light highlight in top-left */}
       <div
         className="absolute inset-0 pointer-events-none"
         style={{
-          background: 'radial-gradient(60% 50% at 10% 0%, rgba(255,255,255,0.22), rgba(255,255,255,0) 70%)',
+          background: 'radial-gradient(60% 50% at 10% 0%, rgba(255,255,255,0.25), rgba(255,255,255,0) 70%)',
         }}
         aria-hidden="true"
       />
 
-      <div className="relative z-10 flex flex-col gap-3.5">
-        <h3 className="text-[15px] font-semibold text-white tracking-tight">
-          What happens after you submit
-        </h3>
+      <div className="relative z-10 flex flex-col h-full justify-between gap-6">
+        <div>
+          <h3 className="text-[16px] font-semibold text-white tracking-tight">
+            What happens after you submit
+          </h3>
+          <p className="text-[12.5px] text-white/80 mt-1 leading-snug">
+            We configure a working demo tailored to your company:
+          </p>
+        </div>
 
-        <div className="flex flex-col gap-3">
+        <div className="flex flex-col gap-4 sm:gap-5 my-auto">
           {/* Step 1 */}
-          <div className="flex items-start gap-3">
-            <div className="w-5 h-5 rounded-full bg-white/20 border border-white/40 flex items-center justify-center font-bold text-[11px] text-white shrink-0 mt-0.5">
+          <div className="flex items-start gap-3.5">
+            <div className="w-6 h-6 rounded-full bg-white/20 border border-white/40 flex items-center justify-center font-bold text-[12px] text-white shrink-0 mt-0.5">
               1
             </div>
             <div>
-              <h4 className="text-[13px] font-semibold text-white leading-tight">
+              <h4 className="text-[13.5px] font-semibold text-white leading-tight">
                 We build your custom AI receptionist
               </h4>
-              <p className="text-[12px] text-white/80 mt-0.5 leading-snug">
-                Customized for your trades, services, and schedule.
+              <p className="text-[12.5px] text-white/80 mt-1 leading-snug">
+                Customized for your specific trades, services, and schedule.
               </p>
             </div>
           </div>
 
           {/* Step 2 */}
-          <div className="flex items-start gap-3">
-            <div className="w-5 h-5 rounded-full bg-white/20 border border-white/40 flex items-center justify-center font-bold text-[11px] text-white shrink-0 mt-0.5">
+          <div className="flex items-start gap-3.5">
+            <div className="w-6 h-6 rounded-full bg-white/20 border border-white/40 flex items-center justify-center font-bold text-[12px] text-white shrink-0 mt-0.5">
               2
             </div>
             <div>
-              <h4 className="text-[13px] font-semibold text-white leading-tight">
-                You test it with live calls
+              <h4 className="text-[13.5px] font-semibold text-white leading-tight">
+                You test it with live phone calls
               </h4>
-              <p className="text-[12px] text-white/80 mt-0.5 leading-snug">
+              <p className="text-[12.5px] text-white/80 mt-1 leading-snug">
                 Call your private demo number to test bookings and questions.
               </p>
             </div>
           </div>
 
           {/* Step 3 */}
-          <div className="flex items-start gap-3">
-            <div className="w-5 h-5 rounded-full bg-white/20 border border-white/40 flex items-center justify-center font-bold text-[11px] text-white shrink-0 mt-0.5">
+          <div className="flex items-start gap-3.5">
+            <div className="w-6 h-6 rounded-full bg-white/20 border border-white/40 flex items-center justify-center font-bold text-[12px] text-white shrink-0 mt-0.5">
               3
             </div>
             <div>
-              <h4 className="text-[13px] font-semibold text-white leading-tight">
+              <h4 className="text-[13.5px] font-semibold text-white leading-tight">
                 Go live with zero disruption
               </h4>
-              <p className="text-[12px] text-white/80 mt-0.5 leading-snug">
+              <p className="text-[12.5px] text-white/80 mt-1 leading-snug">
                 Forward your calls whenever you&apos;re ready.
               </p>
             </div>
           </div>
+        </div>
+
+        {/* Bottom subtle reassurance row */}
+        <div className="pt-3.5 border-t border-white/15 flex items-center justify-between text-[12px] text-white/85">
+          <span className="flex items-center gap-1.5 font-medium">
+            <span className="w-1.5 h-1.5 rounded-full bg-[#6eedc2] inline-block" />
+            Ready within 24 hours
+          </span>
+          <span className="text-white/70">No carrier changes required</span>
         </div>
       </div>
     </div>
@@ -210,9 +224,9 @@ export const BookingPage: React.FC = () => {
           }}
           className="bg-white rounded-[32px] border border-[rgba(15,23,42,0.04)] shadow-[0_50px_100px_-50px_rgba(20,40,120,0.45),0_10px_30px_-18px_rgba(20,40,120,0.18)] p-6 sm:p-9 md:p-[44px_48px]"
         >
-          <div className="grid grid-cols-1 md:grid-cols-[0.84fr_1.16fr] gap-10 md:gap-14 items-start">
+          <div className="grid grid-cols-1 md:grid-cols-[0.84fr_1.16fr] gap-10 md:gap-14 items-stretch">
             {/* LEFT COLUMN: Badge, Heading, Helper text, Checklist, Steps Card */}
-            <div className="flex flex-col text-left">
+            <div className="flex flex-col text-left h-full">
               {/* 1. Mint Outlined Badge */}
               <div className="self-start h-[26px] px-3 rounded-full border border-[#6eedc2] bg-white flex items-center justify-center text-[12px] font-medium text-[#0f7a5a] select-none">
                 Free Demo
@@ -253,8 +267,8 @@ export const BookingPage: React.FC = () => {
                 </div>
               </div>
 
-              {/* 5. Steps Card (Desktop view: sits at the bottom of left column) */}
-              <div className="hidden md:block mt-7">
+              {/* 5. Steps Card (Desktop view: flex-1 expands to fill all vertical space down to card bottom) */}
+              <div className="hidden md:flex flex-col flex-1 mt-7">
                 {stepsCard}
               </div>
             </div>
