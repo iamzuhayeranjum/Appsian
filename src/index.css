@@ -150,13 +150,37 @@
   animation: mintSweep 6s ease-in-out infinite;
 }
 
+@keyframes cardLightSweep {
+  0% {
+    transform: translateX(-100px) skewX(-20deg);
+    opacity: 0;
+  }
+  20% {
+    opacity: 0.9;
+  }
+  80% {
+    opacity: 0.9;
+  }
+  100% {
+    transform: translateX(450px) skewX(-20deg);
+    opacity: 0;
+  }
+}
+
+@media (hover: hover) {
+  .group:hover .card-sweep-line {
+    animation: cardLightSweep 0.9s ease-out forwards;
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   .animate-curtain-left,
   .animate-curtain-right,
   .animate-pulse-glow,
   .animate-flow-pulse,
   .animate-organic-breathe,
-  .animate-mint-sweep {
+  .animate-mint-sweep,
+  .card-sweep-line {
     animation: none !important;
   }
 }
