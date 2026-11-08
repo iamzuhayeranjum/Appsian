@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { motion, useReducedMotion } from 'motion/react';
-import { Calendar, UserCheck, Headphones, Check, Sparkles } from 'lucide-react';
+import { Calendar, UserCheck, Headphones, Check, Sparkles, Phone, Clock, FileText, MessageSquare, ClipboardList } from 'lucide-react';
 import { SectionTag } from './SectionTag';
 import { content } from '../content';
 
@@ -9,12 +9,12 @@ export const DarkBand1: React.FC = () => {
   const reduceMotion = useReducedMotion();
 
   // Card 1 interactive/timed qualification state
-  const jobTypes = ['Repair', 'Install', 'Quote', 'Emergency'];
-  const timelines = ['Today', 'This week'];
-  const jobSequence = ['Quote', 'Emergency', 'Repair', 'Install'];
+  const jobTypes = ['Nights', 'Weekends', 'On a job', 'Lunch'];
+  const timelines = ['Answered', 'Captured'];
+  const jobSequence = ['On a job', 'Nights', 'Weekends', 'Lunch'];
 
-  const [activeJobType, setActiveJobType] = useState('Quote');
-  const [activeTimeline, setActiveTimeline] = useState('Today');
+  const [activeJobType, setActiveJobType] = useState('On a job');
+  const [activeTimeline, setActiveTimeline] = useState('Answered');
   const [seqIdx, setSeqIdx] = useState(0);
 
   useEffect(() => {
@@ -23,7 +23,7 @@ export const DarkBand1: React.FC = () => {
       setSeqIdx((prev) => {
         const next = (prev + 1) % jobSequence.length;
         setActiveJobType(jobSequence[next]);
-        setActiveTimeline(next % 2 === 0 ? 'Today' : 'This week');
+        setActiveTimeline(next % 2 === 0 ? 'Answered' : 'Captured');
         return next;
       });
     }, 3000);
@@ -43,10 +43,10 @@ export const DarkBand1: React.FC = () => {
   });
 
   return (
-    <section className="w-full bg-[#F5F6F8] py-[72px] md:py-[120px] px-4 md:px-10 flex justify-center font-sans">
+    <section id="results" className="w-full bg-[#F5F6F8] py-[72px] md:py-[120px] px-4 md:px-10 flex justify-center font-sans">
       <div className="w-full max-w-[1080px] mx-auto flex flex-col items-center">
         {/* 1. BADGE */}
-        <SectionTag label="Automated Qualification" icon="list-checks" />
+        <SectionTag label="Results" icon="trending-up" />
 
         {/* 2. HEADLINE */}
         <h2 className="mt-[22px] mb-12 md:mb-[56px] text-center font-display tracking-[-0.03em] leading-[1.15] text-3xl sm:text-4xl md:text-[44px] max-w-3xl">
@@ -105,7 +105,7 @@ export const DarkBand1: React.FC = () => {
                   {/* Top Header */}
                   <div className="flex items-center justify-between mb-3">
                     <span className="text-[13px] sm:text-[13.5px] font-semibold text-[#0B0B0F]">
-                      Quick Qualify Logic
+                      Opportunity Capture
                     </span>
                     <span className="text-[10.5px] font-medium text-emerald-600 bg-emerald-50 border border-emerald-200/80 px-2 py-0.5 rounded-[6px] select-none leading-none">
                       Real-time
@@ -115,7 +115,7 @@ export const DarkBand1: React.FC = () => {
                   {/* Group 1: Job Type */}
                   <div className="mb-2.5">
                     <span className="text-[10px] uppercase tracking-[0.08em] font-medium text-slate-400 block mb-1.5">
-                      JOB TYPE
+                      WHEN THEY CALL
                     </span>
                     <div className="flex flex-wrap gap-1.5">
                       {jobTypes.map((type) => {
@@ -141,7 +141,7 @@ export const DarkBand1: React.FC = () => {
                   {/* Group 2: Timeline */}
                   <div>
                     <span className="text-[10px] uppercase tracking-[0.08em] font-medium text-slate-400 block mb-1.5">
-                      TIMELINE
+                      OUTCOME
                     </span>
                     <div className="flex flex-wrap gap-1.5">
                       {timelines.map((timeline) => {
@@ -215,7 +215,7 @@ export const DarkBand1: React.FC = () => {
                       reduceMotion ? '' : 'animate-pulse'
                     }`}
                   />
-                  <span className="text-white text-[13px] font-semibold">Live sync</span>
+                  <span className="text-white text-[13px] font-semibold">From enquiry to job</span>
                 </div>
 
                 {/* Staggered Row 1 */}
@@ -232,15 +232,15 @@ export const DarkBand1: React.FC = () => {
                     </div>
                     <div className="flex flex-col text-left min-w-0">
                       <div className="text-[12.5px] font-semibold text-white leading-tight truncate">
-                        Calendar Dispatch
+                        Estimate booked
                       </div>
                       <div className="text-[11px] text-[#9AA0B5] leading-tight mt-0.5 truncate">
-                        Slot booked in Google Calendar
+                        Slot booked in the calendar
                       </div>
                     </div>
                   </div>
                   <span className="text-[11px] font-medium text-[#34D399] bg-[#34D399]/12 border border-[#34D399]/30 px-2 py-0.5 rounded-[5px] flex items-center gap-1 shrink-0">
-                    <Check className="w-2.5 h-2.5 stroke-[2.5]" /> Synced
+                    <Check className="w-2.5 h-2.5 stroke-[2.5]" /> Booked
                   </span>
                 </motion.div>
 
@@ -258,15 +258,15 @@ export const DarkBand1: React.FC = () => {
                     </div>
                     <div className="flex flex-col text-left min-w-0">
                       <div className="text-[12.5px] font-semibold text-white leading-tight truncate">
-                        CRM Contact Created
+                        Details captured
                       </div>
                       <div className="text-[11px] text-[#9AA0B5] leading-tight mt-0.5 truncate">
-                        HubSpot lead updated
+                        Caller details saved
                       </div>
                     </div>
                   </div>
                   <span className="text-[11px] font-medium text-[#34D399] bg-[#34D399]/12 border border-[#34D399]/30 px-2 py-0.5 rounded-[5px] flex items-center gap-1 shrink-0">
-                    <Check className="w-2.5 h-2.5 stroke-[2.5]" /> Synced
+                    <Check className="w-2.5 h-2.5 stroke-[2.5]" /> Captured
                   </span>
                 </motion.div>
 
@@ -284,15 +284,15 @@ export const DarkBand1: React.FC = () => {
                     </div>
                     <div className="flex flex-col text-left min-w-0">
                       <div className="text-[12.5px] font-semibold text-white leading-tight truncate">
-                        Call Audio &amp; Transcript
+                        Follow-up ready
                       </div>
                       <div className="text-[11px] text-[#9AA0B5] leading-tight mt-0.5 truncate">
-                        Full recording and summary
+                        Summary sent to your team
                       </div>
                     </div>
                   </div>
                   <span className="text-[11px] font-medium text-[#34D399] bg-[#34D399]/12 border border-[#34D399]/30 px-2 py-0.5 rounded-[5px] flex items-center gap-1 shrink-0">
-                    <Check className="w-2.5 h-2.5 stroke-[2.5]" /> Attached
+                    <Check className="w-2.5 h-2.5 stroke-[2.5]" /> Sent
                   </span>
                 </motion.div>
               </div>
@@ -324,10 +324,10 @@ export const DarkBand1: React.FC = () => {
             {/* Header info */}
             <div className="relative z-10">
               <h3 className="text-[21px] font-semibold text-white tracking-[-0.02em] leading-snug">
-                Never misses a call
+                More value from existing ad spend
               </h3>
               <p className="text-[15px] leading-[1.55] text-white/78 max-w-[340px] mt-2 font-normal">
-                Every call is answered, including nights, weekends and emergencies, so no enquiry goes to voicemail.
+                Turn more of the demand you already pay for into qualified opportunities.
               </p>
             </div>
 
@@ -340,9 +340,9 @@ export const DarkBand1: React.FC = () => {
                 className="w-full rounded-t-[16px] bg-[#1C1D23] p-3 sm:p-3.5 pb-6 border-t border-x border-white/8 shadow-[0_-10px_40px_rgba(190,150,255,0.55)] -mb-7 flex flex-col space-y-2 relative z-10"
               >
                 {[
-                  'Every call answered',
-                  'After-hours covered',
-                  'Emergencies flagged',
+                  'Paid enquiries answered',
+                  'Callers qualified',
+                  'Jobs booked',
                 ].map((chipLabel, i) => (
                   <motion.div
                     key={chipLabel}
@@ -389,49 +389,49 @@ export const DarkBand1: React.FC = () => {
             >
               <div className="w-full rounded-[16px] bg-white p-3.5 sm:p-4 border border-[rgba(15,16,32,0.06)] shadow-[0_16px_40px_-16px_rgba(40,50,150,0.35)]">
                 <h4 className="text-[16px] sm:text-[17px] font-semibold text-[#0B0B0F] mb-3">
-                  Recent calls
+                  Handled for you
                 </h4>
                 <div className="flex flex-col divide-y divide-[#E9ECF5]">
                   {[
                     {
-                      initials: 'ZP',
-                      bg: 'bg-[#FDE7D8]',
-                      color: 'text-[#9A3412]',
-                      name: 'Zach P.',
-                      job: 'Burst pipe',
-                      tags: ['Emergency', 'Booked'],
-                    },
-                    {
-                      initials: 'ML',
+                      Icon: Phone,
                       bg: 'bg-[#DDEBFF]',
                       color: 'text-[#1E40AF]',
-                      name: 'Maria L.',
-                      job: 'Boiler service',
-                      tags: ['Quote sent', 'Summary ready'],
+                      name: 'Incoming enquiry',
+                      job: 'After-hours call',
+                      tags: ['Answered', 'Logged'],
                     },
                     {
-                      initials: 'DR',
-                      bg: 'bg-[#E6E0FF]',
-                      color: 'text-[#5B21B6]',
-                      name: 'Dan R.',
-                      job: 'Roof leak',
-                      tags: ['Urgent', 'Alert sent'],
-                    },
-                    {
-                      initials: 'PS',
+                      Icon: ClipboardList,
                       bg: 'bg-[#D9F5EA]',
                       color: 'text-[#065F46]',
-                      name: 'Priya S.',
-                      job: 'AC install',
-                      tags: ['Estimate', 'Booked'],
+                      name: 'Job qualification',
+                      job: 'Service area confirmed',
+                      tags: ['Qualified'],
+                    },
+                    {
+                      Icon: Calendar,
+                      bg: 'bg-[#E0E7FF]',
+                      color: 'text-[#3730A3]',
+                      name: 'Calendar booking',
+                      job: 'Slot confirmed',
+                      tags: ['Booked'],
+                    },
+                    {
+                      Icon: FileText,
+                      bg: 'bg-[#F3E8FF]',
+                      color: 'text-[#6B21A8]',
+                      name: 'Team notification',
+                      job: 'Summary sent to team',
+                      tags: ['Handled'],
                     },
                   ].map((row) => (
                     <div key={row.name} className="py-2.5 flex items-center justify-between gap-2">
                       <div className="flex items-center gap-2.5 min-w-0">
                         <div
-                          className={`w-9 h-9 rounded-full ${row.bg} ${row.color} text-[12px] font-semibold flex items-center justify-center shrink-0`}
+                          className={`w-9 h-9 rounded-full ${row.bg} ${row.color} flex items-center justify-center shrink-0`}
                         >
-                          {row.initials}
+                          <row.Icon className="w-[17px] h-[17px]" />
                         </div>
                         <div className="flex flex-col min-w-0">
                           <span className="text-[13px] font-semibold text-[#0B0B0F] leading-tight truncate">
@@ -462,10 +462,10 @@ export const DarkBand1: React.FC = () => {
             <div className="order-1 lg:order-2 w-full lg:w-[48%] relative z-10 flex flex-col justify-start">
               <div>
                 <h3 className="text-[21px] font-semibold text-[#1B1F3B] tracking-[-0.02em] leading-snug">
-                  Summaries and alerts for your team
+                  Less administrative work
                 </h3>
                 <p className="text-[15px] leading-[1.55] text-[#5A6285] max-w-[340px] mt-2 font-normal">
-                  Every call comes with a transcript, an AI summary and an alert, so your team always knows what happens next.
+                  Fewer repetitive calls and less manual information gathering.
                 </p>
               </div>
 
@@ -494,15 +494,15 @@ export const DarkBand1: React.FC = () => {
 
                 {/* Floating Avatars around rings */}
                 {[
-                  { initials: 'JR', bg: 'bg-[#FEE2E2]', color: 'text-[#991B1B]', top: '15px', right: '180px', delay: 0 },
-                  { initials: 'AK', bg: 'bg-[#FEF3C7]', color: 'text-[#92400E]', top: '25px', right: '50px', delay: 1 },
-                  { initials: 'TC', bg: 'bg-[#E0E7FF]', color: 'text-[#3730A3]', top: '90px', right: '220px', delay: 2 },
-                  { initials: 'BH', bg: 'bg-[#D1FAE5]', color: 'text-[#065F46]', top: '85px', right: '25px', delay: 1.5 },
-                  { initials: 'SL', bg: 'bg-[#F3E8FF]', color: 'text-[#6B21A8]', top: '155px', right: '190px', delay: 2.5 },
-                  { initials: 'EN', bg: 'bg-[#CFFAFE]', color: 'text-[#155E75]', top: '160px', right: '70px', delay: 0.5 },
+                  { Icon: Phone, bg: 'bg-[#DBEAFE]', color: 'text-[#1E40AF]', top: '15px', right: '180px', delay: 0 },
+                  { Icon: Check, bg: 'bg-[#D1FAE5]', color: 'text-[#065F46]', top: '25px', right: '50px', delay: 1 },
+                  { Icon: Clock, bg: 'bg-[#FEF3C7]', color: 'text-[#92400E]', top: '90px', right: '220px', delay: 2 },
+                  { Icon: Calendar, bg: 'bg-[#E0E7FF]', color: 'text-[#3730A3]', top: '85px', right: '25px', delay: 1.5 },
+                  { Icon: MessageSquare, bg: 'bg-[#F3E8FF]', color: 'text-[#6B21A8]', top: '155px', right: '190px', delay: 2.5 },
+                  { Icon: FileText, bg: 'bg-[#CFFAFE]', color: 'text-[#155E75]', top: '160px', right: '70px', delay: 0.5 },
                 ].map((marker) => (
                   <motion.div
-                    key={marker.initials}
+                    key={marker.bg}
                     animate={reduceMotion ? {} : { y: [-5, 5, -5] }}
                     transition={{
                       duration: 6,
@@ -510,10 +510,10 @@ export const DarkBand1: React.FC = () => {
                       repeat: Infinity,
                       ease: 'easeInOut',
                     }}
-                    className={`absolute w-[42px] h-[42px] rounded-full ${marker.bg} ${marker.color} border-[3px] border-white shadow-[0_10px_24px_-8px_rgba(40,50,150,0.4)] flex items-center justify-center text-[12px] font-semibold`}
+                    className={`absolute w-[42px] h-[42px] rounded-full ${marker.bg} ${marker.color} border-[3px] border-white shadow-[0_10px_24px_-8px_rgba(40,50,150,0.4)] flex items-center justify-center`}
                     style={{ top: marker.top, right: marker.right }}
                   >
-                    {marker.initials}
+                    <marker.Icon className="w-[17px] h-[17px]" />
                   </motion.div>
                 ))}
 
@@ -531,11 +531,11 @@ export const DarkBand1: React.FC = () => {
                         className="absolute inset-0 rounded-full border-2 border-white pointer-events-none"
                       />
                     )}
-                    <span>ZP</span>
+                    <Check className="w-[18px] h-[18px] stroke-[2.5]" />
                   </div>
                   <div className="px-2 py-0.5 rounded-full bg-white border border-slate-100 shadow-md text-[10px] font-semibold text-[#1E40AF] whitespace-nowrap flex items-center gap-1">
                     <Sparkles className="w-2.5 h-2.5 text-[#3B82F6]" />
-                    <span>Alert sent</span>
+                    <span>Handled</span>
                   </div>
                 </motion.div>
               </div>

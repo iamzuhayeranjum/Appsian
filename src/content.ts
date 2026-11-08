@@ -91,12 +91,12 @@ export const content = {
     h2Line1: 'Made for busy trades,',
     h2Line2: 'built for booked jobs',
     card1: {
-      title: 'Qualifies every caller',
-      blurb: 'Screens job requirements, urgency, and service zones before scheduling.',
+      title: 'More opportunities captured',
+      blurb: 'Enquiries that previously would have gone unanswered.',
     },
     card2: {
-      title: 'Syncs with your calendar and CRM',
-      blurb: 'Direct two-way calendar dispatch, CRM contact logging, and real-time transcripts.',
+      title: 'More jobs won',
+      blurb: 'Enquiries that actually convert into paying customers.',
     },
   },
 

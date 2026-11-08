@@ -17,7 +17,6 @@ import { DarkBand1 } from './components/DarkBand1';
 import { TrustRow } from './components/TrustRow';
 import { WhyAppsian } from './components/WhyAppsian';
 import { GettingStarted } from './components/GettingStarted';
-import { ResultsSection } from './components/ResultsSection';
 import { PricingSection } from './components/PricingSection';
 import { FaqSection } from './components/FaqSection';
 import { FinalCtaBand } from './components/FinalCtaBand';
@@ -149,8 +148,6 @@ export default function App() {
       {/* Why Appsian comparison table */}
       <WhyAppsian />
 
-      {/* Results: what customers see with an AI phone calling agent */}
-      <ResultsSection onSuccessDemo={handleOpenDemoModal} />
 
       {/* 6. Pricing (1187px wide) */}
       <PricingSection onPlanSelect={handlePlanSelect} />
