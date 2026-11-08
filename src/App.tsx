@@ -37,16 +37,6 @@ export default function App() {
   const pastHero = useHeroPast();
   const appReady = useAppReady();
 
-  // If path is '/book', render the standalone BookingPage
-  if (pathname === '/book') {
-    return (
-      <>
-        <BookingPage />
-        <Analytics />
-      </>
-    );
-  }
-
   // Top-level failsafe: if appReady has not become true after 6.5s, force it true as a last resort
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -58,6 +48,8 @@ export default function App() {
 
   // Initialize Lenis smooth scroll - control with app readiness
   useEffect(() => {
+    if (pathname === '/book') return;
+
     const isReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     if (isReducedMotion) return;
 
@@ -88,7 +80,7 @@ export default function App() {
       cancelAnimationFrame(rafId);
       lenis.destroy();
     };
-  }, [appReady]);
+  }, [appReady, pathname]);
 
   const handleOpenDemoModal = () => {
     navigate('/book');
@@ -101,6 +93,16 @@ export default function App() {
   const handlePlanSelect = (_planName: string) => {
     navigate('/book');
   };
+
+  // If path is '/book', render the standalone BookingPage
+  if (pathname === '/book') {
+    return (
+      <>
+        <BookingPage />
+        <Analytics />
+      </>
+    );
+  }
 
   return (
     <>
