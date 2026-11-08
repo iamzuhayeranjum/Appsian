@@ -24,6 +24,7 @@ import { SectionHeader } from './design-system';
 import { SectionTag } from './SectionTag';
 import { AppsianMark } from './AppsianLogo';
 import { INTEGRATIONS, getLogoSrc } from './IntegrationsStrip';
+import { navigate } from '../lib/navigate';
 
 interface ResultsSectionProps {
   onSuccessDemo?: () => void;
@@ -981,16 +982,10 @@ export const ResultsSection: React.FC<ResultsSectionProps> = ({ onSuccessDemo })
   };
 
   const handleCtaClick = () => {
-    const demoInput = document.getElementById('demo-name') as HTMLInputElement | null;
-    if (demoInput) {
-      demoInput.scrollIntoView({ behavior: 'smooth', block: 'center' });
-      setTimeout(() => {
-        demoInput.focus();
-      }, 450);
-    } else if (onSuccessDemo) {
+    if (onSuccessDemo) {
       onSuccessDemo();
     } else {
-      window.scrollTo({ top: 0, behavior: 'smooth' });
+      navigate('/book');
     }
   };
 

@@ -28,11 +28,24 @@ import { BottomNav } from './components/BottomNav';
 import { useHeroPast } from './hooks/useHeroPast';
 import { Preloader, useAppReady, setGlobalAppReady, restorePageScroll } from './components/Preloader';
 import { Analytics } from '@vercel/analytics/react';
+import { usePathname, navigate } from './lib/navigate';
+import { BookingPage } from './components/BookingPage';
 
 export default function App() {
+  const pathname = usePathname();
   const [isDemoModalOpen, setIsDemoModalOpen] = useState(false);
   const pastHero = useHeroPast();
   const appReady = useAppReady();
+
+  // If path is '/book', render the standalone BookingPage
+  if (pathname === '/book') {
+    return (
+      <>
+        <BookingPage />
+        <Analytics />
+      </>
+    );
+  }
 
   // Top-level failsafe: if appReady has not become true after 6.5s, force it true as a last resort
   useEffect(() => {
@@ -78,15 +91,15 @@ export default function App() {
   }, [appReady]);
 
   const handleOpenDemoModal = () => {
-    setIsDemoModalOpen(true);
+    navigate('/book');
   };
 
   const handleCloseDemoModal = () => {
     setIsDemoModalOpen(false);
   };
 
-  const handlePlanSelect = (planName: string) => {
-    setIsDemoModalOpen(true);
+  const handlePlanSelect = (_planName: string) => {
+    navigate('/book');
   };
 
   return (

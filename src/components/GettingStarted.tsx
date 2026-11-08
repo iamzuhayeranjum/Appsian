@@ -16,6 +16,7 @@ import {
 } from 'lucide-react';
 import { AppsianMark } from './AppsianLogo';
 import { SectionTag } from './SectionTag';
+import { navigate } from '../lib/navigate';
 
 interface GettingStartedProps {
   onSuccessDemo?: () => void;
@@ -417,16 +418,10 @@ export const GettingStarted: React.FC<GettingStartedProps> = ({ onSuccessDemo })
   });
 
   const handleCtaClick = () => {
-    const demoInput = document.getElementById('demo-name') as HTMLInputElement | null;
-    if (demoInput) {
-      demoInput.scrollIntoView({ behavior: 'smooth', block: 'center' });
-      setTimeout(() => {
-        demoInput.focus();
-      }, 450);
-    } else if (onSuccessDemo) {
+    if (onSuccessDemo) {
       onSuccessDemo();
     } else {
-      window.scrollTo({ top: 0, behavior: 'smooth' });
+      navigate('/book');
     }
   };
 

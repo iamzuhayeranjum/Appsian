@@ -1,5 +1,6 @@
 import { AppsianIcon } from './AppsianLogo';
 import { SectionTag } from './SectionTag';
+import { navigate } from '../lib/navigate';
 import React, { useRef, useState, useEffect } from 'react';
 import { motion, useScroll, useMotionValueEvent } from 'motion/react';
 
@@ -69,13 +70,7 @@ export const HowItWorks: React.FC = () => {
   });
 
   const handleScrollToHeroDemo = () => {
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-    setTimeout(() => {
-      const input = document.getElementById('demo-name') as HTMLInputElement | null;
-      if (input) {
-        input.focus();
-      }
-    }, 500);
+    navigate('/book');
   };
 
   // Node glass style helper

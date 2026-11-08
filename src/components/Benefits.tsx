@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { Check, ArrowUpRight, Moon, Calendar, MessageSquare, PhoneCall } from 'lucide-react';
 import { AppsianIcon } from './AppsianLogo';
 import { SectionTag } from './SectionTag';
+import { navigate } from '../lib/navigate';
 
 interface BenefitsProps {
   onBookDemoClick?: () => void;
@@ -169,14 +170,8 @@ export const Benefits: React.FC<BenefitsProps> = ({ onBookDemoClick }) => {
     e.preventDefault();
     if (onBookDemoClick) {
       onBookDemoClick();
-      return;
-    }
-    const demoInput = document.getElementById('demo-name') as HTMLInputElement | null;
-    if (demoInput) {
-      demoInput.scrollIntoView({ behavior: 'smooth', block: 'center' });
-      setTimeout(() => demoInput.focus(), 450);
     } else {
-      window.scrollTo({ top: 0, behavior: 'smooth' });
+      navigate('/book');
     }
   };
 

@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { motion } from 'motion/react';
 import { Phone, Calculator, ArrowRight, ArrowUpRight, Check } from 'lucide-react';
 import { SectionTag } from './SectionTag';
+import { navigate } from '../lib/navigate';
 
 export const MissedCallCalculator: React.FC = () => {
   // Input states with specified defaults: 10 calls/wk, $750/job, 30% close rate
@@ -81,15 +82,7 @@ export const MissedCallCalculator: React.FC = () => {
 
   // Smooth scroll handler to hero demo bar
   const handleScrollToHeroDemo = () => {
-    const nameInput = document.getElementById('demo-name');
-    if (nameInput) {
-      nameInput.scrollIntoView({ behavior: 'smooth', block: 'center' });
-      setTimeout(() => {
-        nameInput.focus();
-      }, 600);
-    } else {
-      window.scrollTo({ top: 0, behavior: 'smooth' });
-    }
+    navigate('/book');
   };
 
   const handleScrollToFeatures = (e: React.MouseEvent) => {

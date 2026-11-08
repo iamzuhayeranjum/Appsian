@@ -12,6 +12,7 @@ import {
   ArrowRight,
 } from 'lucide-react';
 import { SectionTag } from './SectionTag';
+import { navigate } from '../lib/navigate';
 
 export interface ComparisonRowData {
   id: string;
@@ -127,15 +128,7 @@ export const WhyAppsian: React.FC = () => {
   }, []);
 
   const handleScrollToDemoBar = () => {
-    const nameInput = document.getElementById('demo-name') || document.querySelector('input[type="email"]');
-    if (nameInput) {
-      nameInput.scrollIntoView({ behavior: 'smooth', block: 'center' });
-      setTimeout(() => {
-        (nameInput as HTMLElement).focus();
-      }, 600);
-    } else {
-      window.scrollTo({ top: 0, behavior: 'smooth' });
-    }
+    navigate('/book');
   };
 
   const getRowIcon = (name: ComparisonRowData['iconName']) => {

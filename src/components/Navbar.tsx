@@ -4,6 +4,7 @@ import { ArrowUpRight } from 'lucide-react';
 import { AppsianMark } from './AppsianLogo';
 import { content } from '../content';
 import { useAppReady } from './Preloader';
+import { navigate } from '../lib/navigate';
 
 interface NavbarProps {
   onBookDemoClick?: () => void;
@@ -71,12 +72,7 @@ export const Navbar: React.FC<NavbarProps> = ({ onBookDemoClick, pastHero = fals
     if (onBookDemoClick) {
       onBookDemoClick();
     } else {
-      const heroDemoForm = document.getElementById('hero-demo-name');
-      if (heroDemoForm) {
-        heroDemoForm.focus();
-      } else {
-        window.scrollTo({ top: 0, behavior: 'smooth' });
-      }
+      navigate('/book');
     }
   };
 

@@ -4,6 +4,7 @@ import { ArrowRight, ChevronUp } from 'lucide-react';
 import { useHeroPast } from './useHeroPast';
 import { MorePanel } from './MorePanel';
 import ProgressiveBlur from './ProgressiveBlur';
+import { navigate } from '../lib/navigate';
 
 interface BottomNavProps {
   onCtaClick?: () => void;
@@ -265,16 +266,7 @@ export const BottomNav: React.FC<BottomNavProps> = ({ onCtaClick, pastHero: prop
       onCtaClick();
       return;
     }
-
-    const demoInput = document.getElementById('demo-name') as HTMLInputElement | null;
-    if (demoInput) {
-      demoInput.scrollIntoView({ behavior: 'smooth', block: 'center' });
-      setTimeout(() => {
-        demoInput.focus();
-      }, 450);
-    } else {
-      window.scrollTo({ top: 0, behavior: 'smooth' });
-    }
+    navigate('/book');
   };
 
   // Variants for the 5 inner slots with 40ms stagger when shown, no stagger on exit
