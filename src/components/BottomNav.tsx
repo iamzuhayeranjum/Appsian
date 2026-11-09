@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef, useCallback } from 'react';
+import React, { useState, useEffect, useLayoutEffect, useRef, useCallback } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { ArrowRight, ChevronUp } from 'lucide-react';
 import { useHeroPast } from './useHeroPast';
@@ -30,6 +30,21 @@ export const BottomNav: React.FC<BottomNavProps> = ({ onCtaClick, pastHero: prop
   const hoverTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const wrapperRef = useRef<HTMLDivElement>(null);
   const dockNavRef = useRef<HTMLElement>(null);
+  const dockContainerRef = useRef<HTMLDivElement>(null);
+
+  // Distance from the right edge of the dock to the centre of the "More" button.
+  // The panel is right-aligned to the dock, so its pointer notch uses this to sit exactly over "More".
+  const [notchRight, setNotchRight] = useState<number>(76);
+  useLayoutEffect(() => {
+    if (!isMoreOpen) return;
+    const container = dockContainerRef.current;
+    const more = moreRef.current;
+    if (!container || !more) return;
+    const c = container.getBoundingClientRect();
+    const m = more.getBoundingClientRect();
+    const fromRight = c.right - (m.left + m.width / 2);
+    if (fromRight > 16 && fromRight < c.width - 16) setNotchRight(Math.round(fromRight));
+  }, [isMoreOpen]);
 
   // Exact distance from viewport bottom to the resting top edge of the dock
   const [dockTopFromBottom, setDockTopFromBottom] = useState<number>(() => {
@@ -352,6 +367,25 @@ export const BottomNav: React.FC<BottomNavProps> = ({ onCtaClick, pastHero: prop
   return (
     <>
       <ProgressiveBlur visible={pastHero} dockTopFromBottom={dockTopFromBottom} />
+      {/* Page blur while the "More" panel is open (below the dock z-100, above the page and the bottom blur strip) */}
+      <AnimatePresence>
+        {isMoreOpen && (
+          <motion.div
+            key="more-backdrop"
+            aria-hidden="true"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.25, ease: 'easeOut' }}
+            className="fixed inset-0 z-[95] pointer-events-none"
+            style={{
+              backdropFilter: 'blur(14px)',
+              WebkitBackdropFilter: 'blur(14px)',
+              backgroundColor: 'rgba(8, 12, 24, 0.12)',
+            }}
+          />
+        )}
+      </AnimatePresence>
       {/* Non-animated fixed centering wrapper (no translateX(-50%) on animated element) */}
       <div
         ref={wrapperRef}
@@ -360,7 +394,7 @@ export const BottomNav: React.FC<BottomNavProps> = ({ onCtaClick, pastHero: prop
         visibility: isDockVisible ? 'visible' : 'hidden',
       }}
     >
-      <div className="relative flex justify-center w-auto">
+      <div ref={dockContainerRef} className="relative flex justify-center w-auto">
         {/* Mega-panel sibling above motion.nav */}
         <AnimatePresence>
           {isMoreOpen && (
@@ -371,6 +405,8 @@ export const BottomNav: React.FC<BottomNavProps> = ({ onCtaClick, pastHero: prop
               onMouseEnter={handlePanelMouseEnter}
               onMouseLeave={handlePanelMouseLeave}
               onNavigate={handleScrollToHref}
+              onCtaClick={handleCtaClick}
+              notchRight={notchRight}
               activeSection={activeSection}
             />
           )}
