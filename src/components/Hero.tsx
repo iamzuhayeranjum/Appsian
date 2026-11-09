@@ -8,9 +8,7 @@ import {
   Loader2,
 } from 'lucide-react';
 import { useAppReady } from './Preloader';
-import { submitDemoRequest } from '../lib/submitDemoRequest';
-import { SectionTag } from './SectionTag';
-import { AppsianMark } from './AppsianLogo';
+import { navigate } from '../lib/navigate';
 import { HeroParticles } from './HeroParticles';
 import { HeroCurtainBackground } from './HeroCurtainBackground';
 import { HeroPhoneStage } from './HeroPhoneStage';
@@ -118,9 +116,8 @@ export const Hero: React.FC<HeroProps> = ({ onBookDemoClick }) => {
     }
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (status === 'loading') return;
 
     const trimmedName = name.trim();
     if (trimmedName.length < 2) {
@@ -141,23 +138,13 @@ export const Hero: React.FC<HeroProps> = ({ onBookDemoClick }) => {
 
     setErrorField('');
     setErrorMessage('');
-    setStatus('loading');
 
-    try {
-      await submitDemoRequest({
-        source: 'hero',
-        name: trimmedName,
-        email: trimmedEmail,
-        hp: honeypot,
-      });
-      setStatus('success');
-      if (onBookDemoClick) {
-        onBookDemoClick();
-      }
-    } catch (err: any) {
-      setStatus('error');
-      setErrorMessage(err.message || 'Something went wrong. Please try again.');
-    }
+    // Redirect to booking page with name and email pre-filled (do not send to Telegram from hero)
+    const params = new URLSearchParams({
+      name: trimmedName,
+      email: trimmedEmail,
+    });
+    navigate(`/book?${params.toString()}`);
   };
 
   return (
@@ -194,49 +181,8 @@ export const Hero: React.FC<HeroProps> = ({ onBookDemoClick }) => {
       >
         {/* LEFT COLUMN: text + form + chips (all left-aligned) */}
         <div className="flex flex-col justify-center text-left pt-[88px] pb-10">
-          {/* 1. Badge "FOR LOCAL TRADES", left-aligned */}
-          <motion.div
-            initial={reduceMotion ? { opacity: 0 } : { opacity: 0, y: 12, filter: 'blur(6px)' }}
-            animate={
-              appReady
-                ? { opacity: 1, y: 0, filter: 'blur(0px)' }
-                : reduceMotion
-                ? { opacity: 0 }
-                : { opacity: 0, y: 12, filter: 'blur(6px)' }
-            }
-            transition={{
-              duration: reduceMotion ? 0.3 : 0.6,
-              delay: reduceMotion ? 0 : 0.05,
-              ease: EASE,
-            }}
-            className="self-start cursor-default select-none"
-          >
-            <div className="glass-dark glass-dark--hover h-[34px] pl-[6px] pr-[14px] rounded-[10px] inline-flex items-center gap-[8px] relative overflow-hidden">
-              <div
-                className="w-[22px] h-[22px] rounded-[6px] flex items-center justify-center shrink-0"
-                style={{
-                  backgroundColor: '#0b1a4a',
-                  boxShadow: '0 0 0 1px rgba(255, 255, 255, 0.45)',
-                }}
-                aria-hidden="true"
-              >
-                <AppsianMark size={12} className="text-white" />
-              </div>
-              <span
-                className="text-[12px] font-semibold tracking-[0.08em] uppercase select-none leading-none"
-                style={{
-                  color: '#ffffff',
-                  WebkitTextFillColor: 'currentColor',
-                  textShadow: 'none',
-                }}
-              >
-                FOR LOCAL TRADES
-              </span>
-            </div>
-          </motion.div>
-
-          {/* 2. Headline (margin-top 22px): left-aligned */}
-          <h1 className="mt-[22px] font-display font-normal md:font-medium text-[clamp(34px,9vw,44px)] md:text-[clamp(36px,min(4.6vw,8.4vh),68px)] leading-[1.08] tracking-[-0.035em] text-left select-text">
+          {/* Headline: left-aligned */}
+          <h1 className="font-display font-normal md:font-medium text-[clamp(34px,9vw,44px)] md:text-[clamp(36px,min(4.6vw,8.4vh),68px)] leading-[1.08] tracking-[-0.035em] text-left select-text">
             {/* Line 1 */}
             <motion.span
               initial={reduceMotion ? { opacity: 0 } : { opacity: 0, y: 24, filter: 'blur(8px)' }}

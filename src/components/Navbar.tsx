@@ -4,7 +4,6 @@ import { ArrowUpRight } from 'lucide-react';
 import { AppsianMark } from './AppsianLogo';
 import { content } from '../content';
 import { useAppReady } from './Preloader';
-import { navigate } from '../lib/navigate';
 
 interface NavbarProps {
   onBookDemoClick?: () => void;
@@ -13,7 +12,7 @@ interface NavbarProps {
 
 const EASE_OUT: [number, number, number, number] = [0.22, 1, 0.36, 1];
 
-export const Navbar: React.FC<NavbarProps> = ({ onBookDemoClick, pastHero = false }) => {
+export const Navbar: React.FC<NavbarProps> = ({ pastHero = false }) => {
   const appReady = useAppReady();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [isReducedMotion, setIsReducedMotion] = useState(false);
@@ -65,15 +64,6 @@ export const Navbar: React.FC<NavbarProps> = ({ onBookDemoClick, pastHero = fals
 
   const handleLogoClick = () => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
-  };
-
-  const handleCtaClick = () => {
-    setMobileMenuOpen(false);
-    if (onBookDemoClick) {
-      onBookDemoClick();
-    } else {
-      navigate('/book');
-    }
   };
 
   const isVisible = appReady && !pastHero;
@@ -172,37 +162,35 @@ export const Navbar: React.FC<NavbarProps> = ({ onBookDemoClick, pastHero = fals
         </nav>
 
         {/* RIGHT: Desktop CTA (underlined text link in white with 70% underline + 40px light glossy arrow button) */}
+        {/* RIGHT: Desktop CTA (Login link + 40px light glossy arrow button) */}
         <div className="header-desktop-cta">
-          <button
-            type="button"
-            onClick={handleCtaClick}
+          <a
+            href="https://dashboard.appsianai.digital/"
             className="text-[15px] font-normal text-white underline underline-offset-[5px] decoration-1 decoration-[rgba(255,255,255,0.7)] hover:opacity-85 transition-opacity cursor-pointer border-0 bg-transparent p-0 select-none"
           >
-            Get Free Demo
-          </button>
+            Login
+          </a>
           
-          <button
-            type="button"
-            onClick={handleCtaClick}
+          <a
+            href="https://dashboard.appsianai.digital/"
             className="btn-premium btn-premium--light btn-glitter btn-glitter--light w-[40px] h-[40px] min-w-[40px] rounded-[10px] flex items-center justify-center cursor-pointer select-none text-[#2f6bff] shadow-sm"
             style={{ '--btn-fg': '#2f6bff' } as React.CSSProperties}
-            aria-label="Get Free Demo"
+            aria-label="Login"
           >
             <ArrowUpRight className="btn-arrow-diag w-[18px] h-[18px] stroke-[2.2] text-[#2f6bff]" />
-          </button>
+          </a>
         </div>
 
         {/* RIGHT: Tablet & Mobile controls (Light glossy button + 2-line menu button) */}
         <div className="header-mobile-controls">
-          <button
-            type="button"
-            onClick={handleCtaClick}
+          <a
+            href="https://dashboard.appsianai.digital/"
             className="btn-premium btn-premium--light btn-glitter btn-glitter--light w-[40px] h-[40px] min-w-[40px] rounded-[10px] flex items-center justify-center cursor-pointer text-[#2f6bff] shadow-sm"
             style={{ '--btn-fg': '#2f6bff' } as React.CSSProperties}
-            aria-label="Get Free Demo"
+            aria-label="Login"
           >
             <ArrowUpRight className="btn-arrow-diag w-[18px] h-[18px] stroke-[2.2] text-[#2f6bff]" />
-          </button>
+          </a>
 
           <button
             ref={menuButtonRef}
@@ -260,14 +248,13 @@ export const Navbar: React.FC<NavbarProps> = ({ onBookDemoClick, pastHero = fals
               
               <div className="h-[1px] bg-slate-100 my-1" />
 
-              <button
-                type="button"
-                onClick={handleCtaClick}
+              <a
+                href="https://dashboard.appsianai.digital/"
                 className="btn-premium btn-premium--blue btn-glitter w-full px-4 py-3 rounded-[10px] text-[15px] font-semibold text-white flex items-center justify-between cursor-pointer border-0 mt-0.5"
               >
-                <span>Get Free Demo</span>
+                <span>Login</span>
                 <ArrowUpRight className="btn-arrow-diag w-4 h-4 stroke-[2.2] text-white" />
-              </button>
+              </a>
             </motion.div>
           )}
         </AnimatePresence>

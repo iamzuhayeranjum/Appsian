@@ -48,6 +48,13 @@ function isAllowedOrigin(originHeader?: string): boolean {
     if (hostname === 'localhost' || hostname === '127.0.0.1') {
       return true;
     }
+    if (
+      hostname.endsWith('.run.app') ||
+      hostname.endsWith('.aistudio.google.com') ||
+      hostname.endsWith('.googleusercontent.com')
+    ) {
+      return true;
+    }
     return false;
   } catch {
     return false;

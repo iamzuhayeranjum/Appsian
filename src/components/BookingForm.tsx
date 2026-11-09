@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { ArrowRight, Check, ChevronDown, Loader2, AlertCircle } from 'lucide-react';
 import { submitDemoRequest } from '../lib/submitDemoRequest';
 
@@ -190,6 +190,20 @@ export const BookingForm: React.FC<BookingFormProps> = ({ onSuccess }) => {
   const [honeypot, setHoneypot] = useState('');
   const [status, setStatus] = useState<'idle' | 'loading' | 'error'>('idle');
   const [serverError, setServerError] = useState('');
+
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+    const q = new URLSearchParams(window.location.search);
+    const qName = q.get('name');
+    const qEmail = q.get('email');
+    if (qName || qEmail) {
+      setValues((v) => ({
+        ...v,
+        name: qName ? qName.trim() : v.name,
+        email: qEmail ? qEmail.trim() : v.email,
+      }));
+    }
+  }, []);
 
   const set = <K extends keyof FormValues>(key: K, value: FormValues[K]) => {
     setValues((v) => ({ ...v, [key]: value }));
