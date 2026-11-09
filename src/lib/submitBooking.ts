@@ -1,9 +1,9 @@
 /**
- * Booking form submission.
- * TODO (Supabase): replace the simulated request below with an insert, for example
- *   const { error } = await supabase.from('demo_requests').insert(payload);
- * The keys below are snake_case so they can map straight onto table columns.
+ * Booking form submission delegate.
+ * Delegates directly to the unified submitDemoRequest helper.
  */
+import { submitDemoRequest } from './submitDemoRequest';
+
 export interface BookingPayload {
   name: string;
   business_name: string;
@@ -15,13 +15,29 @@ export interface BookingPayload {
   monthly_calls: string;
   missed_call_handling: string;
   receptionist_tasks: string[];
+  hp?: string;
 }
 
 export async function submitBooking(
   payload: BookingPayload
 ): Promise<{ success: boolean; error?: string }> {
-  // Simulated network latency until the backend is connected
-  await new Promise((resolve) => setTimeout(resolve, 700));
-  void payload;
-  return { success: true };
+  try {
+    await submitDemoRequest({
+      source: 'booking-page',
+      name: payload.name,
+      business: payload.business_name,
+      email: payload.email,
+      phone: payload.phone,
+      trade: payload.business_type,
+      website: payload.website_url,
+      services: payload.services,
+      monthlyCalls: payload.monthly_calls,
+      whenUnanswered: payload.missed_call_handling,
+      handles: payload.receptionist_tasks,
+      hp: payload.hp,
+    });
+    return { success: true };
+  } catch (err: any) {
+    return { success: false, error: err.message || 'Something went wrong. Please try again.' };
+  }
 }

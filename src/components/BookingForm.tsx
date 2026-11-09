@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { ArrowRight, Check, ChevronDown, Loader2, AlertCircle } from 'lucide-react';
-import { submitBooking } from '../lib/submitBooking';
+import { submitDemoRequest } from '../lib/submitDemoRequest';
 
 const BUSINESS_TYPES = [
   'Plumbing',
@@ -239,28 +239,31 @@ export const BookingForm: React.FC<BookingFormProps> = ({ onSuccess }) => {
     setServerError('');
     setStatus('loading');
     const site = values.website_url.trim();
+    const formattedSite = site && !/^https?:\/\//i.test(site) ? `https://${site}` : site;
+
     try {
-      const res = await submitBooking({
-        ...values,
+      await submitDemoRequest({
+        source: 'booking-page',
         name: values.name.trim(),
-        business_name: values.business_name.trim(),
+        business: values.business_name.trim(),
         email: values.email.trim(),
         phone: values.phone.trim(),
+        trade: values.business_type,
+        website: formattedSite,
         services: values.services.trim(),
-        website_url: site && !/^https?:\/\//i.test(site) ? `https://${site}` : site,
+        monthlyCalls: values.monthly_calls,
+        whenUnanswered: values.missed_call_handling,
+        handles: values.receptionist_tasks,
+        hp: honeypot,
       });
-      if (res.success) {
-        onSuccess({
-          firstName: values.name.trim().split(' ')[0],
-          business: values.business_name.trim(),
-        });
-      } else {
-        setStatus('error');
-        setServerError(res.error || 'Something went wrong. Please try again.');
-      }
-    } catch {
+
+      onSuccess({
+        firstName: values.name.trim().split(' ')[0],
+        business: values.business_name.trim(),
+      });
+    } catch (err: any) {
       setStatus('error');
-      setServerError('Something went wrong. Please try again.');
+      setServerError(err.message || 'Something went wrong. Please try again.');
     }
   };
 
@@ -281,7 +284,7 @@ export const BookingForm: React.FC<BookingFormProps> = ({ onSuccess }) => {
       {/* Honeypot Spam Protection */}
       <input
         type="text"
-        name="website_hp"
+        name="contact_hp"
         value={honeypot}
         onChange={(e) => setHoneypot(e.target.value)}
         tabIndex={-1}

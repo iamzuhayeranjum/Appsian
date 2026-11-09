@@ -120,12 +120,7 @@ export const Hero: React.FC<HeroProps> = ({ onBookDemoClick }) => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-
-    // Spam honeypot protection: if filled, silently pretend success
-    if (honeypot.trim()) {
-      setStatus('success');
-      return;
-    }
+    if (status === 'loading') return;
 
     const trimmedName = name.trim();
     if (trimmedName.length < 2) {
@@ -149,19 +144,19 @@ export const Hero: React.FC<HeroProps> = ({ onBookDemoClick }) => {
     setStatus('loading');
 
     try {
-      const res = await submitDemoRequest({ name: trimmedName, email: trimmedEmail });
-      if (res.success) {
-        setStatus('success');
-        if (onBookDemoClick) {
-          onBookDemoClick();
-        }
-      } else {
-        setStatus('error');
-        setErrorMessage(res.error || 'Something went wrong. Please try again.');
+      await submitDemoRequest({
+        source: 'hero',
+        name: trimmedName,
+        email: trimmedEmail,
+        hp: honeypot,
+      });
+      setStatus('success');
+      if (onBookDemoClick) {
+        onBookDemoClick();
       }
-    } catch {
+    } catch (err: any) {
       setStatus('error');
-      setErrorMessage('Something went wrong. Please try again.');
+      setErrorMessage(err.message || 'Something went wrong. Please try again.');
     }
   };
 
@@ -427,7 +422,7 @@ export const Hero: React.FC<HeroProps> = ({ onBookDemoClick }) => {
                   {/* Hidden Spam Honeypot */}
                   <input
                     type="text"
-                    name="website"
+                    name="contact_hp"
                     value={honeypot}
                     onChange={(e) => setHoneypot(e.target.value)}
                     tabIndex={-1}

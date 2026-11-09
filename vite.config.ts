@@ -1,11 +1,74 @@
 import tailwindcss from '@tailwindcss/vite';
 import react from '@vitejs/plugin-react';
 import path from 'path';
-import {defineConfig} from 'vite';
+import { defineConfig, type Plugin } from 'vite';
+import leadHandler from './api/lead.ts';
+
+function leadDevPlugin(): Plugin {
+  const middleware = (req: any, res: any, next: any) => {
+    const url = req.url?.split('?')[0];
+    if (url === '/api/lead' && req.method === 'POST') {
+      let raw = '';
+      req.on('data', (chunk: any) => {
+        raw += chunk;
+      });
+      req.on('end', async () => {
+        try {
+          req.body = JSON.parse(raw);
+        } catch {
+          req.body = raw;
+        }
+
+        res.status = (code: number) => {
+          res.statusCode = code;
+          return res;
+        };
+        res.json = (data: any) => {
+          res.setHeader('Content-Type', 'application/json');
+          res.setHeader('Cache-Control', 'no-store');
+          res.end(JSON.stringify(data));
+          return res;
+        };
+
+        if (process.env.TELEGRAM_BOT_TOKEN && process.env.TELEGRAM_CHAT_ID) {
+          try {
+            await leadHandler(req, res);
+          } catch (err: any) {
+            console.error('[lead dev] Handler error:', err);
+            res.status(500).json({ ok: false, error: 'Could not deliver the message' });
+          }
+        } else {
+          // Dev / Preview mode without configured Telegram credentials:
+          // Validate input format and return simulated 200 { ok: true }
+          const body = req.body || {};
+          if (!body.email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(body.email)) {
+            return res.status(400).json({ ok: false, error: 'Invalid request' });
+          }
+          console.log('[Dev Server /api/lead] Form submitted in preview mode:');
+          console.log(`  Source: ${body.source}, Name: ${body.name || '(none)'}, Email: ${body.email}`);
+          console.log('  (In production on Vercel, this delivers directly to your Telegram bot)');
+          res.status(200).json({ ok: true, devMode: true });
+        }
+      });
+      return;
+    }
+    next();
+  };
+
+  return {
+    name: 'lead-api-dev-middleware',
+    configureServer(server) {
+      server.middlewares.use(middleware);
+    },
+    configurePreviewServer(server) {
+      server.middlewares.use(middleware);
+    },
+  };
+}
 
 export default defineConfig(() => {
   return {
-    plugins: [react(), tailwindcss()],
+    plugins: [react(), tailwindcss(), leadDevPlugin()],
     resolve: {
       alias: {
         '@': path.resolve(import.meta.dirname || process.cwd(), '.'),

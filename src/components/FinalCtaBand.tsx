@@ -12,19 +12,36 @@ interface FinalCtaBandProps {
 export const FinalCtaBand: React.FC<FinalCtaBandProps> = ({ onSuccessDemo }) => {
   const { finalCta } = content;
   const [email, setEmail] = useState('');
+  const [honeypot, setHoneypot] = useState('');
+  const [loading, setLoading] = useState(false);
   const [submitted, setSubmitted] = useState(false);
   const [error, setError] = useState('');
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!email || !email.includes('@') || !email.includes('.')) {
+    if (loading) return;
+
+    const trimmedEmail = email.trim();
+    if (!trimmedEmail || !trimmedEmail.includes('@') || !trimmedEmail.includes('.')) {
       setError('Please enter a valid work email.');
       return;
     }
     setError('');
-    submitDemoRequest({ email });
-    setSubmitted(true);
-    if (onSuccessDemo) onSuccessDemo();
+    setLoading(true);
+
+    try {
+      await submitDemoRequest({
+        source: 'final-cta',
+        email: trimmedEmail,
+        hp: honeypot,
+      });
+      setSubmitted(true);
+      if (onSuccessDemo) onSuccessDemo();
+    } catch (err: any) {
+      setError(err.message || 'Something went wrong. Please try again.');
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -184,28 +201,43 @@ export const FinalCtaBand: React.FC<FinalCtaBandProps> = ({ onSuccessDemo }) => 
                   }}
                 />
 
+                {/* Hidden Spam Honeypot */}
+                <input
+                  type="text"
+                  name="contact_hp"
+                  value={honeypot}
+                  onChange={(e) => setHoneypot(e.target.value)}
+                  tabIndex={-1}
+                  aria-hidden="true"
+                  autoComplete="off"
+                  className="sr-only hidden"
+                  style={{ position: 'absolute', opacity: 0, pointerEvents: 'none', height: 0, width: 0 }}
+                />
+
                 {/* Email input field */}
                 <div className="relative flex-1 h-[46px] flex items-center">
                   <Mail className="w-4 h-4 text-white/40 absolute left-3.5 pointer-events-none" />
                   <input
                     type="email"
                     required
+                    disabled={loading}
                     value={email}
                     onChange={(e) => {
                       setEmail(e.target.value);
                       if (error) setError('');
                     }}
                     placeholder={finalCta.emailPlaceholder}
-                    className="w-full h-full pl-10 pr-3 text-[14px] text-white placeholder-white/40 bg-transparent focus:outline-none"
+                    className="w-full h-full pl-10 pr-3 text-[14px] text-white placeholder-white/40 bg-transparent focus:outline-none disabled:opacity-50"
                   />
                 </div>
 
                 {/* Button in mint token */}
                 <button
                   type="submit"
-                  className="btn-premium btn-premium--mint btn-glitter group relative h-[46px] px-6 rounded-[12px] font-sans font-semibold text-[14px] shrink-0 flex items-center justify-center gap-2 cursor-pointer transition-transform duration-150 active:scale-[0.98]"
+                  disabled={loading}
+                  className="btn-premium btn-premium--mint btn-glitter group relative h-[46px] px-6 rounded-[12px] font-sans font-semibold text-[14px] shrink-0 flex items-center justify-center gap-2 cursor-pointer transition-transform duration-150 active:scale-[0.98] disabled:opacity-75 disabled:cursor-not-allowed"
                 >
-                  <span>{finalCta.buttonLabel}</span>
+                  <span>{loading ? 'Sending...' : finalCta.buttonLabel}</span>
                 </button>
               </form>
             ) : (

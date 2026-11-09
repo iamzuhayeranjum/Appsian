@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { ArrowRight, Check } from 'lucide-react';
+import { ArrowRight, Check, Loader2 } from 'lucide-react';
 import { useAppReady } from './Preloader';
+import { submitDemoRequest } from '../lib/submitDemoRequest';
 
 interface DemoBarProps {
   onSuccess?: () => void;
@@ -11,6 +12,8 @@ export const DemoBar: React.FC<DemoBarProps> = ({ onSuccess }) => {
   const appReady = useAppReady();
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
+  const [honeypot, setHoneypot] = useState('');
+  const [loading, setLoading] = useState(false);
   const [nameFocused, setNameFocused] = useState(false);
   const [emailFocused, setEmailFocused] = useState(false);
   const [nameError, setNameError] = useState(false);
@@ -18,8 +21,9 @@ export const DemoBar: React.FC<DemoBarProps> = ({ onSuccess }) => {
   const [errorMessage, setErrorMessage] = useState('');
   const [isSuccess, setIsSuccess] = useState(false);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (loading || isSuccess) return;
 
     let hasError = false;
     let message = '';
@@ -47,15 +51,28 @@ export const DemoBar: React.FC<DemoBarProps> = ({ onSuccess }) => {
     }
 
     setErrorMessage('');
-    // TODO: connect to backend/CRM
-    setIsSuccess(true);
-    setName('');
-    setEmail('');
-    setNameFocused(false);
-    setEmailFocused(false);
+    setLoading(true);
 
-    if (onSuccess) {
-      onSuccess();
+    try {
+      await submitDemoRequest({
+        source: 'final-cta',
+        name: name.trim(),
+        email: email.trim(),
+        hp: honeypot,
+      });
+      setIsSuccess(true);
+      setName('');
+      setEmail('');
+      setNameFocused(false);
+      setEmailFocused(false);
+
+      if (onSuccess) {
+        onSuccess();
+      }
+    } catch (err: any) {
+      setErrorMessage(err.message || 'Something went wrong. Please try again.');
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -98,6 +115,19 @@ export const DemoBar: React.FC<DemoBarProps> = ({ onSuccess }) => {
               'inset 0 1px 0 rgba(255, 255, 255, 0.25), 0 10px 40px rgba(20, 10, 60, 0.35)',
           }}
         >
+          {/* Hidden Spam Honeypot */}
+          <input
+            type="text"
+            name="contact_hp"
+            value={honeypot}
+            onChange={(e) => setHoneypot(e.target.value)}
+            tabIndex={-1}
+            aria-hidden="true"
+            autoComplete="off"
+            className="sr-only hidden"
+            style={{ position: 'absolute', opacity: 0, pointerEvents: 'none', height: 0, width: 0 }}
+          />
+
           {/* Inputs Container */}
           <div className="flex-1 w-full grid grid-cols-1 sm:grid-cols-2 gap-2 sm:gap-0 h-full items-center">
             {/* Field 1: Name* */}
@@ -121,6 +151,7 @@ export const DemoBar: React.FC<DemoBarProps> = ({ onSuccess }) => {
               <input
                 id="demo-name"
                 type="text"
+                disabled={loading || isSuccess}
                 value={name}
                 onChange={(e) => {
                   setName(e.target.value);
@@ -158,6 +189,7 @@ export const DemoBar: React.FC<DemoBarProps> = ({ onSuccess }) => {
               <input
                 id="demo-email"
                 type="email"
+                disabled={loading || isSuccess}
                 value={email}
                 onChange={(e) => {
                   setEmail(e.target.value);
@@ -179,12 +211,17 @@ export const DemoBar: React.FC<DemoBarProps> = ({ onSuccess }) => {
           <div className="w-full sm:w-auto shrink-0 flex items-center justify-end">
             <button
               type="submit"
-              disabled={isSuccess}
-              className={`btn-premium btn-premium--mint btn-glitter group w-full sm:w-auto h-[52px] rounded-[10px] px-[22px] font-sans font-medium text-[15px] flex items-center justify-center gap-3 cursor-pointer ${
+              disabled={isSuccess || loading}
+              className={`btn-premium btn-premium--mint btn-glitter group w-full sm:w-auto h-[52px] rounded-[10px] px-[22px] font-sans font-medium text-[15px] flex items-center justify-center gap-3 cursor-pointer disabled:opacity-75 disabled:cursor-not-allowed ${
                 isSuccess ? 'opacity-95 cursor-default' : ''
               }`}
             >
-              {isSuccess ? (
+              {loading ? (
+                <>
+                  <Loader2 className="w-4 h-4 animate-spin" />
+                  <span>Sending...</span>
+                </>
+              ) : isSuccess ? (
                 <>
                   <Check className="w-4 h-4 stroke-[2.5]" />
                   <span>Request Received</span>
