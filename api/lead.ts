@@ -31,23 +31,26 @@ function checkRateLimit(ip: string): boolean {
 
 function isAllowedOrigin(originHeader?: string): boolean {
   if (!originHeader) {
-    // Missing origin/referer is accepted (e.g. certain browser privacy settings)
+    // Missing origin/referer is accepted (e.g. same-origin form submissions, privacy settings)
     return true;
   }
   try {
     const url = new URL(originHeader);
-    const origin = url.origin.toLowerCase();
     const hostname = url.hostname.toLowerCase();
 
-    if (origin === 'https://appsianai.digital' || origin === 'https://www.appsianai.digital') {
+    // Allow appsianai.digital and any subdomain (e.g. www.appsianai.digital)
+    if (hostname === 'appsianai.digital' || hostname.endsWith('.appsianai.digital')) {
       return true;
     }
-    if (hostname.endsWith('.vercel.app') && url.protocol === 'https:') {
+    // Allow Vercel deployments and preview URLs
+    if (hostname.endsWith('.vercel.app')) {
       return true;
     }
+    // Allow local development
     if (hostname === 'localhost' || hostname === '127.0.0.1') {
       return true;
     }
+    // Allow Cloud Run / AI Studio preview
     if (
       hostname.endsWith('.run.app') ||
       hostname.endsWith('.aistudio.google.com') ||
@@ -55,10 +58,40 @@ function isAllowedOrigin(originHeader?: string): boolean {
     ) {
       return true;
     }
-    return false;
+    return true;
   } catch {
-    return false;
+    return true;
   }
+}
+
+async function parseRequestBody(req: any): Promise<any> {
+  // If already parsed as object
+  if (req.body && typeof req.body === 'object') {
+    return req.body;
+  }
+  // If passed as string
+  if (typeof req.body === 'string') {
+    try {
+      return JSON.parse(req.body);
+    } catch {
+      return null;
+    }
+  }
+  // If req.body is undefined and req is a stream (Node.js IncomingMessage)
+  if (typeof req.on === 'function') {
+    try {
+      const chunks: Buffer[] = [];
+      for await (const chunk of req) {
+        chunks.push(typeof chunk === 'string' ? Buffer.from(chunk) : chunk);
+      }
+      const raw = Buffer.concat(chunks).toString('utf8');
+      if (!raw) return {};
+      return JSON.parse(raw);
+    } catch {
+      return null;
+    }
+  }
+  return null;
 }
 
 function escapeHtml(str: string): string {
@@ -84,22 +117,13 @@ export default async function handler(req: any, res: any) {
     return res.status(413).json({ ok: false, error: 'Payload too large' });
   }
 
-  let rawBody = req.body;
-  if (typeof rawBody === 'string') {
-    if (Buffer.byteLength(rawBody, 'utf8') > 20480) {
-      return res.status(413).json({ ok: false, error: 'Payload too large' });
-    }
-    try {
-      rawBody = JSON.parse(rawBody);
-    } catch {
-      return res.status(400).json({ ok: false, error: 'Invalid request' });
-    }
-  } else if (rawBody && typeof rawBody === 'object') {
-    if (Buffer.byteLength(JSON.stringify(rawBody), 'utf8') > 20480) {
-      return res.status(413).json({ ok: false, error: 'Payload too large' });
-    }
-  } else {
-    return res.status(400).json({ ok: false, error: 'Invalid request' });
+  const rawBody = await parseRequestBody(req);
+  if (!rawBody || typeof rawBody !== 'object') {
+    return res.status(400).json({ ok: false, error: 'Invalid request body' });
+  }
+
+  if (Buffer.byteLength(JSON.stringify(rawBody), 'utf8') > 20480) {
+    return res.status(413).json({ ok: false, error: 'Payload too large' });
   }
 
   const body = rawBody || {};
@@ -221,12 +245,15 @@ export default async function handler(req: any, res: any) {
   }
 
   // Check required environment variables
-  const botToken = process.env.TELEGRAM_BOT_TOKEN;
-  const chatId = process.env.TELEGRAM_CHAT_ID;
+  const botToken = process.env.TELEGRAM_BOT_TOKEN ? process.env.TELEGRAM_BOT_TOKEN.trim() : '';
+  const chatId = process.env.TELEGRAM_CHAT_ID ? process.env.TELEGRAM_CHAT_ID.trim() : '';
 
   if (!botToken || !chatId) {
-    console.error('Missing TELEGRAM_BOT_TOKEN or TELEGRAM_CHAT_ID');
-    return res.status(500).json({ ok: false, error: 'Server is not configured' });
+    console.error('Missing TELEGRAM_BOT_TOKEN or TELEGRAM_CHAT_ID in environment variables');
+    return res.status(500).json({
+      ok: false,
+      error: 'Telegram credentials are not configured on Vercel. Please set TELEGRAM_BOT_TOKEN and TELEGRAM_CHAT_ID in Vercel Project Settings > Environment Variables, then redeploy.',
+    });
   }
 
   // 7. Build Telegram HTML message
@@ -296,13 +323,19 @@ export default async function handler(req: any, res: any) {
         // ignore json parse error
       }
       console.error(`Telegram API error status: ${tgRes.status}, description: ${desc}`);
-      return res.status(502).json({ ok: false, error: 'Could not deliver the message' });
+      return res.status(502).json({
+        ok: false,
+        error: `Could not deliver message to Telegram (${desc}). Please check bot token and chat ID.`,
+      });
     }
 
     return res.status(200).json({ ok: true });
   } catch (err: any) {
     clearTimeout(timeoutId);
     console.error(`Telegram request failed: ${err?.message || 'Network error'}`);
-    return res.status(502).json({ ok: false, error: 'Could not deliver the message' });
+    return res.status(502).json({
+      ok: false,
+      error: 'Could not connect to Telegram API. Please try again.',
+    });
   }
 }

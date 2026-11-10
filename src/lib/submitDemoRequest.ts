@@ -74,35 +74,47 @@ export async function submitDemoRequest(
       },
       body: JSON.stringify(body),
     });
-  } catch {
-    console.warn('[lead] /api/lead is not available (it only works on the deployed Vercel site)');
-    throw new Error('Something went wrong. Please try again.');
+  } catch (err: any) {
+    console.error('[lead] Network fetch error:', err);
+    throw new Error('Network error: unable to reach the server. Please check your internet connection.');
   }
 
-  // If response is HTML or 404 (e.g. AI Studio dev server where /api/lead is not mounted)
-  const contentType = res.headers.get('content-type') || '';
-  if (!contentType.includes('application/json')) {
-    console.warn('[lead] /api/lead is not available (it only works on the deployed Vercel site)');
-    throw new Error('Something went wrong. Please try again.');
-  }
-
+  // Attempt to parse JSON response
   let data: any = null;
-  try {
-    data = await res.json();
-  } catch {
-    throw new Error('Something went wrong. Please try again.');
+  const contentType = res.headers.get('content-type') || '';
+  if (contentType.includes('application/json')) {
+    try {
+      data = await res.json();
+    } catch {
+      // ignore JSON parse failure
+    }
   }
 
+  // Success
   if (res.ok && data?.ok) {
     return { ok: true, success: true };
   }
 
+  // If the server returned a specific error message, show it
+  if (data?.error) {
+    throw new Error(data.error);
+  }
+
+  // Handle common HTTP error codes when body is non-JSON or missing error field
   if (res.status === 429) {
     throw new Error('Too many requests, please try again in a few minutes.');
   }
 
-  if (res.status === 400) {
-    throw new Error(data?.error || 'Invalid request. Please check your information.');
+  if (res.status === 404) {
+    throw new Error('API route /api/lead was not found. Please verify that your Vercel project includes the /api directory.');
+  }
+
+  if (res.status === 500) {
+    throw new Error('Server configuration error. Please ensure TELEGRAM_BOT_TOKEN and TELEGRAM_CHAT_ID are set in Vercel environment variables.');
+  }
+
+  if (res.status === 502) {
+    throw new Error('Could not deliver message to Telegram. Please check your Telegram bot token and chat ID.');
   }
 
   throw new Error('Something went wrong. Please try again.');
