@@ -127,7 +127,7 @@ export const PricingSection: React.FC<PricingSectionProps> = ({ onPlanSelect }) 
       ref={sectionRef}
       id="pricing"
       data-theme="dark"
-      className="pr-sec w-full pt-[110px] pb-[110px] overflow-clip relative flex flex-col items-center px-4 sm:px-6"
+      className="pr-sec w-full pt-[72px] pb-[72px] md:pt-[110px] md:pb-[110px] overflow-clip relative flex flex-col items-center px-4 sm:px-6"
       style={{ '--d': darkness } as any}
     >
       <style>{PRICING_CSS}</style>

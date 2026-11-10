@@ -188,7 +188,7 @@ export const Benefits: React.FC<BenefitsProps> = ({ onBookDemoClick }) => {
   return (
     <section
       ref={sectionRef}
-      className="relative w-full bg-white pt-[96px] pb-[96px] select-none"
+      className="relative w-full bg-white pt-[64px] pb-[64px] md:pt-[96px] md:pb-[96px] select-none"
       style={{ fontFamily: "'Inter', sans-serif" }}
     >
       {/* 1) SECTION HEADER */}

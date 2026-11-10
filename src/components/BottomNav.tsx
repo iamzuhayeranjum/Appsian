@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useLayoutEffect, useRef, useCallback } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { ArrowRight, ChevronUp } from 'lucide-react';
+import { ArrowRight, ChevronUp, LayoutGrid, ListChecks, CircleDollarSign, Menu, Phone } from 'lucide-react';
 import { useHeroPast } from './useHeroPast';
 import { MorePanel } from './MorePanel';
 import ProgressiveBlur from './ProgressiveBlur';
@@ -34,17 +34,33 @@ export const BottomNav: React.FC<BottomNavProps> = ({ onCtaClick, pastHero: prop
 
   // Distance from the right edge of the dock to the centre of the "More" button.
   // The panel is right-aligned to the dock, so its pointer notch uses this to sit exactly over "More".
+  // Phone layout (below 768px) uses its own full-width dock; desktop dock is untouched.
+  const [isMobile, setIsMobile] = useState<boolean>(
+    () => typeof window !== 'undefined' && window.innerWidth < 768
+  );
+  useEffect(() => {
+    const mq = window.matchMedia('(max-width: 767px)');
+    const onChange = () => setIsMobile(mq.matches);
+    onChange();
+    mq.addEventListener('change', onChange);
+    return () => mq.removeEventListener('change', onChange);
+  }, []);
+  const mobileNavRef = useRef<HTMLElement>(null);
+  const mobileAnchorRef = useRef<HTMLDivElement>(null);
+  const moreMobileRef = useRef<HTMLDivElement>(null);
+  const [mobileBarH, setMobileBarH] = useState<number>(72);
+
   const [notchRight, setNotchRight] = useState<number>(76);
   useLayoutEffect(() => {
     if (!isMoreOpen) return;
-    const container = dockContainerRef.current;
-    const more = moreRef.current;
+    const container = isMobile ? mobileAnchorRef.current : dockContainerRef.current;
+    const more = isMobile ? moreMobileRef.current : moreRef.current;
     if (!container || !more) return;
     const c = container.getBoundingClientRect();
     const m = more.getBoundingClientRect();
     const fromRight = c.right - (m.left + m.width / 2);
     if (fromRight > 16 && fromRight < c.width - 16) setNotchRight(Math.round(fromRight));
-  }, [isMoreOpen]);
+  }, [isMoreOpen, isMobile]);
 
   // Exact distance from viewport bottom to the resting top edge of the dock
   const [dockTopFromBottom, setDockTopFromBottom] = useState<number>(() => {
@@ -57,6 +73,12 @@ export const BottomNav: React.FC<BottomNavProps> = ({ onCtaClick, pastHero: prop
   const updateDockMeasurement = useCallback(() => {
     if (typeof window === 'undefined') return;
     const isMd = window.innerWidth >= 768;
+    if (!isMd && mobileNavRef.current && mobileNavRef.current.offsetHeight > 0) {
+      const h = mobileNavRef.current.offsetHeight;
+      setMobileBarH(h);
+      setDockTopFromBottom(h);
+      return;
+    }
     const defaultOffset = isMd ? 24 : 12;
     const defaultHeight = isMd ? 72 : 64;
 
@@ -234,7 +256,8 @@ export const BottomNav: React.FC<BottomNavProps> = ({ onCtaClick, pastHero: prop
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       const target = event.target as Node;
-      const isInsideMore = moreRef.current?.contains(target);
+      const isInsideMore =
+        moreRef.current?.contains(target) || moreMobileRef.current?.contains(target);
       const isInsidePanel = panelRef.current?.contains(target);
       if (!isInsideMore && !isInsidePanel) {
         setIsMoreOpen(false);
@@ -386,6 +409,134 @@ export const BottomNav: React.FC<BottomNavProps> = ({ onCtaClick, pastHero: prop
           />
         )}
       </AnimatePresence>
+      {/* ===== PHONE DOCK (below md): full-width bar, raised centre button with a round notch cut-out ===== */}
+      <div className="md:hidden" style={{ visibility: isDockVisible ? 'visible' : 'hidden' }}>
+        {/* Anchor for the "More" panel, sits just above the bar */}
+        <div
+          ref={mobileAnchorRef}
+          className="fixed left-3 right-3 z-[100] h-0 pointer-events-none"
+          style={{ bottom: mobileBarH + 14 }}
+        >
+          <AnimatePresence>
+            {isMoreOpen && isMobile && (
+              <MorePanel
+                ref={panelRef}
+                isOpen={isMoreOpen}
+                onClose={() => setIsMoreOpen(false)}
+                onNavigate={handleScrollToHref}
+                onCtaClick={handleCtaClick}
+                notchRight={notchRight}
+                activeSection={activeSection}
+              />
+            )}
+          </AnimatePresence>
+        </div>
+
+        <motion.nav
+          ref={mobileNavRef}
+          initial={false}
+          animate={pastHero ? 'shown' : 'hidden'}
+          variants={{
+            hidden: {
+              y: isReducedMotion ? 0 : 90,
+              opacity: 0,
+              transition: { duration: isReducedMotion ? 0.15 : 0.25, ease: [0.4, 0, 1, 1] as const },
+            },
+            shown: {
+              y: 0,
+              opacity: 1,
+              transition: isReducedMotion
+                ? { duration: 0.15 }
+                : { type: 'spring' as const, stiffness: 260, damping: 26, mass: 0.9, delay: 0.14 },
+            },
+          }}
+          onAnimationComplete={handleAnimationComplete}
+          aria-label="Mobile Navigation"
+          aria-hidden={!pastHero}
+          inert={!pastHero ? true : undefined}
+          className={`fixed inset-x-0 bottom-0 z-[100] ${pastHero ? 'pointer-events-auto' : 'pointer-events-none'}`}
+          style={{ paddingBottom: 'env(safe-area-inset-bottom, 0px)' }}
+        >
+          {/* Dark bar with a circular bite taken out of the top centre */}
+          <div
+            aria-hidden="true"
+            className="absolute inset-0 rounded-t-[26px] bg-[#0A0A0A]"
+            style={{
+              border: '1px solid rgba(110, 237, 194, 0.35)',
+              borderBottom: 'none',
+              boxShadow:
+                'inset 0 1px 0 rgba(255, 255, 255, 0.06), inset 0 0 28px -10px rgba(110, 237, 194, 0.22)',
+              WebkitMaskImage: 'radial-gradient(circle 50px at 50% 0px, transparent 49.5px, #000 50px)',
+              maskImage: 'radial-gradient(circle 50px at 50% 0px, transparent 49.5px, #000 50px)',
+            }}
+          />
+          {/* Mint outline that follows the notch */}
+          <div
+            aria-hidden="true"
+            className="absolute left-1/2 -top-[50px] w-[100px] h-[100px] -translate-x-1/2 rounded-full pointer-events-none"
+            style={{ border: '1px solid rgba(110, 237, 194, 0.35)', clipPath: 'inset(50% 0 0 0)' }}
+          />
+
+          {/* Raised centre CTA */}
+          <div className="absolute left-1/2 -top-[26px] -translate-x-1/2 z-10">
+            <button
+              type="button"
+              onClick={handleCtaClick}
+              aria-label="Get Free Demo"
+              className="btn-premium btn-premium--mint btn-glitter w-[64px] h-[64px] rounded-[20px] flex items-center justify-center cursor-pointer select-none"
+            >
+              <Phone className="relative z-10 w-[28px] h-[28px]" strokeWidth={2} />
+            </button>
+          </div>
+
+          <div className="relative h-[72px] flex items-stretch">
+            {[
+              { id: 'features', label: 'Product', href: '#features', Icon: LayoutGrid },
+              { id: 'how-it-works', label: 'How it works', href: '#how-it-works', Icon: ListChecks },
+            ].map(({ id, label, href, Icon }) => (
+              <a
+                key={id}
+                href={href}
+                onClick={(e) => handleScrollTo(e, href)}
+                className={`flex-1 min-w-0 flex flex-col items-center justify-center gap-1.5 select-none active:opacity-70 transition-colors ${
+                  activeSection === id ? 'text-[#6EEDC2]' : 'text-white'
+                }`}
+              >
+                <Icon className="w-[22px] h-[22px]" strokeWidth={1.75} />
+                <span className="text-[12.5px] font-sans font-[600] tracking-tight leading-none whitespace-nowrap">{label}</span>
+              </a>
+            ))}
+
+            <div className="w-[92px] shrink-0" aria-hidden="true" />
+
+            <a
+              href="#pricing"
+              onClick={(e) => handleScrollTo(e, '#pricing')}
+              className={`flex-1 min-w-0 flex flex-col items-center justify-center gap-1.5 select-none active:opacity-70 transition-colors ${
+                activeSection === 'pricing' ? 'text-[#6EEDC2]' : 'text-white'
+              }`}
+            >
+              <CircleDollarSign className="w-[22px] h-[22px]" strokeWidth={1.75} />
+              <span className="text-[12.5px] font-sans font-[600] tracking-tight leading-none">Pricing</span>
+            </a>
+
+            <div ref={moreMobileRef} className="flex-1 min-w-0 flex">
+              <button
+                type="button"
+                onClick={() => setIsMoreOpen((prev) => !prev)}
+                aria-expanded={isMoreOpen}
+                className={`flex-1 min-w-0 flex flex-col items-center justify-center gap-1.5 select-none active:opacity-70 transition-colors ${
+                  isMoreOpen || isMoreActive ? 'text-[#6EEDC2]' : 'text-white'
+                }`}
+              >
+                <Menu className="w-[22px] h-[22px]" strokeWidth={1.75} />
+                <span className="text-[12.5px] font-sans font-[600] tracking-tight leading-none">More</span>
+              </button>
+            </div>
+          </div>
+        </motion.nav>
+      </div>
+
       {/* Non-animated fixed centering wrapper (no translateX(-50%) on animated element) */}
       <div
         ref={wrapperRef}
@@ -397,7 +548,7 @@ export const BottomNav: React.FC<BottomNavProps> = ({ onCtaClick, pastHero: prop
       <div ref={dockContainerRef} className="relative flex justify-center w-auto">
         {/* Mega-panel sibling above motion.nav */}
         <AnimatePresence>
-          {isMoreOpen && (
+          {isMoreOpen && !isMobile && (
             <MorePanel
               ref={panelRef}
               isOpen={isMoreOpen}
@@ -421,7 +572,7 @@ export const BottomNav: React.FC<BottomNavProps> = ({ onCtaClick, pastHero: prop
           aria-label="Floating Navigation"
           aria-hidden={!pastHero}
           inert={!pastHero ? true : undefined}
-          className={`relative w-[calc(100vw-24px)] max-w-[440px] md:w-[712px] md:max-w-[712px] h-[64px] md:h-[72px] p-2 md:p-[10px] rounded-[18px] bg-[#0A0A0A] flex items-center justify-between ${
+          className={`relative w-[calc(100vw-24px)] max-w-[440px] md:w-[712px] md:max-w-[712px] h-[64px] md:h-[72px] p-2 md:p-[10px] rounded-[18px] bg-[#0A0A0A] hidden md:flex items-center justify-between ${
             pastHero ? 'pointer-events-auto' : 'pointer-events-none'
           }`}
           style={{

@@ -268,7 +268,7 @@ export const WhyAppsian: React.FC = () => {
   return (
     <section
       id="why-appsian"
-      className="w-full bg-[#F5F6F8] pt-[96px] pb-[110px] relative overflow-hidden"
+      className="w-full bg-[#F5F6F8] pt-[64px] pb-[72px] md:pt-[96px] md:pb-[110px] relative overflow-hidden"
     >
       {/* Halftone dot texture: 12px spacing, masked toward right and top-center */}
       <div

@@ -106,7 +106,7 @@ export const MissedCallCalculator: React.FC = () => {
   const pct3 = Math.max(0, Math.min(100, ((closeRate - 5) / 75) * 100));
 
   return (
-    <section className="w-full bg-[#F5F6F8] pt-[72px] pb-[96px] relative overflow-hidden">
+    <section className="w-full bg-[#F5F6F8] pt-[56px] pb-[64px] md:pt-[72px] md:pb-[96px] relative overflow-hidden">
       {/* Custom styles for range slider thumbs and floating bubble */}
       <style>{`
         .custom-range-slider::-webkit-slider-thumb {

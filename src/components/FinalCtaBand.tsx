@@ -47,7 +47,7 @@ export const FinalCtaBand: React.FC<FinalCtaBandProps> = ({ onSuccessDemo }) => 
   return (
     <section
       data-theme="dark"
-      className="relative w-full bg-[#000000] overflow-hidden min-h-[min(100svh,820px)] py-[120px] px-6 flex flex-col items-center justify-center text-center select-none"
+      className="relative w-full bg-[#000000] overflow-hidden min-h-[min(100svh,820px)] py-[80px] md:py-[120px] px-6 flex flex-col items-center justify-center text-center select-none"
       style={{
         width: '100%',
         margin: 0,

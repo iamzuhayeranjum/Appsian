@@ -143,11 +143,11 @@ export const FeaturesSection: React.FC = () => {
       </div>
 
       {/* 2) Text Area: 160px, background #FAFBFC, 1px hairline */}
-      <div className="h-[160px] bg-[#FAFBFC] border-t border-[rgba(10,10,20,0.06)] p-6 flex flex-col justify-center text-left">
+      <div className="min-h-[160px] md:h-[160px] bg-[#FAFBFC] border-t border-[rgba(10,10,20,0.06)] p-6 flex flex-col justify-center text-left">
         <h3 className="text-[26px] font-display font-light text-[#2D283C] leading-[1.2] tracking-tight mb-2">
           Reclaim your time
         </h3>
-        <p className="text-[15px] leading-[23px] text-[#2D283C]/75 line-clamp-3 font-normal">
+        <p className="text-[15px] leading-[23px] text-[#2D283C]/75 md:line-clamp-3 font-normal">
           Stop playing phone tag. Get a clear summary of every call.
         </p>
       </div>
@@ -253,11 +253,11 @@ export const FeaturesSection: React.FC = () => {
       </div>
 
       {/* 2) Text Area: 160px, background #FAFBFC, 1px hairline */}
-      <div className="h-[160px] bg-[#FAFBFC] border-t border-[rgba(10,10,20,0.06)] p-6 flex flex-col justify-center text-left">
+      <div className="min-h-[160px] md:h-[160px] bg-[#FAFBFC] border-t border-[rgba(10,10,20,0.06)] p-6 flex flex-col justify-center text-left">
         <h3 className="text-[26px] font-display font-light text-[#2D283C] leading-[1.2] tracking-tight mb-2">
           Never lose a lead to voicemail
         </h3>
-        <p className="text-[15px] leading-[23px] text-[#2D283C]/75 line-clamp-3 font-normal">
+        <p className="text-[15px] leading-[23px] text-[#2D283C]/75 md:line-clamp-3 font-normal">
           Appsian picks up on your existing number, talks to callers naturally and captures every detail, even at 2am on a Sunday.
         </p>
       </div>
@@ -330,11 +330,11 @@ export const FeaturesSection: React.FC = () => {
       </div>
 
       {/* 2) Text Area: 160px, background #FAFBFC, 1px hairline */}
-      <div className="h-[160px] bg-[#FAFBFC] border-t border-[rgba(10,10,20,0.06)] p-6 flex flex-col justify-center text-left">
+      <div className="min-h-[160px] md:h-[160px] bg-[#FAFBFC] border-t border-[rgba(10,10,20,0.06)] p-6 flex flex-col justify-center text-left">
         <h3 className="text-[26px] font-display font-light text-[#2D283C] leading-[1.2] tracking-tight mb-2">
           Stay on top of every call
         </h3>
-        <p className="text-[15px] leading-[23px] text-[#2D283C]/75 line-clamp-3 font-normal">
+        <p className="text-[15px] leading-[23px] text-[#2D283C]/75 md:line-clamp-3 font-normal">
           Every call, booking and caller detail in one simple dashboard.
         </p>
       </div>
@@ -345,7 +345,7 @@ export const FeaturesSection: React.FC = () => {
     <section
       id="features"
       ref={sectionRef}
-      className="w-full bg-[#FFFFFF] pt-[96px] pb-[120px] relative overflow-x-clip"
+      className="w-full bg-[#FFFFFF] pt-[64px] pb-[72px] md:pt-[96px] md:pb-[120px] relative overflow-x-clip"
     >
       {/* 1. Dot Grid background: 14px spacing, 4% opacity, radial mask */}
       <div

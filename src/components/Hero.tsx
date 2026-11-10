@@ -182,7 +182,7 @@ export const Hero: React.FC<HeroProps> = ({ onBookDemoClick }) => {
         {/* LEFT COLUMN: text + form + chips (all left-aligned) */}
         <div className="flex flex-col justify-center text-left pt-[88px] pb-10">
           {/* Headline: left-aligned */}
-          <h1 className="font-display font-normal md:font-medium text-[clamp(34px,9vw,44px)] md:text-[clamp(36px,min(4.6vw,8.4vh),68px)] leading-[1.08] tracking-[-0.035em] text-left select-text">
+          <h1 className="font-display font-normal md:font-medium text-[clamp(26px,8.3vw,42px)] md:text-[clamp(36px,min(4.6vw,8.4vh),68px)] leading-[1.08] tracking-[-0.035em] text-left select-text">
             {/* Line 1 */}
             <motion.span
               initial={reduceMotion ? { opacity: 0 } : { opacity: 0, y: 24, filter: 'blur(8px)' }}

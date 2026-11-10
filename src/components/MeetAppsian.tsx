@@ -20,7 +20,7 @@ export const MeetAppsian: React.FC = () => {
     <section
       id="meet-appsian"
       ref={containerRef}
-      className="relative w-full bg-[#FFFFFF] pt-[96px] pb-[112px] overflow-hidden select-none"
+      className="relative w-full bg-[#FFFFFF] pt-[64px] pb-[72px] md:pt-[96px] md:pb-[112px] overflow-hidden select-none"
       style={{
         fontFamily: "'Inter', sans-serif",
       }}

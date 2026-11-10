@@ -105,7 +105,7 @@ export const HowItWorks: React.FC = () => {
         id="how-it-works"
         data-theme="dark"
         ref={sectionRef}
-        className="relative w-full bg-[#040506] pt-[120px] pb-[140px] text-white"
+        className="relative w-full bg-[#040506] pt-[72px] pb-[88px] md:pt-[120px] md:pb-[140px] text-white"
         style={{
           backgroundColor: '#040506',
           overflow: 'clip',
