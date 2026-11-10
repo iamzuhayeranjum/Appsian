@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useLayoutEffect, useRef, useCallback } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { ArrowRight, ChevronUp, LayoutGrid, ListChecks, CircleDollarSign, Menu, Phone } from 'lucide-react';
+import { ArrowRight, ChevronUp, LayoutGrid, ListChecks, CircleDollarSign, Menu } from 'lucide-react';
+import { AppsianMark } from './AppsianLogo';
 import { useHeroPast } from './useHeroPast';
 import { MorePanel } from './MorePanel';
 import ProgressiveBlur from './ProgressiveBlur';
@@ -479,13 +480,49 @@ export const BottomNav: React.FC<BottomNavProps> = ({ onCtaClick, pastHero: prop
 
           {/* Raised centre CTA */}
           <div className="absolute left-1/2 -top-[26px] -translate-x-1/2 z-10">
+            <style>{`
+              @keyframes appsianDockDrift { from { background-position: 0 0; } to { background-position: 64px 0; } }
+              @keyframes appsianDockWave { 0% { transform: translateX(-22%) scale(1); } 50% { transform: translateX(22%) scale(1.15); } 100% { transform: translateX(-22%) scale(1); } }
+              @media (prefers-reduced-motion: reduce) { .appsian-dock-logo-anim { animation: none !important; } }
+            `}</style>
             <button
               type="button"
-              onClick={handleCtaClick}
-              aria-label="Get Free Demo"
-              className="btn-premium btn-premium--mint btn-glitter w-[64px] h-[64px] rounded-[20px] flex items-center justify-center cursor-pointer select-none"
+              onClick={() => {
+                setIsMoreOpen(false);
+                navigate('/book');
+              }}
+              aria-label="Book a free demo"
+              className="relative w-[64px] h-[64px] rounded-[20px] flex items-center justify-center overflow-hidden cursor-pointer select-none active:scale-95 transition-transform"
+              style={{
+                background: 'linear-gradient(180deg, #0b3d99 0%, #1263d6 42%, #2e86f0 72%, #7db9f8 100%)',
+                border: '1px solid rgba(255, 255, 255, 0.35)',
+                boxShadow:
+                  '0 10px 24px -8px rgba(18, 99, 214, 0.65), inset 0 1px 0 rgba(255, 255, 255, 0.35)',
+              }}
             >
-              <Phone className="relative z-10 w-[28px] h-[28px]" strokeWidth={2} />
+              {/* Moving background: deep blue folds drifting sideways, like the hero */}
+              <span
+                aria-hidden="true"
+                className="appsian-dock-logo-anim absolute inset-0 pointer-events-none"
+                style={{
+                  backgroundImage:
+                    'repeating-linear-gradient(90deg, rgba(8,42,107,0) 0px, rgba(8,42,107,0) 9px, rgba(8,42,107,0.55) 17px, rgba(8,42,107,0.25) 25px, rgba(8,42,107,0) 40px, rgba(8,42,107,0.4) 47px, rgba(8,42,107,0) 55px, rgba(8,42,107,0) 64px)',
+                  backgroundSize: '64px 100%',
+                  WebkitMaskImage: 'linear-gradient(180deg, #000 0%, rgba(0,0,0,0.7) 40%, transparent 85%)',
+                  maskImage: 'linear-gradient(180deg, #000 0%, rgba(0,0,0,0.7) 40%, transparent 85%)',
+                  animation: 'appsianDockDrift 5s linear infinite',
+                }}
+              />
+              {/* Soft light that slides along the bottom, like the pale glow of the hero background */}
+              <span
+                aria-hidden="true"
+                className="appsian-dock-logo-anim absolute -bottom-6 left-[-20%] right-[-20%] h-[46px] pointer-events-none"
+                style={{
+                  background: 'radial-gradient(60% 70% at 50% 100%, rgba(207, 232, 255, 0.85), rgba(207, 232, 255, 0) 70%)',
+                  animation: 'appsianDockWave 6s ease-in-out infinite',
+                }}
+              />
+              <AppsianMark size={34} fill="#FFFFFF" className="relative z-10 drop-shadow-[0_2px_6px_rgba(8,42,107,0.45)]" />
             </button>
           </div>
 
