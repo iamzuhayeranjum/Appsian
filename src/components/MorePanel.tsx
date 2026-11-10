@@ -1,6 +1,6 @@
-import React, { forwardRef } from 'react';
+import React, { forwardRef, useState } from 'react';
 import { motion, useReducedMotion } from 'motion/react';
-import { ArrowRight, Check, Phone } from 'lucide-react';
+import { ArrowRight } from 'lucide-react';
 
 interface MorePanelProps {
   isOpen: boolean;
@@ -14,6 +14,22 @@ interface MorePanelProps {
   activeSection?: string;
 }
 
+// Appsian's own footer artwork, already in /public. Used as the tile background.
+const TILE_ART = '/appsian-footer.jpg';
+
+// Warm the browser cache when idle so the artwork is ready by the time someone hovers "More".
+if (typeof window !== 'undefined') {
+  const warm = () => {
+    const img = new Image();
+    img.src = TILE_ART;
+  };
+  if ('requestIdleCallback' in window) {
+    (window as any).requestIdleCallback(warm);
+  } else {
+    setTimeout(warm, 2000);
+  }
+}
+
 const ITEMS = [
   { title: 'Meet Appsian', desc: 'Interactive phone agent breakdown', href: '#meet-appsian' },
   { title: 'Features', desc: 'Real-time booking & call flow', href: '#features' },
@@ -23,16 +39,13 @@ const ITEMS = [
   { title: 'FAQ', desc: 'Setup time, porting & guarantees', href: '#faq' },
 ];
 
-const BAR_HEIGHTS = [10, 18, 28, 14, 34, 22, 38, 16, 30, 12, 26, 18, 32, 14, 22, 10];
-
-const STEPS = ['Call answered', 'Details captured', 'Job booked'];
-
 export const MorePanel = forwardRef<HTMLDivElement, MorePanelProps>(
   (
     { onMouseEnter, onMouseLeave, onNavigate, onClose, onCtaClick, notchRight = 76, activeSection },
     ref
   ) => {
     const reduce = useReducedMotion();
+    const [artReady, setArtReady] = useState(false);
 
     const handleClick = (e: React.MouseEvent, href: string) => {
       e.preventDefault();
@@ -78,62 +91,41 @@ export const MorePanel = forwardRef<HTMLDivElement, MorePanelProps>(
         />
 
         <div className="relative flex flex-col md:flex-row gap-2.5 bg-white rounded-[20px]">
-          {/* LEFT: dark Appsian media tile (desktop only) */}
-          <div
-            className="hidden md:flex relative w-[232px] shrink-0 flex-col justify-between overflow-hidden rounded-[18px] p-4 text-white"
-            style={{
-              background:
-                'radial-gradient(120% 70% at 85% 0%, rgba(110,237,194,0.30) 0%, rgba(110,237,194,0) 60%), radial-gradient(90% 60% at 0% 100%, rgba(74,127,240,0.30) 0%, rgba(74,127,240,0) 60%), #07090D',
-            }}
-          >
-            <div className="flex items-center gap-2">
-              <span className="relative flex w-2 h-2">
-                <span className="absolute inset-0 rounded-full bg-[#6EEDC2] opacity-60 animate-ping" />
-                <span className="relative w-2 h-2 rounded-full bg-[#6EEDC2]" />
-              </span>
-              <span className="text-[11px] font-semibold tracking-[0.12em] uppercase text-white/70">
-                Live call
-              </span>
-            </div>
+          {/* LEFT: Appsian brand-artwork tile (desktop only) */}
+          <div className="hidden md:flex relative w-[232px] shrink-0 flex-col justify-between overflow-hidden rounded-[18px] bg-[#050507] p-5 text-white">
+            {/* Brand artwork (public/appsian-footer.jpg), cropped to the glowing blue streaks */}
+            <img
+              src={TILE_ART}
+              alt=""
+              aria-hidden="true"
+              draggable={false}
+              onLoad={() => setArtReady(true)}
+              className={`absolute left-1/2 bottom-0 h-[215%] max-w-none -translate-x-1/2 select-none pointer-events-none transition-opacity duration-500 ${
+                artReady ? 'opacity-100' : 'opacity-0'
+              }`}
+            />
+            {/* Keeps the top dark so the text stays readable */}
+            <div
+              aria-hidden="true"
+              className="absolute inset-0 pointer-events-none"
+              style={{
+                background:
+                  'linear-gradient(180deg, rgba(5,5,7,0.92) 0%, rgba(5,5,7,0.55) 38%, rgba(5,5,7,0) 70%)',
+              }}
+            />
+            {/* Soft inner edge */}
+            <div
+              aria-hidden="true"
+              className="absolute inset-0 rounded-[18px] pointer-events-none"
+              style={{ boxShadow: 'inset 0 0 0 1px rgba(255,255,255,0.08)' }}
+            />
 
-            <div className="rounded-[14px] border border-white/10 bg-white/[0.06] p-3">
-              <div className="flex items-center gap-2">
-                <span className="w-6 h-6 rounded-full bg-[#6EEDC2] text-[#062B20] flex items-center justify-center">
-                  <Phone className="w-3 h-3" strokeWidth={2.4} />
-                </span>
-                <span className="text-[12px] font-medium text-white/90">Incoming call</span>
-              </div>
+            <p className="relative text-[11px] font-semibold tracking-[0.14em] uppercase text-white/60">
+              Free personalized demo
+            </p>
 
-              <div className="mt-3 flex items-center justify-between h-[40px]" aria-hidden="true">
-                {BAR_HEIGHTS.map((h, i) => (
-                  <motion.span
-                    key={i}
-                    className="w-[3px] rounded-full bg-[#6EEDC2]"
-                    style={{ height: h, originY: 0.5 }}
-                    animate={reduce ? undefined : { scaleY: [1, 0.35, 1] }}
-                    transition={
-                      reduce
-                        ? undefined
-                        : { duration: 1.1 + (i % 5) * 0.14, repeat: Infinity, ease: 'easeInOut', delay: i * 0.05 }
-                    }
-                  />
-                ))}
-              </div>
-
-              <ul className="mt-3 space-y-1.5">
-                {STEPS.map((s) => (
-                  <li key={s} className="flex items-center gap-2 text-[12px] text-white/80">
-                    <span className="w-4 h-4 rounded-full bg-[#6EEDC2]/15 text-[#6EEDC2] flex items-center justify-center">
-                      <Check className="w-2.5 h-2.5" strokeWidth={3} />
-                    </span>
-                    {s}
-                  </li>
-                ))}
-              </ul>
-            </div>
-
-            <div>
-              <p className="text-[15px] font-semibold leading-snug tracking-tight">
+            <div className="relative">
+              <p className="text-[19px] font-semibold leading-[1.2] tracking-[-0.02em] whitespace-nowrap">
                 Answers every call.
                 <br />
                 Books the job.
@@ -144,7 +136,7 @@ export const MorePanel = forwardRef<HTMLDivElement, MorePanelProps>(
                   onClose();
                   onCtaClick?.();
                 }}
-                className="btn-premium btn-premium--mint btn-glitter group relative mt-3 w-full h-[40px] rounded-[10px] flex items-center justify-center gap-2 font-sans font-[600] text-[13px] cursor-pointer select-none"
+                className="btn-premium btn-premium--mint btn-glitter group relative mt-4 w-full h-[42px] rounded-[10px] flex items-center justify-center gap-2 font-sans font-[600] text-[13px] cursor-pointer select-none"
               >
                 <span className="relative z-10 whitespace-nowrap">Get Free Demo</span>
                 <ArrowRight className="btn-arrow relative z-10 w-4 h-4" strokeWidth={2} />
