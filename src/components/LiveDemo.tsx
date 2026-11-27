@@ -102,6 +102,8 @@ export const LiveDemo: React.FC<LiveDemoProps> = ({ onBookDemoClick }) => {
   useEffect(() => {
     if (reduceMotion) {
       setCallTime(TOTAL_CALL_SECS);
+      setIsTyping(false);
+      setTypingSpeaker(null);
       return;
     }
     if (!isInView) return;
@@ -112,19 +114,6 @@ export const LiveDemo: React.FC<LiveDemoProps> = ({ onBookDemoClick }) => {
     const interval = setInterval(() => {
       setCallTime((prev) => {
         const next = prev + callSecsPerTick;
-
-        // Check if approaching next Appsian line to show typing indicator
-        const nextAppsianLine = SCRIPT.find(
-          (line) => line.speaker === 'Appsian' && line.timeSec > prev && line.timeSec <= next + 3.5
-        );
-        if (nextAppsianLine && nextAppsianLine.timeSec - next <= 3.5) {
-          setIsTyping(true);
-          setTypingSpeaker('Appsian');
-        } else {
-          setIsTyping(false);
-          setTypingSpeaker(null);
-        }
-
         // Loop after call ends + 3s pause
         if (next >= TOTAL_CALL_SECS + PAUSE_AFTER_SECS * SPEED) {
           return 1;
@@ -135,6 +124,25 @@ export const LiveDemo: React.FC<LiveDemoProps> = ({ onBookDemoClick }) => {
 
     return () => clearInterval(interval);
   }, [isInView, reduceMotion]);
+
+  // Update typing indicator cleanly when callTime advances
+  useEffect(() => {
+    if (reduceMotion) {
+      setIsTyping(false);
+      setTypingSpeaker(null);
+      return;
+    }
+    const nextAppsianLine = SCRIPT.find(
+      (line) => line.speaker === 'Appsian' && line.timeSec > callTime && line.timeSec <= callTime + 3.5
+    );
+    if (nextAppsianLine && nextAppsianLine.timeSec - callTime <= 3.5) {
+      setIsTyping((prev) => (prev ? prev : true));
+      setTypingSpeaker((prev) => (prev === 'Appsian' ? prev : 'Appsian'));
+    } else {
+      setIsTyping((prev) => (prev ? false : prev));
+      setTypingSpeaker((prev) => (prev === null ? prev : null));
+    }
+  }, [callTime, reduceMotion]);
 
   // Auto-scroll transcript container as new lines appear
   useEffect(() => {

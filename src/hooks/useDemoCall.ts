@@ -356,8 +356,10 @@ export function useDemoCall({ containerRef }: UseDemoCallOptions) {
           return;
         }
       }
-      callTimeRef.current = t;
-      setCallTime(t);
+      if (t !== callTimeRef.current) {
+        callTimeRef.current = t;
+        setCallTime(t);
+      }
       rafId = requestAnimationFrame(tick);
     };
 
@@ -380,7 +382,7 @@ export function useDemoCall({ containerRef }: UseDemoCallOptions) {
         behavior: reduceMotion ? 'auto' : 'smooth',
       });
       if (transcriptListRef.current.scrollTop > 2) {
-        setIsScrolled(true);
+        setIsScrolled((prev) => (prev ? prev : true));
       }
     }
   }, [callTime, callState, reduceMotion]);

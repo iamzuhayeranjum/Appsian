@@ -373,7 +373,8 @@ export const GettingStarted: React.FC<GettingStartedProps> = ({ onSuccessDemo })
 
     const measure = () => {
       const containerRect = el.getBoundingClientRect();
-      setContainerHeight(containerRect.height);
+      const nextHeight = containerRect.height;
+      setContainerHeight((prev) => (Math.abs(prev - nextHeight) < 0.5 ? prev : nextHeight));
 
       const tops = rowRefs.current.map((row) => {
         if (!row) return 0;
@@ -381,7 +382,11 @@ export const GettingStarted: React.FC<GettingStartedProps> = ({ onSuccessDemo })
         return rowRect.top - containerRect.top + 10;
       });
       if (tops.length === 4) {
-        setNodeTops(tops);
+        setNodeTops((prev) =>
+          prev.length === tops.length && prev.every((v, i) => Math.abs(v - tops[i]) < 0.5)
+            ? prev
+            : tops
+        );
       }
     };
 
@@ -414,7 +419,7 @@ export const GettingStarted: React.FC<GettingStartedProps> = ({ onSuccessDemo })
         idx = i;
       }
     }
-    setActiveStepIndex(idx);
+    setActiveStepIndex((prev) => (prev === idx ? prev : idx));
   });
 
   const handleCtaClick = () => {

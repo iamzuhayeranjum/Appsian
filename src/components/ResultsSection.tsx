@@ -105,7 +105,8 @@ const IllustrationContainer: React.FC<IllustrationContainerProps> = ({
       const sX = w / 520;
       const sY = h / 248;
       const target = Math.min(1.15, Math.min(sX, sY));
-      setScale(Math.max(0.58, target));
+      const nextScale = Math.max(0.58, target);
+      setScale((prev) => (Math.abs(prev - nextScale) < 0.001 ? prev : nextScale));
     };
 
     updateScale();

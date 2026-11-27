@@ -55,7 +55,7 @@ export default function ProgressiveBlur({
       const rect = nav.getBoundingClientRect();
       if (rect.height <= 0) return;
       const actual = Math.round(window.innerHeight - rect.top);
-      if (actual > 0) setMeasured(actual);
+      if (actual > 0) setMeasured((prev) => (prev === actual ? prev : actual));
     };
     // Wait until the dock's slide-in animation has finished so the measurement is the resting position.
     const timer = window.setTimeout(measure, 900);
@@ -66,7 +66,7 @@ export default function ProgressiveBlur({
       window.removeEventListener('resize', measure);
       window.removeEventListener('orientationchange', measure);
     };
-  }, [visible, dockTopFromBottom]);
+  }, [visible]);
 
   const base = measured !== null ? measured : dockTopFromBottom;
   const totalHeight = Math.max(0, base + BLUR_EXTRA_PX);

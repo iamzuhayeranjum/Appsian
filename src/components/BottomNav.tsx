@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useLayoutEffect, useRef, useCallback } from 'react';
+import React, { useState, useEffect, useLayoutEffect, useRef, useCallback, useMemo } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { ArrowRight, ChevronUp, LayoutGrid, ListChecks, CircleDollarSign, Menu } from 'lucide-react';
 import { AppsianMark } from './AppsianLogo';
@@ -76,8 +76,8 @@ export const BottomNav: React.FC<BottomNavProps> = ({ onCtaClick, pastHero: prop
     const isMd = window.innerWidth >= 768;
     if (!isMd && mobileNavRef.current && mobileNavRef.current.offsetHeight > 0) {
       const h = mobileNavRef.current.offsetHeight;
-      setMobileBarH(h);
-      setDockTopFromBottom(h);
+      setMobileBarH((prev) => (prev === h ? prev : h));
+      setDockTopFromBottom((prev) => (prev === h ? prev : h));
       return;
     }
     const defaultOffset = isMd ? 24 : 12;
@@ -97,7 +97,8 @@ export const BottomNav: React.FC<BottomNavProps> = ({ onCtaClick, pastHero: prop
       dockHeight = dockNavRef.current.offsetHeight;
     }
 
-    setDockTopFromBottom(bottomOffset + dockHeight);
+    const nextTop = bottomOffset + dockHeight;
+    setDockTopFromBottom((prev) => (prev === nextTop ? prev : nextTop));
   }, []);
 
   useEffect(() => {
@@ -309,28 +310,31 @@ export const BottomNav: React.FC<BottomNavProps> = ({ onCtaClick, pastHero: prop
   };
 
   // Variants for the 5 inner slots with 40ms stagger when shown, no stagger on exit
-  const slotVariants = {
-    hidden: {
-      opacity: 0,
-      y: isReducedMotion ? 0 : 8,
-      transition: {
-        duration: isReducedMotion ? 0.15 : 0.2,
-        ease: [0.4, 0, 1, 1] as const,
-        delay: 0, // No stagger on exit
+  const slotVariants = useMemo(
+    () => ({
+      hidden: {
+        opacity: 0,
+        y: isReducedMotion ? 0 : 8,
+        transition: {
+          duration: isReducedMotion ? 0.15 : 0.2,
+          ease: [0.4, 0, 1, 1] as const,
+          delay: 0, // No stagger on exit
+        },
       },
-    },
-    shown: (customIndex: number) => ({
-      opacity: 1,
-      y: 0,
-      transition: isReducedMotion
-        ? { duration: 0.15 }
-        : {
-            duration: 0.32,
-            ease: [0.22, 1, 0.36, 1] as const,
-            delay: 0.14 + 0.04 * customIndex, // 40ms stagger per slot
-          },
+      shown: (customIndex: number) => ({
+        opacity: 1,
+        y: 0,
+        transition: isReducedMotion
+          ? { duration: 0.15 }
+          : {
+              duration: 0.32,
+              ease: [0.22, 1, 0.36, 1] as const,
+              delay: 0.14 + 0.04 * customIndex, // 40ms stagger per slot
+            },
+      }),
     }),
-  };
+    [isReducedMotion]
+  );
 
   // Helper to render an item slot
   const renderItemSlot = (item: NavItem) => {
@@ -357,36 +361,57 @@ export const BottomNav: React.FC<BottomNavProps> = ({ onCtaClick, pastHero: prop
 
   const isMoreActive = moreLinks.some((link) => link.id === activeSection);
 
-  const dockVariants = {
-    hidden: {
-      y: isReducedMotion ? 0 : 44,
-      scale: isReducedMotion ? 1 : 0.96,
-      opacity: 0,
-      filter: isReducedMotion ? 'blur(0px)' : 'blur(10px)',
-      transition: isReducedMotion
-        ? { duration: 0.15 }
-        : {
-            duration: 0.28,
-            ease: [0.4, 0, 1, 1] as const,
-            delay: 0,
-          },
-    },
-    shown: {
-      y: 0,
-      scale: 1,
-      opacity: 1,
-      filter: 'blur(0px)',
-      transition: isReducedMotion
-        ? { duration: 0.15 }
-        : {
-            type: 'spring' as const,
-            stiffness: 260,
-            damping: 26,
-            mass: 0.9,
-            delay: 0.14,
-          },
-    },
-  };
+  const dockVariants = useMemo(
+    () => ({
+      hidden: {
+        y: isReducedMotion ? 0 : 44,
+        scale: isReducedMotion ? 1 : 0.96,
+        opacity: 0,
+        filter: isReducedMotion ? 'blur(0px)' : 'blur(10px)',
+        transition: isReducedMotion
+          ? { duration: 0.15 }
+          : {
+              duration: 0.28,
+              ease: [0.4, 0, 1, 1] as const,
+              delay: 0,
+            },
+      },
+      shown: {
+        y: 0,
+        scale: 1,
+        opacity: 1,
+        filter: 'blur(0px)',
+        transition: isReducedMotion
+          ? { duration: 0.15 }
+          : {
+              type: 'spring' as const,
+              stiffness: 260,
+              damping: 26,
+              mass: 0.9,
+              delay: 0.14,
+            },
+      },
+    }),
+    [isReducedMotion]
+  );
+
+  const mobileNavVariants = useMemo(
+    () => ({
+      hidden: {
+        y: isReducedMotion ? 0 : 90,
+        opacity: 0,
+        transition: { duration: isReducedMotion ? 0.15 : 0.25, ease: [0.4, 0, 1, 1] as const },
+      },
+      shown: {
+        y: 0,
+        opacity: 1,
+        transition: isReducedMotion
+          ? { duration: 0.15 }
+          : { type: 'spring' as const, stiffness: 260, damping: 26, mass: 0.9, delay: 0.14 },
+      },
+    }),
+    [isReducedMotion]
+  );
 
   return (
     <>
@@ -437,20 +462,7 @@ export const BottomNav: React.FC<BottomNavProps> = ({ onCtaClick, pastHero: prop
           ref={mobileNavRef}
           initial={false}
           animate={pastHero ? 'shown' : 'hidden'}
-          variants={{
-            hidden: {
-              y: isReducedMotion ? 0 : 90,
-              opacity: 0,
-              transition: { duration: isReducedMotion ? 0.15 : 0.25, ease: [0.4, 0, 1, 1] as const },
-            },
-            shown: {
-              y: 0,
-              opacity: 1,
-              transition: isReducedMotion
-                ? { duration: 0.15 }
-                : { type: 'spring' as const, stiffness: 260, damping: 26, mass: 0.9, delay: 0.14 },
-            },
-          }}
+          variants={mobileNavVariants}
           onAnimationComplete={handleAnimationComplete}
           aria-label="Mobile Navigation"
           aria-hidden={!pastHero}

@@ -80,8 +80,10 @@ export const Benefits: React.FC<BenefitsProps> = ({ onBookDemoClick }) => {
 
     const checkViewport = () => {
       const w = window.innerWidth;
-      setIsMobile(w < 768);
-      setIsTablet(w >= 768 && w < 1024);
+      const nextMobile = w < 768;
+      const nextTablet = w >= 768 && w < 1024;
+      setIsMobile((prev) => (prev === nextMobile ? prev : nextMobile));
+      setIsTablet((prev) => (prev === nextTablet ? prev : nextTablet));
     };
     checkViewport();
     window.addEventListener('resize', checkViewport);
@@ -101,6 +103,7 @@ export const Benefits: React.FC<BenefitsProps> = ({ onBookDemoClick }) => {
         ([entry]) => {
           if (entry.isIntersecting) {
             setVisibleCards((prev) => {
+              if (prev[index]) return prev;
               const next = [...prev];
               next[index] = true;
               return next;
@@ -122,7 +125,7 @@ export const Benefits: React.FC<BenefitsProps> = ({ onBookDemoClick }) => {
   // requestAnimationFrame scroll listener for card depth stacking effect
   useEffect(() => {
     if (isReducedMotion || isMobile) {
-      setCardProgress([0, 0, 0, 0]);
+      setCardProgress((prev) => (prev.every((v) => v === 0) ? prev : [0, 0, 0, 0]));
       return;
     }
 
@@ -153,7 +156,12 @@ export const Benefits: React.FC<BenefitsProps> = ({ onBookDemoClick }) => {
           }
         }
 
-        setCardProgress(newProgress);
+        setCardProgress((prev) =>
+          prev.length === newProgress.length &&
+          prev.every((v, i) => v === newProgress[i])
+            ? prev
+            : newProgress
+        );
       });
     };
 

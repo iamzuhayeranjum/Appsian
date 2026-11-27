@@ -18,7 +18,8 @@ export const HowItWorks: React.FC = () => {
     if (!cardRef.current) return;
     const updateCardHeight = () => {
       if (cardRef.current) {
-        setCardHeight(cardRef.current.offsetHeight);
+        const h = cardRef.current.offsetHeight;
+        setCardHeight((prev) => (prev === h ? prev : h));
       }
     };
     updateCardHeight();
@@ -55,7 +56,7 @@ export const HowItWorks: React.FC = () => {
 
   useMotionValueEvent(scrollYProgress, 'change', (latest) => {
     if (isReducedMotion) {
-      setActiveStep(10);
+      setActiveStep((prev) => (prev === 10 ? prev : 10));
       return;
     }
     // 10 stages corresponding to the 10 rows
@@ -66,7 +67,7 @@ export const HowItWorks: React.FC = () => {
         step = i;
       }
     }
-    setActiveStep(step);
+    setActiveStep((prev) => (prev === step ? prev : step));
   });
 
   const handleScrollToHeroDemo = () => {

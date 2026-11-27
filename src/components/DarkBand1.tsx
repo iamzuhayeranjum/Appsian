@@ -1,34 +1,32 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { motion, useReducedMotion } from 'motion/react';
 import { Calendar, UserCheck, Headphones, Check, Sparkles, Phone, Clock, FileText, MessageSquare, ClipboardList } from 'lucide-react';
 import { SectionTag } from './SectionTag';
 import { content } from '../content';
+
+const JOB_TYPES = ['Nights', 'Weekends', 'On a job', 'Lunch'];
+const TIMELINES = ['Answered', 'Captured'];
+const JOB_SEQUENCE = ['On a job', 'Nights', 'Weekends', 'Lunch'];
 
 export const DarkBand1: React.FC = () => {
   const { darkBand1 } = content;
   const reduceMotion = useReducedMotion();
 
   // Card 1 interactive/timed qualification state
-  const jobTypes = ['Nights', 'Weekends', 'On a job', 'Lunch'];
-  const timelines = ['Answered', 'Captured'];
-  const jobSequence = ['On a job', 'Nights', 'Weekends', 'Lunch'];
-
   const [activeJobType, setActiveJobType] = useState('On a job');
   const [activeTimeline, setActiveTimeline] = useState('Answered');
-  const [seqIdx, setSeqIdx] = useState(0);
+  const seqIdxRef = useRef(0);
 
   useEffect(() => {
     if (reduceMotion) return;
     const interval = setInterval(() => {
-      setSeqIdx((prev) => {
-        const next = (prev + 1) % jobSequence.length;
-        setActiveJobType(jobSequence[next]);
-        setActiveTimeline(next % 2 === 0 ? 'Answered' : 'Captured');
-        return next;
-      });
+      const next = (seqIdxRef.current + 1) % JOB_SEQUENCE.length;
+      seqIdxRef.current = next;
+      setActiveJobType(JOB_SEQUENCE[next]);
+      setActiveTimeline(next % 2 === 0 ? 'Answered' : 'Captured');
     }, 3000);
     return () => clearInterval(interval);
-  }, [reduceMotion, jobSequence]);
+  }, [reduceMotion]);
 
   // Shared card entrance animation parameters
   const cardEntrance = (delay: number) => ({
@@ -118,7 +116,7 @@ export const DarkBand1: React.FC = () => {
                       WHEN THEY CALL
                     </span>
                     <div className="flex flex-wrap gap-1.5">
-                      {jobTypes.map((type) => {
+                      {JOB_TYPES.map((type) => {
                         const isSelected = type === activeJobType;
                         return (
                           <button
@@ -144,7 +142,7 @@ export const DarkBand1: React.FC = () => {
                       OUTCOME
                     </span>
                     <div className="flex flex-wrap gap-1.5">
-                      {timelines.map((timeline) => {
+                      {TIMELINES.map((timeline) => {
                         const isSelected = timeline === activeTimeline;
                         return (
                           <button

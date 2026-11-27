@@ -510,7 +510,7 @@ export const Hero: React.FC<HeroProps> = () => {
         {/* FULL-WIDTH FROSTED CALL CONSOLE WINDOW */}
         <motion.div
           initial={reduceMotion ? false : { y: 28 }}
-          animate={appReady ? { y: 0 } : reduceMotion ? false : { y: 28 }}
+          animate={appReady || reduceMotion ? { y: 0 } : { y: 28 }}
           transition={{
             duration: reduceMotion ? 0.2 : 0.75,
             delay: reduceMotion ? 0 : 0.22,
