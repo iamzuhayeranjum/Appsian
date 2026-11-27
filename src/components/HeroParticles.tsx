@@ -40,11 +40,12 @@ interface SparkleParticle {
   timeAlive: number;
 }
 
-const ICE_WHITE_COLORS = ['#ffffff', '#ddeeff', '#a9d3ff', '#7db9f8'];
+const BLUE_DUST_COLORS = ['#60a5fa', '#3b82f6', '#93c5fd'];
+const ICE_WHITE_COLORS = ['#ffffff', '#eff6ff', '#dbeafe'];
 const pickDustColor = () =>
-  Math.random() < 0.7
-    ? ICE_WHITE_COLORS[Math.floor(Math.random() * ICE_WHITE_COLORS.length)]
-    : '#4f9bf5';
+  Math.random() < 0.5
+    ? BLUE_DUST_COLORS[Math.floor(Math.random() * BLUE_DUST_COLORS.length)]
+    : ICE_WHITE_COLORS[Math.floor(Math.random() * ICE_WHITE_COLORS.length)];
 
 export const HeroParticles: React.FC<HeroParticlesProps> = ({ containerRef }) => {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
@@ -105,7 +106,7 @@ export const HeroParticles: React.FC<HeroParticlesProps> = ({ containerRef }) =>
         y: Math.random() * height,
         vy: 3 + Math.random() * 5, // 3 to 8 px/sec
         radius: 6 + Math.random() * 12, // 6 to 18px
-        alpha: 0.08,
+        alpha: 0.12,
       }));
 
       sparkleParticles = Array.from({ length: sparkleCount }, () => ({
@@ -159,9 +160,9 @@ export const HeroParticles: React.FC<HeroParticlesProps> = ({ containerRef }) =>
         }
 
         const grad = ctx.createRadialGradient(b.x, b.y, 0, b.x, b.y, b.radius);
-        grad.addColorStop(0, `rgba(255, 255, 255, ${b.alpha})`);
-        grad.addColorStop(0.6, `rgba(255, 255, 255, ${b.alpha * 0.35})`);
-        grad.addColorStop(1, 'rgba(255, 255, 255, 0)');
+        grad.addColorStop(0, `rgba(96, 165, 250, ${b.alpha})`);
+        grad.addColorStop(0.6, `rgba(96, 165, 250, ${b.alpha * 0.35})`);
+        grad.addColorStop(1, 'rgba(96, 165, 250, 0)');
 
         ctx.beginPath();
         ctx.arc(b.x, b.y, b.radius, 0, Math.PI * 2);

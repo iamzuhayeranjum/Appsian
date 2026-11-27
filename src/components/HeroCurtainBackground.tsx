@@ -4,6 +4,7 @@ interface HeroCurtainBackgroundProps {
   uDrift?: number;
   uWaveAmp?: number;
   uWaveSpeed?: number;
+  flip?: boolean;
 }
 
 const VERTEX_SHADER_SRC = `
@@ -24,6 +25,7 @@ uniform float u_time;
 uniform float u_drift;
 uniform float u_waveAmp;
 uniform float u_waveSpeed;
+uniform float u_flip;
 
 float hash(vec2 p) { return fract(sin(dot(p, vec2(127.1, 311.7))) * 43758.5453123); }
 float pdist(float a, float b) { return abs(fract(a - b + 0.5) - 0.5); }
@@ -52,7 +54,21 @@ void main() {
   float wave = u_waveAmp * sin(TAU * (x * 1.35 - t * u_waveSpeed))
              + u_waveAmp * 0.45 * sin(TAU * (x * 2.7 + t * u_waveSpeed * 0.64) + 1.7);
   float yy = y + wave;
-  vec3 col = ramp(yy);
+
+  vec3 col;
+  float foldGate = 1.0;
+  float bandY = y;
+  float foldSampleY = yy;
+
+  if (u_flip > 0.5) {
+    float s = clamp((yy - 0.42) / 0.58, 0.0, 1.0);
+    col = ramp(1.0 - s);
+    foldSampleY = 1.0 - s;
+    bandY = 1.0 - s;
+    foldGate = smoothstep(0.0, 0.06, s);
+  } else {
+    col = ramp(yy);
+  }
 
   // (a) vertical FOLDS drifting from left to right (wrapping around), tips lengthen and shorten
   float folds = 0.0;
@@ -65,16 +81,16 @@ void main() {
     float core = exp(-(d * d) / (w * w));
     float len = 0.50 + 0.22 * hash(vec2(fi, 11.0))
               + 0.08 * sin(t * (0.30 + 0.25 * hash(vec2(fi, 5.0))) + fi * 1.9);
-    float taper = 1.0 - smoothstep(0.04, len, yy);
+    float taper = 1.0 - smoothstep(0.04, len, foldSampleY);
     folds += core * taper * (0.55 + 0.45 * hash(vec2(fi, 13.0)));
   }
-  folds = clamp(folds, 0.0, 1.0);
-  vec3 deep = ramp(yy - 0.22) * vec3(0.82, 0.90, 1.0);
+  folds = clamp(folds, 0.0, 1.0) * foldGate;
+  vec3 deep = ramp(foldSampleY - 0.22) * vec3(0.82, 0.90, 1.0);
   col = mix(col, deep, folds * 0.8);
 
   // faint broad light columns between the folds (also drifting)
   float lightCols = 0.5 + 0.5 * sin(TAU * (x * 3.0 - t * u_drift));
-  col += vec3(0.025, 0.045, 0.075) * lightCols * (1.0 - smoothstep(0.15, 0.75, y));
+  col += vec3(0.025, 0.045, 0.075) * lightCols * foldGate * (1.0 - smoothstep(0.15, 0.75, bandY));
 
   // thin soft vertical hairlines (subtle)
   for (int j = 0; j < 3; j++) {
@@ -82,11 +98,11 @@ void main() {
     float xj = fract(0.16 + 0.31 * fj + 0.04 * sin(fj * 3.0) + t * u_drift);
     float dd = pdist(x, xj);
     float line = exp(-(dd * dd) / (0.0011 * 0.0011));
-    float vis = smoothstep(0.06, 0.18, y) * (1.0 - smoothstep(0.30, 0.62, y));
-    col += vec3(line * vis * 0.10);
+    float vis = smoothstep(0.06, 0.18, bandY) * (1.0 - smoothstep(0.30, 0.62, bandY)) * 0.10 * foldGate;
+    col += vec3(line * vis);
   }
 
-  col += (hash(gl_FragCoord.xy + fract(t)) - 0.5) / 255.0;   // dither, no banding
+  col += ((hash(gl_FragCoord.xy + fract(t)) - 0.5) / 255.0) * (u_flip > 0.5 ? step(0.001, foldGate) : 1.0);   // dither, no banding
   gl_FragColor = vec4(col, 1.0);
 }
 `;
@@ -95,6 +111,7 @@ export const HeroCurtainBackground: React.FC<HeroCurtainBackgroundProps> = ({
   uDrift = 0.016,
   uWaveAmp = 0.045,
   uWaveSpeed = 0.11,
+  flip = false,
 }) => {
   const containerRef = useRef<HTMLDivElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -178,6 +195,7 @@ export const HeroCurtainBackground: React.FC<HeroCurtainBackgroundProps> = ({
     const uDriftLoc = gl.getUniformLocation(program, 'u_drift');
     const uWaveAmpLoc = gl.getUniformLocation(program, 'u_waveAmp');
     const uWaveSpeedLoc = gl.getUniformLocation(program, 'u_waveSpeed');
+    const uFlipLoc = gl.getUniformLocation(program, 'u_flip');
 
     let isVisible = true;
     let rafId: number | null = null;
@@ -219,6 +237,7 @@ export const HeroCurtainBackground: React.FC<HeroCurtainBackgroundProps> = ({
       gl.uniform1f(uDriftLoc, uDrift * speedMult);
       gl.uniform1f(uWaveAmpLoc, uWaveAmp);
       gl.uniform1f(uWaveSpeedLoc, uWaveSpeed * speedMult);
+      gl.uniform1f(uFlipLoc, flip ? 1.0 : 0.0);
 
       gl.drawArrays(gl.TRIANGLES, 0, 3);
     };
@@ -319,15 +338,16 @@ export const HeroCurtainBackground: React.FC<HeroCurtainBackgroundProps> = ({
         gl.deleteBuffer(posBuffer);
       }
     };
-  }, [uDrift, uWaveAmp, uWaveSpeed]);
+  }, [uDrift, uWaveAmp, uWaveSpeed, flip]);
 
   return (
     <div
       ref={containerRef}
       className="absolute inset-0 overflow-hidden pointer-events-none select-none z-0"
       style={{
-        background:
-          'linear-gradient(180deg, #082a6b 0%, #0b3d99 16%, #1263d6 38%, #2e86f0 60%, #7db9f8 76%, #cfe8ff 88%, #f4faff 96%, #f5f6f8 100%)',
+        background: flip
+          ? 'linear-gradient(180deg, #f5f6f8 0%, #f5f6f8 42%, #f4faff 48%, #cfe8ff 56%, #7db9f8 66%, #2e86f0 76%, #1263d6 88%, #0b3d99 95%, #082a6b 100%)'
+          : 'linear-gradient(180deg, #082a6b 0%, #0b3d99 16%, #1263d6 38%, #2e86f0 60%, #7db9f8 76%, #cfe8ff 88%, #f4faff 96%, #f5f6f8 100%)',
       }}
       aria-hidden="true"
     >

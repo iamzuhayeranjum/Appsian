@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { ArrowUpRight } from 'lucide-react';
+import { ArrowRight } from 'lucide-react';
 import { AppsianMark } from './AppsianLogo';
 import { content } from '../content';
 import { useAppReady } from './Preloader';
@@ -12,7 +12,7 @@ interface NavbarProps {
 
 const EASE_OUT: [number, number, number, number] = [0.22, 1, 0.36, 1];
 
-export const Navbar: React.FC<NavbarProps> = ({ pastHero = false }) => {
+export const Navbar: React.FC<NavbarProps> = ({ onBookDemoClick, pastHero = false }) => {
   const appReady = useAppReady();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [isReducedMotion, setIsReducedMotion] = useState(false);
@@ -63,7 +63,21 @@ export const Navbar: React.FC<NavbarProps> = ({ pastHero = false }) => {
   };
 
   const handleLogoClick = () => {
+    setMobileMenuOpen(false);
     window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  const handleFocusHeroForm = () => {
+    setMobileMenuOpen(false);
+    const nameInput = document.getElementById('hero-demo-name') as HTMLInputElement | null;
+    if (nameInput) {
+      nameInput.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      setTimeout(() => {
+        nameInput.focus({ preventScroll: true });
+      }, 240);
+    } else if (onBookDemoClick) {
+      onBookDemoClick();
+    }
   };
 
   const isVisible = appReady && !pastHero;
@@ -89,68 +103,45 @@ export const Navbar: React.FC<NavbarProps> = ({ pastHero = false }) => {
         duration: isReducedMotion ? 0.15 : 0.4,
         ease: EASE_OUT,
       }}
-      className="absolute top-0 left-0 right-0 w-full z-50 pointer-events-none"
+      className="fixed top-0 left-0 right-0 w-full z-50 pointer-events-none"
     >
-      {/* Plain full-width bar (72px desktop, 64px mobile, transparent background) */}
+      {/* Floating white top-centered bar */}
       <div className="header-row">
-        
-        {/* LEFT: Logo Lockup (white wordmark and white/bfe0ff gradient logo) */}
+        {/* LEFT: Dark Appsian Logo + Wordmark */}
         <button
           type="button"
           onClick={handleLogoClick}
-          className="header-logo-group flex items-center gap-[10px] cursor-pointer select-none border-0 bg-transparent p-0 text-left group"
+          className="header-logo-group flex items-center gap-[9px] cursor-pointer select-none border-0 bg-transparent p-0 text-left group focus-visible:outline-2 focus-visible:outline-[#2563eb] focus-visible:outline-offset-[3px] rounded-[8px]"
           aria-label="Appsian Home - Scroll to top"
         >
           <div className="transition-transform duration-200 group-hover:scale-105">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              viewBox="260 296 694 569"
-              fill="none"
-              aria-label="Appsian"
-              width={28}
-              height={23}
-              className="block shrink-0"
-            >
-              <defs>
-                <linearGradient id="appsian-nav-logo-white-grad" x1="0" y1="0" x2="1" y2="1">
-                  <stop offset="0%" stopColor="#ffffff" />
-                  <stop offset="100%" stopColor="#bfe0ff" />
-                </linearGradient>
-              </defs>
-              <path
-                fill="url(#appsian-nav-logo-white-grad)"
-                d="M633 301 949 860H698L536 568C516 532 510 497 523 468 530 452 538 442 546 431Z"
-              />
-              <path
-                fill="url(#appsian-nav-logo-white-grad)"
-                d="M265 860 323 766C345 732 366 708 395 690 430 666 490 656 534 687 562 708 574 732 576 752 579 780 575 797 567 815 562 826 556 834 552 842 548 852 544 857 538 860Z"
-              />
-            </svg>
+            <AppsianMark size={24} fill="#0b1530" />
           </div>
-          <span className="text-[20px] font-semibold tracking-[-0.01em] text-white leading-none">
+          <span className="text-[18px] font-bold tracking-[-0.02em] text-[#0b1530] leading-none">
             Appsian
           </span>
         </button>
 
-        {/* CENTER: Plain text links floating directly on the hero (Desktop) */}
-        <nav
-          aria-label="Main Navigation"
-          className="header-nav"
-        >
+        {/* CENTER: Nav links (Desktop 900px+) */}
+        <nav aria-label="Main Navigation" className="header-nav">
           {navLinks.map((link, index) => (
             <motion.a
               key={link.href}
               href={link.href}
               onClick={(e) => handleScrollTo(e, link.href)}
-              initial={isReducedMotion ? { opacity: 0 } : { opacity: 0, y: 8 }}
+              initial={isReducedMotion ? { opacity: 0 } : { opacity: 0, y: 6 }}
               animate={
                 isVisible
-                  ? (isReducedMotion ? { opacity: 1 } : { opacity: 1, y: 0 })
-                  : (isReducedMotion ? { opacity: 0 } : { opacity: 0, y: 8 })
+                  ? isReducedMotion
+                    ? { opacity: 1 }
+                    : { opacity: 1, y: 0 }
+                  : isReducedMotion
+                  ? { opacity: 0 }
+                  : { opacity: 0, y: 6 }
               }
               transition={{
-                duration: isReducedMotion ? 0.15 : 0.4,
-                delay: isReducedMotion ? 0 : 0.1 + index * 0.06,
+                duration: isReducedMotion ? 0.15 : 0.35,
+                delay: isReducedMotion ? 0 : 0.08 + index * 0.05,
                 ease: EASE_OUT,
               }}
               whileTap={!isReducedMotion ? { y: 1, transition: { duration: 0.1 } } : undefined}
@@ -161,51 +152,41 @@ export const Navbar: React.FC<NavbarProps> = ({ pastHero = false }) => {
           ))}
         </nav>
 
-        {/* RIGHT: Desktop CTA (underlined text link in white with 70% underline + 40px light glossy arrow button) */}
-        {/* RIGHT: Desktop CTA (Login link + 40px light glossy arrow button) */}
+        {/* RIGHT: Desktop CTA (Outlined white Login + Dark filled Get Free Demo) */}
         <div className="header-desktop-cta">
           <a
             href="https://dashboard.appsianai.digital/"
-            className="text-[15px] font-normal text-white underline underline-offset-[5px] decoration-1 decoration-[rgba(255,255,255,0.7)] hover:opacity-85 transition-opacity cursor-pointer border-0 bg-transparent p-0 select-none"
+            className="h-[36px] px-[16px] rounded-full bg-white text-[#0b1530] border border-[rgba(11,21,48,0.14)] text-[13.5px] font-medium inline-flex items-center justify-center hover:bg-[#f8fafc] hover:border-[rgba(11,21,48,0.26)] transition-colors whitespace-nowrap select-none focus-visible:outline-2 focus-visible:outline-[#2563eb] focus-visible:outline-offset-[3px]"
           >
             Login
           </a>
-          
-          <a
-            href="https://dashboard.appsianai.digital/"
-            className="btn-premium btn-premium--light btn-glitter btn-glitter--light w-[40px] h-[40px] min-w-[40px] rounded-[10px] flex items-center justify-center cursor-pointer select-none text-[#2f6bff] shadow-sm"
-            style={{ '--btn-fg': '#2f6bff' } as React.CSSProperties}
-            aria-label="Login"
+
+          <button
+            type="button"
+            onClick={handleFocusHeroForm}
+            className="btn-premium btn-premium--dark h-[36px] px-[16px] rounded-full text-[13.5px] font-semibold text-white inline-flex items-center justify-center gap-1.5 cursor-pointer whitespace-nowrap select-none focus-visible:outline-2 focus-visible:outline-[#2563eb] focus-visible:outline-offset-[3px]"
           >
-            <ArrowUpRight className="btn-arrow-diag w-[18px] h-[18px] stroke-[2.2] text-[#2f6bff]" />
-          </a>
+            <span>Get Free Demo</span>
+            <ArrowRight className="btn-arrow w-[14px] h-[14px] text-white" strokeWidth={2.2} />
+          </button>
         </div>
 
-        {/* RIGHT: Tablet & Mobile controls (Light glossy button + 2-line menu button) */}
+        {/* RIGHT: Mobile & Tablet Hamburger inside white bar (< 900px) */}
         <div className="header-mobile-controls">
-          <a
-            href="https://dashboard.appsianai.digital/"
-            className="btn-premium btn-premium--light btn-glitter btn-glitter--light w-[40px] h-[40px] min-w-[40px] rounded-[10px] flex items-center justify-center cursor-pointer text-[#2f6bff] shadow-sm"
-            style={{ '--btn-fg': '#2f6bff' } as React.CSSProperties}
-            aria-label="Login"
-          >
-            <ArrowUpRight className="btn-arrow-diag w-[18px] h-[18px] stroke-[2.2] text-[#2f6bff]" />
-          </a>
-
           <button
             ref={menuButtonRef}
             type="button"
             onClick={() => setMobileMenuOpen((prev) => !prev)}
             aria-expanded={mobileMenuOpen}
             aria-label={mobileMenuOpen ? 'Close navigation menu' : 'Open navigation menu'}
-            className="btn-glitter w-[40px] h-[40px] min-w-[40px] rounded-[10px] border border-[rgba(255,255,255,0.28)] bg-[rgba(255,255,255,0.12)] backdrop-blur-md flex items-center justify-center cursor-pointer transition-colors hover:bg-[rgba(255,255,255,0.2)] active:scale-95"
+            className="w-[38px] h-[38px] min-w-[38px] rounded-[10px] border border-[rgba(11,21,48,0.12)] bg-[#f8fafc] flex items-center justify-center cursor-pointer transition-colors hover:bg-[#f1f5f9] active:scale-95 focus-visible:outline-2 focus-visible:outline-[#2563eb] focus-visible:outline-offset-[3px]"
           >
             <svg
               width="18"
               height="18"
               viewBox="0 0 18 18"
               fill="none"
-              stroke="#ffffff"
+              stroke="#0b1530"
               strokeWidth="2"
               strokeLinecap="round"
             >
@@ -233,32 +214,41 @@ export const Navbar: React.FC<NavbarProps> = ({ pastHero = false }) => {
               animate={{ opacity: 1, y: 0, scale: 1 }}
               exit={{ opacity: 0, y: -8, scale: 0.98 }}
               transition={{ duration: 0.18, ease: EASE_OUT }}
-              className="absolute right-5 top-[68px] z-50 w-[240px] bg-white rounded-[16px] shadow-[0_12px_32px_rgba(15,23,42,0.12)] p-2 border border-slate-100 flex flex-col"
+              className="absolute right-0 top-[64px] z-50 w-[250px] bg-white rounded-[18px] shadow-[0_14px_36px_rgba(11,21,48,0.16)] p-2 border border-[rgba(11,21,48,0.08)] flex flex-col"
             >
               {navLinks.map((link) => (
                 <a
                   key={link.href}
                   href={link.href}
                   onClick={(e) => handleScrollTo(e, link.href)}
-                  className="px-4 py-3 rounded-[10px] text-[16px] font-medium text-[#1F2937] hover:bg-slate-50 hover:text-[#0B0F19] transition-colors select-none"
+                  className="px-4 py-2.5 rounded-[10px] text-[15px] font-medium text-[#0b1530] hover:bg-slate-50 transition-colors select-none"
                 >
                   {link.label}
                 </a>
               ))}
-              
-              <div className="h-[1px] bg-slate-100 my-1" />
 
-              <a
-                href="https://dashboard.appsianai.digital/"
-                className="btn-premium btn-premium--blue btn-glitter w-full px-4 py-3 rounded-[10px] text-[15px] font-semibold text-white flex items-center justify-between cursor-pointer border-0 mt-0.5"
-              >
-                <span>Login</span>
-                <ArrowUpRight className="btn-arrow-diag w-4 h-4 stroke-[2.2] text-white" />
-              </a>
+              <div className="h-[1px] bg-slate-100 my-1.5" />
+
+              <div className="flex flex-col gap-2 p-1">
+                <a
+                  href="https://dashboard.appsianai.digital/"
+                  className="w-full h-[40px] px-4 rounded-full bg-white text-[#0b1530] border border-[rgba(11,21,48,0.14)] text-[14px] font-medium flex items-center justify-center hover:bg-[#f8fafc] transition-colors"
+                >
+                  Login
+                </a>
+
+                <button
+                  type="button"
+                  onClick={handleFocusHeroForm}
+                  className="btn-premium btn-premium--dark w-full h-[40px] px-4 rounded-full text-[14px] font-semibold text-white flex items-center justify-center gap-1.5 cursor-pointer"
+                >
+                  <span>Get Free Demo</span>
+                  <ArrowRight className="btn-arrow w-4 h-4 text-white" strokeWidth={2.2} />
+                </button>
+              </div>
             </motion.div>
           )}
         </AnimatePresence>
-
       </div>
     </motion.header>
   );

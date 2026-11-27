@@ -223,6 +223,78 @@ function createButtonGlitterTile(seed: number, isLightButton: boolean): string {
   return canvas.toDataURL('image/png');
 }
 
+/**
+ * Creates a white sparkle tile for dark-ink headlines on light backgrounds.
+ * Size: 260 x 140 CSS px at DPR 2.
+ */
+function createWhiteHeadlineGlitterTile(seed: number): string {
+  if (typeof document === 'undefined') return '';
+  const width = 260;
+  const height = 140;
+  const dpr = 2;
+
+  const canvas = document.createElement('canvas');
+  canvas.width = width * dpr;
+  canvas.height = height * dpr;
+
+  const ctx = canvas.getContext('2d');
+  if (!ctx) return '';
+
+  ctx.scale(dpr, dpr);
+  ctx.clearRect(0, 0, width, height);
+
+  const rand = mulberry32(seed);
+  const numSparkles = 9;
+  const padding = 6;
+
+  for (let i = 0; i < numSparkles; i++) {
+    const x = padding + rand() * (width - padding * 2);
+    const y = padding + rand() * (height - padding * 2);
+    const alpha = 0.35 + rand() * 0.35;
+    const isStar = rand() > 0.6;
+
+    if (!isStar) {
+      const radius = 0.7 + rand() * 0.8;
+      const grad = ctx.createRadialGradient(x, y, 0, x, y, radius * 2.2);
+      grad.addColorStop(0, `rgba(255, 255, 255, ${alpha})`);
+      grad.addColorStop(0.7, `rgba(219, 234, 254, ${alpha * 0.7})`);
+      grad.addColorStop(1, 'rgba(255, 255, 255, 0)');
+
+      ctx.beginPath();
+      ctx.arc(x, y, radius * 2.2, 0, Math.PI * 2);
+      ctx.fillStyle = grad;
+      ctx.fill();
+    } else {
+      const size = 3 + rand() * 3;
+      const armLength = size * 1.8;
+      const thickness = 0.8;
+
+      ctx.save();
+      const hGrad = ctx.createLinearGradient(x - armLength, y, x + armLength, y);
+      hGrad.addColorStop(0, 'rgba(255, 255, 255, 0)');
+      hGrad.addColorStop(0.5, `rgba(255, 255, 255, ${alpha})`);
+      hGrad.addColorStop(1, 'rgba(255, 255, 255, 0)');
+      ctx.fillStyle = hGrad;
+      ctx.fillRect(x - armLength, y - thickness / 2, armLength * 2, thickness);
+
+      const vGrad = ctx.createLinearGradient(x, y - armLength, x, y + armLength);
+      vGrad.addColorStop(0, 'rgba(255, 255, 255, 0)');
+      vGrad.addColorStop(0.5, `rgba(255, 255, 255, ${alpha})`);
+      vGrad.addColorStop(1, 'rgba(255, 255, 255, 0)');
+      ctx.fillStyle = vGrad;
+      ctx.fillRect(x - thickness / 2, y - armLength, thickness, armLength * 2);
+
+      ctx.beginPath();
+      ctx.arc(x, y, 0.75, 0, Math.PI * 2);
+      ctx.fillStyle = `rgba(255, 255, 255, ${Math.min(1.0, alpha * 1.3)})`;
+      ctx.fill();
+      ctx.restore();
+    }
+  }
+
+  return canvas.toDataURL('image/png');
+}
+
 let initialized = false;
 
 export function initGlitterTiles(): void {
@@ -234,6 +306,14 @@ export function initGlitterTiles(): void {
     if (tileA && tileB) {
       document.documentElement.style.setProperty('--gl-a', `url("${tileA}")`);
       document.documentElement.style.setProperty('--gl-b', `url("${tileB}")`);
+    }
+
+    // White sparkle headline tiles (260x140) for dark-navy & blue hero text
+    const whiteTileA = createWhiteHeadlineGlitterTile(2113);
+    const whiteTileB = createWhiteHeadlineGlitterTile(6449);
+    if (whiteTileA && whiteTileB) {
+      document.documentElement.style.setProperty('--glw-a', `url("${whiteTileA}")`);
+      document.documentElement.style.setProperty('--glw-b', `url("${whiteTileB}")`);
     }
 
     // Button hover tiles (96x56)
