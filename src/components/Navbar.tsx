@@ -156,7 +156,7 @@ export const Navbar: React.FC<NavbarProps> = ({ onBookDemoClick, pastHero = fals
         <div className="header-desktop-cta">
           <a
             href="https://dashboard.appsianai.digital/"
-            className="h-[36px] px-[16px] rounded-full bg-white text-[#0b1530] border border-[rgba(11,21,48,0.14)] text-[13.5px] font-medium inline-flex items-center justify-center hover:bg-[#f8fafc] hover:border-[rgba(11,21,48,0.26)] transition-colors whitespace-nowrap select-none focus-visible:outline-2 focus-visible:outline-[#2563eb] focus-visible:outline-offset-[3px]"
+            className="h-[38px] px-[16px] rounded-[10px] bg-white text-[#0b1530] border border-[rgba(11,21,48,0.14)] text-[13.5px] font-medium inline-flex items-center justify-center hover:bg-[#f8fafc] hover:border-[rgba(11,21,48,0.26)] transition-colors whitespace-nowrap select-none focus-visible:outline-2 focus-visible:outline-[#2563eb] focus-visible:outline-offset-[3px]"
           >
             Login
           </a>
@@ -164,7 +164,7 @@ export const Navbar: React.FC<NavbarProps> = ({ onBookDemoClick, pastHero = fals
           <button
             type="button"
             onClick={handleFocusHeroForm}
-            className="btn-premium btn-premium--dark h-[36px] px-[16px] rounded-full text-[13.5px] font-semibold text-white inline-flex items-center justify-center gap-1.5 cursor-pointer whitespace-nowrap select-none focus-visible:outline-2 focus-visible:outline-[#2563eb] focus-visible:outline-offset-[3px]"
+            className="btn-premium btn-premium--dark h-[38px] px-[16px] rounded-[10px] text-[13.5px] font-semibold text-white inline-flex items-center justify-center gap-1.5 cursor-pointer whitespace-nowrap select-none focus-visible:outline-2 focus-visible:outline-[#2563eb] focus-visible:outline-offset-[3px]"
           >
             <span>Get Free Demo</span>
             <ArrowRight className="btn-arrow w-[14px] h-[14px] text-white" strokeWidth={2.2} />
@@ -232,7 +232,7 @@ export const Navbar: React.FC<NavbarProps> = ({ onBookDemoClick, pastHero = fals
               <div className="flex flex-col gap-2 p-1">
                 <a
                   href="https://dashboard.appsianai.digital/"
-                  className="w-full h-[40px] px-4 rounded-full bg-white text-[#0b1530] border border-[rgba(11,21,48,0.14)] text-[14px] font-medium flex items-center justify-center hover:bg-[#f8fafc] transition-colors"
+                  className="w-full h-[38px] px-4 rounded-[10px] bg-white text-[#0b1530] border border-[rgba(11,21,48,0.14)] text-[14px] font-medium flex items-center justify-center hover:bg-[#f8fafc] transition-colors"
                 >
                   Login
                 </a>
@@ -240,7 +240,7 @@ export const Navbar: React.FC<NavbarProps> = ({ onBookDemoClick, pastHero = fals
                 <button
                   type="button"
                   onClick={handleFocusHeroForm}
-                  className="btn-premium btn-premium--dark w-full h-[40px] px-4 rounded-full text-[14px] font-semibold text-white flex items-center justify-center gap-1.5 cursor-pointer"
+                  className="btn-premium btn-premium--dark w-full h-[38px] px-4 rounded-[10px] text-[14px] font-semibold text-white flex items-center justify-center gap-1.5 cursor-pointer"
                 >
                   <span>Get Free Demo</span>
                   <ArrowRight className="btn-arrow w-4 h-4 text-white" strokeWidth={2.2} />

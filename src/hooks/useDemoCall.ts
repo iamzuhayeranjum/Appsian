@@ -40,8 +40,11 @@ export function useDemoCall({ containerRef }: UseDemoCallOptions) {
   const [notAllowedHint, setNotAllowedHint] = useState(false);
   const [audioPlayFailed, setAudioPlayFailed] = useState(false);
   const [audioStatus, setAudioStatus] = useState<'checking' | 'ok' | 'missing' | 'wrong-type'>('checking');
+  const [audioDuration, setAudioDuration] = useState<number>(durationSeconds);
   const [reduceMotion, setReduceMotion] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
+  const [isUserScrolledUp, setIsUserScrolledUp] = useState(false);
+  const isUserScrolledUpRef = useRef(false);
   const [isDebugTime, setIsDebugTime] = useState(false);
 
   useEffect(() => {
@@ -84,6 +87,8 @@ export function useDemoCall({ containerRef }: UseDemoCallOptions) {
       setAudioPlayFailed(false);
       fallbackStartRef.current = null;
       setIsScrolled(false);
+      isUserScrolledUpRef.current = false;
+      setIsUserScrolledUp(false);
       setCallState('ringing');
       callStateRef.current = 'ringing';
       acceptBtnRef.current?.focus();
@@ -117,6 +122,9 @@ export function useDemoCall({ containerRef }: UseDemoCallOptions) {
       audio.setAttribute('webkit-playsinline', 'true');
 
       audio.addEventListener('loadedmetadata', () => {
+        if (Number.isFinite(audio.duration) && audio.duration > 10) {
+          setAudioDuration(audio.duration);
+        }
         console.log('[demo-call] Event: loadedmetadata', {
           duration: audio.duration,
           playbackRate: audio.playbackRate,
@@ -233,6 +241,8 @@ export function useDemoCall({ containerRef }: UseDemoCallOptions) {
     setNotAllowedHint(false);
     setAudioPlayFailed(false);
     setIsScrolled(false);
+    isUserScrolledUpRef.current = false;
+    setIsUserScrolledUp(false);
 
     const audio = getAudio();
     audio.playbackRate = 1;
@@ -326,18 +336,22 @@ export function useDemoCall({ containerRef }: UseDemoCallOptions) {
     }, 600);
   };
 
-  // Seek handler when tapping a step tile
-  const handleSeek = (timeSec: number) => {
-    if (callStateRef.current !== 'answered') return;
-    const audio = audioInstanceRef.current;
-    if (audio && !audioPlayFailed) {
-      audio.currentTime = timeSec;
-    } else if (fallbackStartRef.current) {
-      fallbackStartRef.current = performance.now() - timeSec * 1000;
-    }
-    callTimeRef.current = timeSec;
-    setCallTime(timeSec);
-  };
+  // Seek handler when tapping a step tile, progress bar, or transcript line
+  const handleSeek = useCallback(
+    (timeSec: number) => {
+      if (callStateRef.current !== 'answered') return;
+      const clamped = Math.max(0, Math.min(audioDuration, timeSec));
+      const audio = audioInstanceRef.current;
+      if (audio && !audioPlayFailed) {
+        audio.currentTime = clamped;
+      } else if (fallbackStartRef.current) {
+        fallbackStartRef.current = performance.now() - clamped * 1000;
+      }
+      callTimeRef.current = clamped;
+      setCallTime(clamped);
+    },
+    [audioDuration, audioPlayFailed]
+  );
 
   // RAF clock loop driven strictly by audio.currentTime while answered
   useEffect(() => {
@@ -367,23 +381,39 @@ export function useDemoCall({ containerRef }: UseDemoCallOptions) {
     return () => cancelAnimationFrame(rafId);
   }, [callState, audioPlayFailed, handleEndCall]);
 
-  const handleListScroll = (e: React.UIEvent<HTMLDivElement>) => {
-    const scrolled = e.currentTarget.scrollTop > 2;
-    if (scrolled !== isScrolled) {
-      setIsScrolled(scrolled);
-    }
-  };
+  const handleListScroll = useCallback((e: React.UIEvent<HTMLDivElement>) => {
+    const el = e.currentTarget;
+    const scrolled = el.scrollTop > 2;
+    setIsScrolled((prev) => (prev === scrolled ? prev : scrolled));
 
-  // Auto-scroll transcript list to bottom as lines arrive
-  useEffect(() => {
-    if (callState === 'answered' && transcriptListRef.current) {
+    if (callStateRef.current === 'answered') {
+      const distanceFromBottom = el.scrollHeight - el.scrollTop - el.clientHeight;
+      const scrolledUp = distanceFromBottom > 40;
+      if (scrolledUp !== isUserScrolledUpRef.current) {
+        isUserScrolledUpRef.current = scrolledUp;
+        setIsUserScrolledUp(scrolledUp);
+      }
+    }
+  }, []);
+
+  const jumpToLive = useCallback(() => {
+    isUserScrolledUpRef.current = false;
+    setIsUserScrolledUp(false);
+    if (transcriptListRef.current) {
       transcriptListRef.current.scrollTo({
         top: transcriptListRef.current.scrollHeight,
         behavior: reduceMotion ? 'auto' : 'smooth',
       });
-      if (transcriptListRef.current.scrollTop > 2) {
-        setIsScrolled((prev) => (prev ? prev : true));
-      }
+    }
+  }, [reduceMotion]);
+
+  // Auto-scroll transcript list to bottom as lines arrive (unless user scrolled up)
+  useEffect(() => {
+    if (callState === 'answered' && !isUserScrolledUpRef.current && transcriptListRef.current) {
+      transcriptListRef.current.scrollTo({
+        top: transcriptListRef.current.scrollHeight,
+        behavior: reduceMotion ? 'auto' : 'smooth',
+      });
     }
   }, [callTime, callState, reduceMotion]);
 
@@ -427,41 +457,52 @@ export function useDemoCall({ containerRef }: UseDemoCallOptions) {
     return () => document.removeEventListener('visibilitychange', handleVisibility);
   }, [handleEndCall]);
 
-  const visibleLines = reduceMotion
-    ? lines
-    : lines.filter((line) => callTime >= line.start + TRANSCRIPT_OFFSET - 0.1);
+  const isLiveOrEnding = callState === 'answered' || callState === 'ended';
+
+  const visibleLines =
+    callState !== 'ringing' && reduceMotion
+      ? lines
+      : lines.filter((line) => callTime >= line.start + TRANSCRIPT_OFFSET - 0.1);
 
   const isAnswered =
-    (callState === 'answered' && callTime >= phases.answered + TRANSCRIPT_OFFSET) || reduceMotion;
+    isLiveOrEnding && (callTime >= phases.answered + TRANSCRIPT_OFFSET || reduceMotion);
   const isQualified =
-    (callState === 'answered' && callTime >= phases.qualified + TRANSCRIPT_OFFSET) || reduceMotion;
+    isLiveOrEnding && (callTime >= phases.qualified + TRANSCRIPT_OFFSET || reduceMotion);
   const isBooked =
-    (callState === 'answered' && callTime >= phases.booked + TRANSCRIPT_OFFSET) || reduceMotion;
+    isLiveOrEnding && (callTime >= phases.booked + TRANSCRIPT_OFFSET || reduceMotion);
 
   const showIssue = Boolean(
-    jobDetails.issue?.value &&
+    isLiveOrEnding &&
+      jobDetails.issue?.value &&
       (reduceMotion || callTime >= jobDetails.issue.time + TRANSCRIPT_OFFSET)
   );
   const showCaller = Boolean(
-    jobDetails.callerName?.value &&
+    isLiveOrEnding &&
+      jobDetails.callerName?.value &&
       (reduceMotion || callTime >= jobDetails.callerName.time + TRANSCRIPT_OFFSET)
   );
   const showAddress = Boolean(
-    jobDetails.address?.value &&
+    isLiveOrEnding &&
+      jobDetails.address?.value &&
       (reduceMotion || callTime >= jobDetails.address.time + TRANSCRIPT_OFFSET)
   );
   const showAppointment = Boolean(
-    jobDetails.appointment?.value &&
+    isLiveOrEnding &&
+      jobDetails.appointment?.value &&
       (reduceMotion || callTime >= jobDetails.appointment.time + TRANSCRIPT_OFFSET)
   );
   const showBooked = Boolean(
-    jobDetails.booked?.value &&
+    isLiveOrEnding &&
+      jobDetails.booked?.value &&
       (reduceMotion || callTime >= jobDetails.booked.time + TRANSCRIPT_OFFSET)
   );
 
   const hasVisibleJobDetails =
-    callState === 'answered' &&
-    (showIssue || showCaller || showAddress || showAppointment || showBooked);
+    isLiveOrEnding && (showIssue || showCaller || showAddress || showAppointment || showBooked);
+
+  const revealedDetailsCount = [showIssue, showCaller, showAddress, showAppointment].filter(
+    Boolean
+  ).length;
 
   let latestVisibleLineIdx = -1;
   for (let i = lines.length - 1; i >= 0; i--) {
@@ -471,12 +512,40 @@ export function useDemoCall({ containerRef }: UseDemoCallOptions) {
     }
   }
 
+  let activeLineIndex = -1;
+  let upcomingLineIndex = -1;
+  let timeUntilNextLine = Infinity;
+
+  if (callState === 'answered') {
+    for (let i = 0; i < lines.length; i++) {
+      const lStart = lines[i].start + TRANSCRIPT_OFFSET;
+      const lEnd = lines[i].end + TRANSCRIPT_OFFSET;
+      if (callTime >= lStart && callTime <= lEnd) {
+        activeLineIndex = i;
+        break;
+      }
+    }
+
+    if (activeLineIndex === -1) {
+      for (let i = 0; i < lines.length; i++) {
+        const lStart = lines[i].start + TRANSCRIPT_OFFSET;
+        if (lStart > callTime) {
+          upcomingLineIndex = i;
+          timeUntilNextLine = lStart - callTime;
+          break;
+        }
+      }
+    }
+  }
+
   return {
     transcriptListRef,
     acceptBtnRef,
     hangUpBtnRef,
     callState,
     callTime,
+    currentTime: callTime,
+    duration: audioDuration,
     finalDuration,
     isDeclined,
     acceptPulse,
@@ -485,8 +554,13 @@ export function useDemoCall({ containerRef }: UseDemoCallOptions) {
     audioStatus,
     reduceMotion,
     isScrolled,
+    isUserScrolledUp,
     isDebugTime,
     visibleLines,
+    activeLineIndex,
+    upcomingLineIndex,
+    timeUntilNextLine,
+    phaseTimes: phases,
     isAnswered,
     isQualified,
     isBooked,
@@ -495,13 +569,19 @@ export function useDemoCall({ containerRef }: UseDemoCallOptions) {
     showAddress,
     showAppointment,
     showBooked,
+    revealedDetailsCount,
     hasVisibleJobDetails,
     latestVisibleLineIdx,
     handleAcceptCall,
+    accept: handleAcceptCall,
     handleDecline,
+    decline: handleDecline,
     handleEndCall,
+    hangUp: () => handleEndCall('hang-up'),
     handleRemindOrMessage,
     handleSeek,
+    seekTo: handleSeek,
     handleListScroll,
+    jumpToLive,
   };
 }

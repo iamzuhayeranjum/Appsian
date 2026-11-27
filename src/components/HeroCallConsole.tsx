@@ -1,5 +1,5 @@
-import React, { useRef } from 'react';
-import { motion, AnimatePresence } from 'motion/react';
+import React, { useRef, useState } from 'react';
+import { motion } from 'motion/react';
 import {
   ChevronDown,
   Phone,
@@ -8,41 +8,226 @@ import {
   MessageSquare,
   Check,
   Mic,
-  Grid,
+  Grid3x3,
   Volume2,
-  Plus,
-  Video,
-  Users,
-  Hash,
   User,
+  Play,
+  AudioLines,
+  ArrowDown,
+  Wrench,
+  MapPin,
+  CalendarClock,
 } from 'lucide-react';
 import { AppsianMark } from './AppsianLogo';
-import { useDemoCall, formatTimer } from '../hooks/useDemoCall';
+import { useDemoCall } from '../hooks/useDemoCall';
 import { lines, jobDetails, phases, TRANSCRIPT_OFFSET } from '../config/demoTranscript';
 
-const SIDEBAR_CHANNELS = [
-  { name: 'incoming-calls', active: true },
-  { name: 'booked-jobs', active: false },
-  { name: 'emergency-dispatch', active: false },
-  { name: 'after-hours', active: false },
-  { name: 'follow-ups', active: false },
-  { name: 'missed-recovered', active: false },
-];
-
-const SKELETON_ROWS = ['68%', '52%', '74%', '46%'];
-
 const WAVE_BARS = [
-  { delay: '0s', height: 20 },
-  { delay: '0.15s', height: 28 },
-  { delay: '0.3s', height: 16 },
-  { delay: '0.1s', height: 32 },
-  { delay: '0.25s', height: 24 },
-  { delay: '0.4s', height: 28 },
-  { delay: '0.2s', height: 18 },
+  { delay: '0s', height: 18 },
+  { delay: '0.14s', height: 26 },
+  { delay: '0.28s', height: 14 },
+  { delay: '0.08s', height: 30 },
+  { delay: '0.22s', height: 22 },
+  { delay: '0.36s', height: 26 },
+  { delay: '0.18s', height: 16 },
 ];
+
+const formatCompactTime = (totalSec: number) => {
+  const safe = Math.max(0, Math.floor(totalSec));
+  const m = Math.floor(safe / 60);
+  const s = safe % 60;
+  return `${m}:${String(s).padStart(2, '0')}`;
+};
+
+interface JobDetailsPanelProps {
+  layout: 'sidebar' | 'compact';
+  callState: 'ringing' | 'answered' | 'ended';
+  revealedDetailsCount: number;
+  showIssue: boolean;
+  showCaller: boolean;
+  showAddress: boolean;
+  showAppointment: boolean;
+  showBooked: boolean;
+}
+
+const JobDetailsPanel: React.FC<JobDetailsPanelProps> = ({
+  layout,
+  callState,
+  revealedDetailsCount,
+  showIssue,
+  showCaller,
+  showAddress,
+  showAppointment,
+  showBooked,
+}) => {
+  const detailRows = [
+    {
+      key: 'issue',
+      label: 'ISSUE',
+      value: jobDetails.issue?.value || '',
+      revealed: showIssue,
+      icon: Wrench,
+    },
+    {
+      key: 'caller',
+      label: 'CALLER',
+      value: jobDetails.callerName?.value || '',
+      revealed: showCaller,
+      icon: User,
+    },
+    {
+      key: 'address',
+      label: 'ADDRESS',
+      value: jobDetails.address?.value || '',
+      revealed: showAddress,
+      icon: MapPin,
+    },
+    {
+      key: 'appointment',
+      label: 'APPOINTMENT',
+      value: jobDetails.appointment?.value || '',
+      revealed: showAppointment,
+      icon: CalendarClock,
+    },
+  ];
+
+  const isSidebar = layout === 'sidebar';
+
+  return (
+    <div
+      className={
+        isSidebar
+          ? 'flex flex-col h-full bg-[#fafbff] px-[18px] py-4 border-l border-[#eceff5] text-left'
+          : 'flex flex-col bg-[#fafbff] border border-[#e3e9f6] rounded-[16px] px-3.5 py-3 text-left'
+      }
+      aria-label="Job details"
+    >
+      {/* Top Header + Pill */}
+      <div className="flex items-center justify-between gap-2">
+        <span className="text-[14px] font-bold text-[#0b1530] tracking-[-0.01em]">
+          Job details
+        </span>
+        <span className="bg-[#e8f0ff] text-[#1d4ed8] text-[11px] font-semibold rounded-[8px] px-2 py-[3px] whitespace-nowrap">
+          Captured automatically
+        </span>
+      </div>
+
+      {/* Counter & Progress Bar */}
+      <div className="mt-2.5">
+        <div className="flex items-center justify-between text-[12px] text-[#64748b] tabular-nums mb-1.5">
+          <span>{revealedDetailsCount} of 4 captured</span>
+          {!isSidebar && (
+            <span
+              className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-[7px] text-[11px] font-semibold ${
+                showBooked
+                  ? 'bg-[#dcfce7] text-[#15803d]'
+                  : 'bg-[#f1f5f9] text-[#64748b]'
+              }`}
+            >
+              {showBooked && <Check className="w-3 h-3 stroke-[2.5]" />}
+              <span>{showBooked ? 'Booked' : 'Waiting'}</span>
+            </span>
+          )}
+        </div>
+        <div className="w-full h-1 rounded-full bg-[#e8ecf7] overflow-hidden">
+          <div
+            className="h-full rounded-full bg-[#2563eb] transition-[width] duration-300 ease-out"
+            style={{ width: `${(revealedDetailsCount / 4) * 100}%` }}
+          />
+        </div>
+      </div>
+
+      {/* 4 Detail Rows */}
+      <div
+        className={
+          isSidebar
+            ? 'mt-3.5 flex flex-col gap-2'
+            : 'mt-3 grid grid-cols-1 sm:grid-cols-2 gap-2'
+        }
+      >
+        {detailRows.map((row) => {
+          const Icon = row.icon;
+          return (
+            <div
+              key={row.key}
+              className="rounded-[12px] px-3 py-[10px] border border-[#eef1f7] bg-white flex items-center gap-[10px] min-w-0"
+            >
+              {row.revealed ? (
+                <div className="job-detail-reveal flex items-center gap-[10px] w-full min-w-0">
+                  <span className="w-8 h-8 rounded-[9px] bg-[#eef4ff] text-[#2563eb] flex items-center justify-center shrink-0">
+                    <Icon className="w-4 h-4 stroke-[2]" />
+                  </span>
+                  <div className="flex-1 min-w-0">
+                    <div className="text-[11px] font-semibold uppercase tracking-[0.06em] text-[#94a3b8] leading-none">
+                      {row.label}
+                    </div>
+                    <div
+                      className="text-[13px] font-semibold text-[#0b1530] leading-[1.3] mt-0.5 break-words line-clamp-2"
+                      title={row.value}
+                    >
+                      {row.value}
+                    </div>
+                  </div>
+                  <span
+                    className="w-[18px] h-[18px] rounded-full bg-[#dcfce7] text-[#15803d] flex items-center justify-center shrink-0"
+                    aria-hidden="true"
+                  >
+                    <Check className="w-2.5 h-2.5 stroke-[3]" />
+                  </span>
+                </div>
+              ) : (
+                <div className="flex items-center gap-[10px] w-full min-w-0" aria-label={`${row.label} pending`}>
+                  <span className="w-8 h-8 rounded-[9px] bg-[#f1f5f9] text-[#94a3b8] flex items-center justify-center shrink-0">
+                    <Icon className="w-4 h-4 stroke-[1.9]" />
+                  </span>
+                  <div className="flex-1 min-w-0 flex flex-col justify-center">
+                    <span className="sr-only">{row.label}</span>
+                    <div className="h-3 w-[70%] rounded-[6px] job-skeleton-bar" />
+                  </div>
+                </div>
+              )}
+            </div>
+          );
+        })}
+      </div>
+
+      {/* Footer Status Row (Sidebar) + Idle Caption */}
+      {isSidebar && (
+        <div className="mt-auto pt-3 border-t border-[#eceff5]">
+          <div className="flex items-center justify-between">
+            <span className="text-[12px] font-semibold text-[#64748b]">Status</span>
+            {showBooked ? (
+              <span className="job-detail-reveal inline-flex items-center gap-1 px-2.5 py-1 rounded-[8px] text-[12px] font-semibold bg-[#dcfce7] text-[#15803d]">
+                <Check className="w-3.5 h-3.5 stroke-[2.5]" />
+                <span>Booked</span>
+              </span>
+            ) : (
+              <span className="inline-flex items-center px-2.5 py-1 rounded-[8px] text-[12px] font-semibold bg-[#f1f5f9] text-[#64748b]">
+                Waiting
+              </span>
+            )}
+          </div>
+          {callState === 'ringing' && (
+            <p className="text-[11.5px] text-[#94a3b8] mt-2 text-center">
+              Details appear as the caller speaks
+            </p>
+          )}
+        </div>
+      )}
+
+      {!isSidebar && callState === 'ringing' && (
+        <p className="text-[11.5px] text-[#94a3b8] mt-2 text-center">
+          Details appear as the caller speaks
+        </p>
+      )}
+    </div>
+  );
+};
 
 export const HeroCallConsole: React.FC = () => {
   const consoleRef = useRef<HTMLDivElement>(null);
+  const timelineRef = useRef<HTMLDivElement>(null);
+  const [isDraggingTimeline, setIsDraggingTimeline] = useState(false);
 
   const {
     transcriptListRef,
@@ -50,6 +235,7 @@ export const HeroCallConsole: React.FC = () => {
     hangUpBtnRef,
     callState,
     callTime,
+    duration,
     finalDuration,
     isDeclined,
     acceptPulse,
@@ -58,8 +244,12 @@ export const HeroCallConsole: React.FC = () => {
     audioStatus,
     reduceMotion,
     isScrolled,
+    isUserScrolledUp,
     isDebugTime,
     visibleLines,
+    activeLineIndex,
+    upcomingLineIndex,
+    timeUntilNextLine,
     isAnswered,
     isQualified,
     isBooked,
@@ -68,7 +258,7 @@ export const HeroCallConsole: React.FC = () => {
     showAddress,
     showAppointment,
     showBooked,
-    hasVisibleJobDetails,
+    revealedDetailsCount,
     latestVisibleLineIdx,
     handleAcceptCall,
     handleDecline,
@@ -76,28 +266,98 @@ export const HeroCallConsole: React.FC = () => {
     handleRemindOrMessage,
     handleSeek,
     handleListScroll,
+    jumpToLive,
   } = useDemoCall({ containerRef: consoleRef });
+
+  const safeDuration = Math.max(1, duration || 53.9);
+  const progressPct =
+    callState === 'answered'
+      ? Math.min(100, Math.max(0, (callTime / safeDuration) * 100))
+      : 0;
 
   const phaseTiles = [
     {
-      time: formatTimer(Math.floor(phases.answered)),
+      time: formatCompactTime(phases.answered),
       timeSec: phases.answered + TRANSCRIPT_OFFSET,
       label: 'Answered',
       active: isAnswered,
+      markerPct: Math.min(98.2, Math.max(2, ((phases.answered + TRANSCRIPT_OFFSET) / safeDuration) * 100)),
+      alignRight: false,
     },
     {
-      time: formatTimer(Math.floor(phases.qualified)),
+      time: formatCompactTime(phases.qualified),
       timeSec: phases.qualified + TRANSCRIPT_OFFSET,
       label: 'Qualified',
       active: isQualified,
+      markerPct: Math.min(98.2, Math.max(2, ((phases.qualified + TRANSCRIPT_OFFSET) / safeDuration) * 100)),
+      alignRight: false,
     },
     {
-      time: formatTimer(Math.floor(phases.booked)),
+      time: formatCompactTime(phases.booked),
       timeSec: phases.booked + TRANSCRIPT_OFFSET,
       label: 'Booked',
       active: isBooked,
+      markerPct: Math.min(98.2, Math.max(2, ((phases.booked + TRANSCRIPT_OFFSET) / safeDuration) * 100)),
+      alignRight: true,
     },
   ];
+
+  const seekFromClientX = (clientX: number) => {
+    const track = timelineRef.current;
+    if (!track || callState !== 'answered') return;
+    const rect = track.getBoundingClientRect();
+    if (rect.width <= 0) return;
+    const ratio = Math.min(1, Math.max(0, (clientX - rect.left) / rect.width));
+    handleSeek(ratio * safeDuration);
+  };
+
+  const handleTimelinePointerDown = (e: React.PointerEvent<HTMLDivElement>) => {
+    if (callState !== 'answered') return;
+    e.currentTarget.setPointerCapture(e.pointerId);
+    setIsDraggingTimeline(true);
+    seekFromClientX(e.clientX);
+  };
+
+  const handleTimelinePointerMove = (e: React.PointerEvent<HTMLDivElement>) => {
+    if (!isDraggingTimeline || callState !== 'answered') return;
+    seekFromClientX(e.clientX);
+  };
+
+  const handleTimelinePointerUp = (e: React.PointerEvent<HTMLDivElement>) => {
+    if (!isDraggingTimeline) return;
+    setIsDraggingTimeline(false);
+    if (e.currentTarget.hasPointerCapture(e.pointerId)) {
+      e.currentTarget.releasePointerCapture(e.pointerId);
+    }
+  };
+
+  const handleTimelineKeyDown = (e: React.KeyboardEvent<HTMLDivElement>) => {
+    if (callState !== 'answered') return;
+    if (e.key === 'ArrowRight') {
+      e.preventDefault();
+      handleSeek(callTime + 5);
+    } else if (e.key === 'ArrowLeft') {
+      e.preventDefault();
+      handleSeek(callTime - 5);
+    } else if (e.key === 'Home') {
+      e.preventDefault();
+      handleSeek(0);
+    } else if (e.key === 'End') {
+      e.preventDefault();
+      handleSeek(safeDuration);
+    }
+  };
+
+  const showTypingCue =
+    callState === 'answered' &&
+    activeLineIndex === -1 &&
+    upcomingLineIndex >= 0 &&
+    timeUntilNextLine > 0 &&
+    timeUntilNextLine <= 0.8 &&
+    !reduceMotion;
+
+  const typingSpeakerIsAi =
+    upcomingLineIndex >= 0 ? lines[upcomingLineIndex].speaker === 'ai' : true;
 
   return (
     <div ref={consoleRef} className="w-full relative z-20">
@@ -113,251 +373,346 @@ export const HeroCallConsole: React.FC = () => {
             '0 36px 90px -28px rgba(4, 30, 100, 0.42), 0 8px 24px -12px rgba(4, 30, 100, 0.18), inset 0 1px 0 rgba(255, 255, 255, 0.9)',
         }}
       >
-        {/* Crisp White Console Window */}
-        <div className="w-full rounded-[18px] bg-white border border-[rgba(11,21,48,0.08)] overflow-hidden grid grid-cols-1 lg:grid-cols-[248px_1fr] min-h-[460px]">
-          {/* LEFT SIDEBAR (Desktop 1024px+ only) */}
-          <aside
-            className="hidden lg:flex flex-col bg-[#f8fafc] border-r border-[rgba(11,21,48,0.07)] p-4 text-left"
-            aria-label="Console Queues"
-          >
-            {/* Workspace title */}
-            <div className="flex items-center justify-between px-2 py-1">
-              <div className="flex items-center gap-2 min-w-0">
-                <span className="w-5 h-5 rounded-[6px] bg-[#0b1530] flex items-center justify-center shrink-0">
-                  <AppsianMark size={11} fill="#ffffff" />
-                </span>
-                <span className="text-[13.5px] font-bold text-[#0b1530] tracking-[-0.015em] truncate">
-                  Appsian Console
-                </span>
-              </div>
-              <ChevronDown className="w-3.5 h-3.5 text-[#64748b] shrink-0" />
-            </div>
-
-            {/* Section 1: Call queues */}
-            <div className="mt-5">
-              <div className="px-2 mb-1.5 text-[10.5px] font-semibold uppercase tracking-[0.06em] text-[#64748b]">
-                Call queues
-              </div>
-              <ul className="flex flex-col gap-0.5">
-                {SIDEBAR_CHANNELS.map((channel) => (
-                  <li key={channel.name}>
-                    <div
-                      className={`flex items-center gap-2 px-2.5 py-[6px] rounded-[8px] text-[13px] leading-tight ${
-                        channel.active
-                          ? 'text-[#1d4ed8] font-semibold'
-                          : 'text-[#475569] font-medium'
-                      }`}
-                      style={
-                        channel.active
-                          ? {
-                              background:
-                                'linear-gradient(90deg, rgba(37,99,235,0.12), rgba(59,130,246,0.06))',
-                            }
-                          : undefined
-                      }
-                    >
-                      <Hash
-                        className={`w-3.5 h-3.5 shrink-0 ${
-                          channel.active ? 'text-[#2563eb]' : 'text-[#94a3b8]'
-                        }`}
-                      />
-                      <span className="truncate">{channel.name}</span>
-                    </div>
-                  </li>
-                ))}
-              </ul>
-            </div>
-
-            {/* Section 2: Connected tools (decorative skeleton placeholders) */}
-            <div className="mt-[14px] pt-3 border-t border-[rgba(11,21,48,0.06)]" aria-hidden="true">
-              <div className="px-2 mb-2 text-[10.5px] font-semibold uppercase tracking-[0.06em] text-[#94a3b8]">
-                Connected tools
-              </div>
-              <div className="flex flex-col gap-2.5 px-2">
-                {SKELETON_ROWS.map((width, idx) => (
-                  <div key={idx} className="flex items-center gap-2.5">
-                    <span
-                      className="w-4 h-4 rounded-[5px] shrink-0"
-                      style={{ background: 'rgba(11, 21, 48, 0.06)' }}
-                    />
-                    <span
-                      className="h-[11px] rounded-[6px]"
-                      style={{ width, background: 'rgba(11, 21, 48, 0.06)' }}
-                    />
-                  </div>
-                ))}
-              </div>
-            </div>
-          </aside>
-
-          {/* RIGHT MAIN AREA */}
-          <div className="flex flex-col min-w-0 bg-white">
-            {/* Window Top Header Bar */}
-            <div className="min-h-[56px] md:h-[64px] px-4 md:px-5 py-2.5 md:py-0 border-b border-[rgba(11,21,48,0.07)] flex flex-col md:flex-row md:items-center md:justify-between gap-2.5 shrink-0">
-              {/* Channel Title */}
-              <div className="flex items-center justify-between md:justify-start gap-2">
-                <div className="flex items-center gap-1.5">
-                  <Hash className="w-4 h-4 text-[#64748b] stroke-[2.2]" />
-                  <span className="text-[15.5px] font-bold text-[#0b1530] tracking-[-0.015em]">
-                    incoming-calls
-                  </span>
-                  <ChevronDown className="w-3.5 h-3.5 text-[#64748b]" />
-                </div>
-
-                {/* Status pill on mobile / desktop */}
-                <span
-                  className={`inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full text-[11px] font-medium ${
-                    callState === 'answered'
-                      ? 'bg-[#eff6ff] text-[#1d4ed8]'
-                      : 'bg-[#f1f5f9] text-[#64748b]'
-                  }`}
-                >
-                  <span
-                    className={`w-1.5 h-1.5 rounded-full ${
-                      callState === 'answered' ? 'bg-[#2563eb] animate-pulse' : 'bg-[#94a3b8]'
-                    }`}
-                  />
-                  <span>
-                    {callState === 'answered'
-                      ? 'Live call'
-                      : callState === 'ended'
-                      ? 'Ended'
-                      : 'Ready'}
-                  </span>
-                </span>
-              </div>
-
-              {/* 3-Phase Segmented Control */}
+        {/* Main White Call Window (Sidebar-free) */}
+        <div
+          className="w-full rounded-[20px] md:rounded-[22px] border border-[rgba(11,21,48,0.08)] overflow-hidden flex flex-col"
+          style={{
+            backgroundColor: '#ffffff',
+            backgroundImage:
+              'radial-gradient(60% 40% at 0% 0%, rgba(59,130,246,0.05), rgba(59,130,246,0) 70%)',
+          }}
+        >
+          {/* 1. HEADER */}
+          <div className="min-h-[68px] md:h-[68px] px-4 py-3 md:py-0 md:px-[22px] border-b border-[#eceff5] flex flex-col md:flex-row md:items-center md:justify-between gap-2.5 shrink-0">
+            {/* Left: Blue gradient logo tile + 2-line title */}
+            <div className="flex items-center gap-3 min-w-0">
               <div
-                className="p-[3px] rounded-[12px] grid grid-cols-3 md:inline-flex items-center gap-0.5 border border-[rgba(11,21,48,0.07)]"
-                style={{ background: 'rgba(11, 21, 48, 0.04)' }}
-                role="group"
-                aria-label="Call progression phases"
+                className="w-9 h-9 rounded-[11px] flex items-center justify-center shrink-0"
+                style={{
+                  background: 'linear-gradient(145deg, #7aa9ff, #1d4ed8)',
+                  border: '1px solid rgba(255, 255, 255, 0.45)',
+                  boxShadow:
+                    'inset 0 1px 0 rgba(255, 255, 255, 0.5), 0 6px 14px -6px rgba(29, 78, 216, 0.4)',
+                }}
               >
-                {phaseTiles.map((tile) => (
+                <AppsianMark size={19} fill="#ffffff" />
+              </div>
+
+              <div className="min-w-0 text-left">
+                <div className="flex items-center gap-2 flex-wrap">
+                  <span className="text-[16px] font-bold text-[#0b1530] tracking-[-0.01em] leading-tight">
+                    Incoming call
+                  </span>
+                  <span
+                    className={`h-[22px] px-[9px] rounded-[8px] text-[11.5px] font-semibold inline-flex items-center gap-1.5 leading-none ${
+                      callState === 'answered'
+                        ? 'bg-[#dcfce7] text-[#15803d]'
+                        : callState === 'ended'
+                        ? 'bg-[#f1f5f9] text-[#64748b]'
+                        : 'bg-[#fef3c7] text-[#b45309]'
+                    }`}
+                  >
+                    <span
+                      className={`w-1.5 h-1.5 rounded-full shrink-0 ${
+                        callState === 'answered'
+                          ? `bg-[#22c55e] ${!reduceMotion ? 'animate-pulse' : ''}`
+                          : callState === 'ended'
+                          ? 'bg-[#94a3b8]'
+                          : `bg-[#f59e0b] ${!reduceMotion ? 'animate-pulse' : ''}`
+                      }`}
+                    />
+                    <span>
+                      {callState === 'answered'
+                        ? 'Live'
+                        : callState === 'ended'
+                        ? 'Ended'
+                        : 'Ringing'}
+                    </span>
+                  </span>
+                </div>
+                <p className="text-[12.5px] text-[#64748b] leading-tight mt-0.5 truncate">
+                  New York Plumbing · Sample inbound call
+                </p>
+              </div>
+            </div>
+
+            {/* Right: 3-Segment Phase Control */}
+            <div
+              className="bg-[#f3f5fa] rounded-[12px] p-1 grid grid-cols-3 md:inline-flex items-center gap-1 shrink-0"
+              role="group"
+              aria-label="Call progression phases"
+            >
+              {phaseTiles.map((tile) => {
+                const isInteractive = callState === 'answered';
+                return (
                   <button
                     key={tile.label}
                     type="button"
                     onClick={() => handleSeek(tile.timeSec)}
-                    disabled={callState !== 'answered'}
+                    disabled={!isInteractive}
                     title={
-                      callState === 'answered'
+                      isInteractive
                         ? `Jump to ${tile.label} (${tile.time})`
                         : `${tile.label} at ${tile.time}`
                     }
-                    className={`px-2 md:px-3 py-[5px] rounded-[9px] text-[11.5px] md:text-[12px] leading-none flex items-center justify-center gap-1.5 transition-all whitespace-nowrap ${
-                      tile.active
-                        ? 'bg-white text-[#0b1530] font-semibold shadow-[0_1px_4px_rgba(11,21,48,0.08)]'
-                        : 'bg-transparent text-[#64748b] font-medium'
-                    } ${
-                      callState === 'answered'
-                        ? 'cursor-pointer hover:text-[#0b1530]'
-                        : 'cursor-default'
+                    className={`h-[34px] px-2 md:px-[14px] rounded-[9px] text-[12px] md:text-[13px] font-semibold leading-none inline-flex items-center justify-center gap-1.5 transition-all whitespace-nowrap focus-visible:outline-2 focus-visible:outline-[#2563eb] focus-visible:outline-offset-[2px] ${
+                      callState === 'ringing'
+                        ? 'text-[#64748b] opacity-60 cursor-default'
+                        : tile.active
+                        ? 'bg-white text-[#0b1530] shadow-[0_2px_8px_rgba(30,60,160,0.12)] cursor-pointer'
+                        : isInteractive
+                        ? 'text-[#64748b] hover:text-[#0b1530] cursor-pointer'
+                        : 'text-[#64748b] cursor-default'
                     }`}
                   >
                     {tile.active && (
                       <span
-                        className={`w-3.5 h-3.5 rounded-full flex items-center justify-center shrink-0 ${
-                          tile.label === 'Booked'
-                            ? 'bg-[#10b981] text-white'
-                            : 'bg-[#2563eb] text-white'
-                        }`}
+                        className="w-3.5 h-3.5 rounded-full bg-[#2563eb] text-white flex items-center justify-center shrink-0"
+                        aria-hidden="true"
                       >
                         <Check className="w-2.5 h-2.5 stroke-[3]" />
                       </span>
                     )}
-                    <span className="tabular-nums opacity-75">{tile.time}</span>
+                    <span className="tabular-nums text-[#94a3b8] font-medium">{tile.time}</span>
                     <span>{tile.label}</span>
                   </button>
-                ))}
-              </div>
+                );
+              })}
             </div>
+          </div>
 
-            {/* Body Split: Left Call Controls Pane + Right Transcript Pane */}
-            <div className="grid grid-cols-1 md:grid-cols-[300px_1fr] lg:grid-cols-[320px_1fr] flex-1 min-h-0">
-              {/* LEFT PANE: Call Controls */}
-              <div className="bg-[#fafbff] border-b md:border-b-0 md:border-r border-[rgba(11,21,48,0.07)] px-4 py-4 md:p-6 flex flex-col justify-between items-center text-center">
-                {/* Caller Info Header (compact horizontal row on mobile, centered stack on desktop) */}
-                <div className="w-full flex md:flex-col items-center justify-between md:justify-center gap-3 md:gap-0">
-                  <div className="flex md:flex-col items-center gap-3 md:gap-0 min-w-0">
-                    <div
-                      className="w-11 h-11 md:w-14 md:h-14 rounded-full flex items-center justify-center shrink-0 md:mb-3"
-                      style={{
-                        background: 'linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%)',
-                        border: '1px solid #bfdbfe',
-                        boxShadow: '0 6px 16px -6px rgba(37, 99, 235, 0.22)',
-                      }}
-                    >
-                      <AppsianMark size={20} fill="#2563eb" />
-                    </div>
-                    <div className="text-left md:text-center min-w-0">
-                      <h3 className="text-[15px] md:text-[17px] font-bold text-[#0b1530] leading-tight tracking-[-0.015em] truncate">
-                        AI Sales Receptionist
-                      </h3>
-                      <p
-                        className="text-[12.5px] md:text-[13px] font-medium text-[#64748b] tabular-nums mt-0.5 flex items-center md:justify-center gap-1.5"
-                        aria-hidden="true"
-                      >
-                        {callState === 'answered' ? (
-                          <>
-                            <span className="w-2 h-2 rounded-full bg-[#10b981] inline-block" />
-                            <span className="text-[#0b1530] font-semibold">
-                              {formatTimer(callTime)}
-                            </span>
-                          </>
-                        ) : callState === 'ended' ? (
-                          <span>Call ended {formatTimer(finalDuration || callTime || 54)}</span>
-                        ) : isDeclined ? (
-                          <span className="text-[#EF4444] font-semibold">Call declined</span>
-                        ) : (
-                          <span>Incoming demo call</span>
-                        )}
-                      </p>
-                    </div>
-                  </div>
+          {/* 2. FULL-WIDTH PROGRESS TIMELINE */}
+          <div
+            ref={timelineRef}
+            role="slider"
+            tabIndex={callState === 'answered' ? 0 : -1}
+            aria-label="Call progress"
+            aria-valuemin={0}
+            aria-valuemax={Math.round(safeDuration)}
+            aria-valuenow={Math.round(callTime)}
+            aria-valuetext={`${formatCompactTime(callTime)} of ${formatCompactTime(safeDuration)}`}
+            aria-disabled={callState !== 'answered'}
+            onPointerDown={handleTimelinePointerDown}
+            onPointerMove={handleTimelinePointerMove}
+            onPointerUp={handleTimelinePointerUp}
+            onPointerCancel={handleTimelinePointerUp}
+            onKeyDown={handleTimelineKeyDown}
+            className={`relative w-full h-[6px] bg-[#eef1f7] transition-[height] duration-150 shrink-0 touch-none select-none focus-visible:outline-2 focus-visible:outline-[#2563eb] focus-visible:outline-offset-[-2px] ${
+              callState === 'answered'
+                ? `cursor-pointer hover:h-[10px] focus-visible:h-[10px] ${
+                    isDraggingTimeline ? 'h-[10px]' : ''
+                  }`
+                : 'cursor-default'
+            }`}
+          >
+            {/* Active Progress Fill (zero CSS transition on width so it stays frame-exact) */}
+            <div
+              className="h-full pointer-events-none"
+              style={{
+                width: `${progressPct}%`,
+                background: 'linear-gradient(90deg, #3b82f6, #6aa8ff)',
+              }}
+            />
 
-                  {/* Mobile quick action buttons inline on right when screen < 768px */}
-                  <div className="flex md:hidden items-center gap-2.5 shrink-0">
-                    {callState === 'answered' ? (
-                      <button
-                        type="button"
-                        onClick={() => handleEndCall('hang-up')}
-                        className="w-[44px] h-[44px] rounded-full bg-[#FF4B4B] flex items-center justify-center text-white shadow-sm cursor-pointer active:scale-95 transition-transform"
-                        style={{ touchAction: 'manipulation' }}
-                        aria-label="Hang up call"
-                      >
-                        <PhoneOff className="w-5 h-5 stroke-[2.2]" />
-                      </button>
-                    ) : (
+            {/* Three Phase Markers */}
+            {phaseTiles.map((tile) => (
+              <div
+                key={tile.label}
+                style={{ left: `${tile.markerPct}%` }}
+                className="group/marker absolute top-1/2 -translate-y-1/2 -translate-x-1/2 z-10 pointer-events-auto"
+              >
+                <span
+                  className={`w-[10px] h-[10px] rounded-full flex items-center justify-center transition-colors ${
+                    tile.active
+                      ? 'bg-[#2563eb] border-2 border-[#2563eb] text-white'
+                      : 'bg-white border-2 border-[#3b82f6]'
+                  }`}
+                >
+                  {tile.active && <Check className="w-[7px] h-[7px] stroke-[3.5]" />}
+                </span>
+
+                <span
+                  className={`pointer-events-none absolute bottom-full mb-2 px-2 py-0.5 rounded-[7px] bg-white border border-[#e2e8f0] text-[#0b1530] text-[11px] font-semibold whitespace-nowrap shadow-[0_6px_16px_rgba(11,21,48,0.12)] opacity-0 group-hover/marker:opacity-100 transition-opacity duration-150 ${
+                    tile.alignRight ? 'right-0 translate-x-1' : 'left-1/2 -translate-x-1/2'
+                  }`}
+                >
+                  {tile.label} {tile.time}
+                </span>
+              </div>
+            ))}
+          </div>
+
+          {/* 3. BODY COLUMNS */}
+          <div className="grid grid-cols-1 lg:grid-cols-[296px_minmax(0,1fr)] xl:grid-cols-[296px_minmax(0,1fr)_276px] lg:h-[590px] xl:h-[464px] min-h-0">
+            {/* COLUMN 1: CALL PANE */}
+            <div
+              className="border-b lg:border-b-0 lg:border-r border-[#eceff5] px-4 py-4 md:px-[22px] md:py-6 flex flex-col items-center text-center min-h-0"
+              style={{
+                background: 'linear-gradient(180deg, #f8faff 0%, #eef3ff 100%)',
+              }}
+            >
+              {/* MOBILE COMPACT ROW (< 768px) */}
+              <div className="w-full flex md:hidden items-center justify-between gap-2.5">
+                <div className="flex items-center gap-2.5 min-w-0">
+                  <div className="relative w-12 h-12 sm:w-14 sm:h-14 flex items-center justify-center shrink-0">
+                    {callState === 'ringing' && !reduceMotion && (
                       <>
-                        <button
-                          type="button"
-                          onClick={handleDecline}
-                          className="w-[42px] h-[42px] rounded-full flex items-center justify-center text-white shadow-sm cursor-pointer active:scale-95 transition-transform"
-                          style={{
-                            background: 'linear-gradient(135deg, #ff5a52 0%, #ff3b30 100%)',
-                            touchAction: 'manipulation',
-                          }}
-                          aria-label="Decline call"
-                        >
-                          <PhoneOff className="w-4 h-4 stroke-[2.2]" />
-                        </button>
-                        <button
-                          type="button"
-                          onClick={handleAcceptCall}
-                          className="w-[44px] h-[44px] rounded-full flex items-center justify-center text-white shadow-sm cursor-pointer active:scale-95 transition-transform relative"
-                          style={{
-                            background: 'linear-gradient(135deg, #46d36e 0%, #28b84f 100%)',
-                            touchAction: 'manipulation',
-                          }}
-                          aria-label="Accept call"
-                        >
-                          <Phone className="w-4 h-4 stroke-[2.2]" />
-                        </button>
+                        <span className="avatar-ripple-1 absolute inset-0 rounded-full border border-[#3b82f6]/50 pointer-events-none" />
+                        <span className="avatar-ripple-2 absolute inset-0 rounded-full border border-[#3b82f6]/50 pointer-events-none" />
                       </>
                     )}
+                    <div
+                      className="w-12 h-12 sm:w-14 sm:h-14 rounded-full flex items-center justify-center relative z-10"
+                      style={{
+                        background: 'linear-gradient(145deg, #7aa9ff, #1d4ed8)',
+                        border: '1px solid rgba(255, 255, 255, 0.5)',
+                        boxShadow:
+                          '0 14px 28px -12px rgba(29, 78, 216, 0.55), inset 0 2px 0 rgba(255, 255, 255, 0.45)',
+                      }}
+                    >
+                      <AppsianMark size={22} fill="#ffffff" />
+                    </div>
+                  </div>
+
+                  <div className="text-left min-w-0 pr-1">
+                    <h3 className="text-[13.5px] sm:text-[16px] font-bold text-[#0b1530] leading-tight tracking-[-0.015em] truncate">
+                      AI Sales Receptionist
+                    </h3>
+                    <div className="mt-0.5 text-[12px] sm:text-[12.5px] font-medium text-[#64748b] tabular-nums flex items-center gap-1.5 whitespace-nowrap">
+                      {callState === 'answered' ? (
+                        <>
+                          <span className="w-1.5 h-1.5 rounded-full bg-[#22c55e] inline-block" />
+                          <span className="text-[#0b1530] font-semibold">
+                            {formatCompactTime(callTime)}
+                          </span>
+                          <span className="text-[#15803d]">Connected</span>
+                        </>
+                      ) : callState === 'ended' ? (
+                        <span>Call ended {formatCompactTime(finalDuration || callTime || 54)}</span>
+                      ) : isDeclined ? (
+                        <span className="text-[#EF4444] font-semibold">Call declined</span>
+                      ) : (
+                        <span>Incoming demo call</span>
+                      )}
+                    </div>
                   </div>
                 </div>
+
+                {/* Mobile quick actions >= 44px touch targets */}
+                <div className="flex items-center gap-2.5 shrink-0">
+                  {callState === 'answered' ? (
+                    <button
+                      type="button"
+                      onClick={() => handleEndCall('hang-up')}
+                      className="w-[46px] h-[46px] rounded-full bg-[#FF4B4B] flex items-center justify-center text-white shadow-sm cursor-pointer active:scale-95 transition-transform focus-visible:outline-2 focus-visible:outline-[#2563eb] focus-visible:outline-offset-[3px]"
+                      style={{ touchAction: 'manipulation' }}
+                      aria-label="End call"
+                    >
+                      <PhoneOff className="w-5 h-5 stroke-[2.2]" />
+                    </button>
+                  ) : (
+                    <>
+                      <button
+                        type="button"
+                        onClick={handleDecline}
+                        className={`w-[44px] h-[44px] rounded-full flex items-center justify-center text-white shadow-sm cursor-pointer active:scale-95 transition-all focus-visible:outline-2 focus-visible:outline-[#2563eb] focus-visible:outline-offset-[3px] ${
+                          callState === 'ended' ? 'opacity-0 pointer-events-none' : 'opacity-100'
+                        }`}
+                        style={{
+                          background: 'linear-gradient(135deg, #ff5a52 0%, #ff3b30 100%)',
+                          touchAction: 'manipulation',
+                        }}
+                        aria-label="Decline call"
+                      >
+                        <PhoneOff className="w-4 h-4 stroke-[2.2]" />
+                      </button>
+                      <button
+                        type="button"
+                        onClick={handleAcceptCall}
+                        className={`w-[46px] h-[46px] rounded-full flex items-center justify-center text-white shadow-sm cursor-pointer active:scale-95 transition-all focus-visible:outline-2 focus-visible:outline-[#2563eb] focus-visible:outline-offset-[3px] ${
+                          callState === 'ended' ? 'opacity-0 pointer-events-none' : 'opacity-100'
+                        }`}
+                        style={{
+                          background: 'linear-gradient(135deg, #46d36e 0%, #28b84f 100%)',
+                          touchAction: 'manipulation',
+                        }}
+                        aria-label="Accept call"
+                      >
+                        <Phone className="w-4 h-4 stroke-[2.2]" />
+                      </button>
+                    </>
+                  )}
+                </div>
+              </div>
+
+              {/* DESKTOP/TABLET CALL LAYOUT (md: 768px+) */}
+              <div className="hidden md:flex flex-col items-center w-full h-full">
+                {/* 92px Avatar + Concentric Rings while Ringing */}
+                <div className="relative w-[92px] h-[92px] flex items-center justify-center shrink-0">
+                  {callState === 'ringing' && !reduceMotion && (
+                    <>
+                      <span className="avatar-ripple-1 absolute inset-0 rounded-full border border-[#3b82f6]/55 pointer-events-none" />
+                      <span className="avatar-ripple-2 absolute inset-0 rounded-full border border-[#3b82f6]/55 pointer-events-none" />
+                      <span className="avatar-ripple-3 absolute inset-0 rounded-full border border-[#3b82f6]/55 pointer-events-none" />
+                    </>
+                  )}
+                  <div
+                    className="w-[92px] h-[92px] rounded-full flex items-center justify-center relative z-10"
+                    style={{
+                      background: 'linear-gradient(145deg, #7aa9ff, #1d4ed8)',
+                      border: '1px solid rgba(255, 255, 255, 0.5)',
+                      boxShadow:
+                        '0 22px 40px -18px rgba(29, 78, 216, 0.6), inset 0 2px 0 rgba(255, 255, 255, 0.45)',
+                    }}
+                  >
+                    <AppsianMark size={40} fill="#ffffff" />
+                  </div>
+                </div>
+
+                {/* Caller Title */}
+                <h3 className="mt-[14px] text-[18px] font-bold text-[#0b1530] leading-tight tracking-[-0.015em]">
+                  AI Sales Receptionist
+                </h3>
+
+                {/* Sub-status / Live Timer + Waveform */}
+                {callState === 'answered' ? (
+                  <div className="flex flex-col items-center mt-2">
+                    {/* 7-bar Indigo Waveform */}
+                    <div className="h-[30px] flex items-center justify-center gap-1" aria-hidden="true">
+                      {WAVE_BARS.map((bar, idx) => (
+                        <span
+                          key={idx}
+                          className="hero-wave-bar w-[3px] rounded-full bg-[#4f6bf0]"
+                          style={{
+                            height: `${bar.height}px`,
+                            animationDelay: bar.delay,
+                          }}
+                        />
+                      ))}
+                    </div>
+
+                    <div className="mt-1.5 text-[28px] font-semibold text-[#0b1530] tabular-nums leading-none">
+                      {formatCompactTime(callTime)}
+                    </div>
+
+                    <div className="mt-1.5 flex items-center gap-1.5 text-[12px] font-medium text-[#15803d]">
+                      <span className="w-1.5 h-1.5 rounded-full bg-[#22c55e] inline-block" />
+                      <span>Connected</span>
+                    </div>
+                  </div>
+                ) : callState === 'ended' ? (
+                  <p className="mt-1 text-[13px] font-medium text-[#64748b] tabular-nums">
+                    Call ended · {formatCompactTime(finalDuration || callTime || 54)}
+                  </p>
+                ) : isDeclined ? (
+                  <p className="mt-1 text-[13px] font-semibold text-[#EF4444]">
+                    Call declined
+                  </p>
+                ) : (
+                  <p className="mt-1 text-[13px] font-medium text-[#64748b]">
+                    Incoming demo call
+                  </p>
+                )}
 
                 {/* Audio permission / failure notice */}
                 {(notAllowedHint || (audioPlayFailed && callState === 'answered')) && (
@@ -377,139 +732,129 @@ export const HeroCallConsole: React.FC = () => {
                   </div>
                 )}
 
-                {/* DESKTOP MIDDLE CONTENT (hidden on compact mobile top bar) */}
-                {callState === 'answered' ? (
-                  <div className="hidden md:flex flex-col items-center gap-5 my-4 w-full">
-                    {/* Subtle animated waveform bars */}
-                    <div className="h-[34px] flex items-center justify-center gap-1.5" aria-hidden="true">
-                      {WAVE_BARS.map((bar, idx) => (
-                        <span
-                          key={idx}
-                          className="hero-wave-bar w-[4px] rounded-full bg-[#2563eb]"
-                          style={{
-                            height: `${bar.height}px`,
-                            animationDelay: bar.delay,
-                          }}
-                        />
-                      ))}
+                {/* RINGING Hint Chip & Ghost Buttons */}
+                {callState === 'ringing' && (
+                  <>
+                    <div className="console-compact-hide mt-3 inline-flex items-center gap-1 bg-[#e8f0ff] text-[#1d4ed8] text-[12px] font-semibold rounded-[10px] px-[11px] py-[5px]">
+                      <span>Tap Accept to hear a real call</span>
+                      <ChevronDown
+                        className={`w-3.5 h-3.5 shrink-0 ${
+                          !reduceMotion ? 'hint-chevron-nudge' : ''
+                        }`}
+                      />
                     </div>
 
-                    {/* Decorative 3x2 quick-action grid */}
-                    <div className="grid grid-cols-3 gap-x-4 gap-y-3 w-full max-w-[228px] opacity-70 pointer-events-none select-none">
-                      {[
-                        { label: 'mute', icon: Mic },
-                        { label: 'keypad', icon: Grid },
-                        { label: 'audio', icon: Volume2 },
-                        { label: 'add call', icon: Plus },
-                        { label: 'video', icon: Video },
-                        { label: 'contacts', icon: Users },
-                      ].map((btn) => {
-                        const Icon = btn.icon;
-                        return (
-                          <div key={btn.label} className="flex flex-col items-center gap-1">
-                            <div className="w-[42px] h-[42px] rounded-full bg-white border border-[rgba(11,21,48,0.08)] flex items-center justify-center text-[#334155] shadow-2xs">
-                              <Icon className="w-4 h-4 stroke-[1.8]" />
-                            </div>
-                            <span className="text-[10px] text-[#64748b] font-medium leading-none">
-                              {btn.label}
-                            </span>
-                          </div>
-                        );
-                      })}
-                    </div>
-                  </div>
-                ) : (
-                  <div className="hidden md:flex items-center justify-center gap-8 my-6">
-                    <button
-                      type="button"
-                      onClick={handleRemindOrMessage}
-                      className="flex flex-col items-center gap-1.5 cursor-pointer group select-none active:scale-95 transition-transform focus-visible:outline-2 focus-visible:outline-[#2563eb] focus-visible:outline-offset-2 rounded-lg p-1"
-                      style={{ touchAction: 'manipulation' }}
-                      aria-label="Remind Me"
-                    >
-                      <div className="w-[42px] h-[42px] rounded-full bg-white border border-[rgba(11,21,48,0.10)] flex items-center justify-center text-[#1e293b] shadow-2xs group-hover:border-[rgba(37,99,235,0.35)] transition-colors">
-                        <Clock className="w-4 h-4 stroke-[1.8]" />
-                      </div>
-                      <span className="text-[11px] text-[#475569] font-medium leading-none">
-                        Remind Me
-                      </span>
-                    </button>
+                    <div className="console-compact-hide mt-[18px] flex items-center justify-center gap-7">
+                      <button
+                        type="button"
+                        onClick={handleRemindOrMessage}
+                        className="flex flex-col items-center gap-1.5 cursor-pointer group select-none active:scale-[0.96] transition-transform focus-visible:outline-2 focus-visible:outline-[#2563eb] focus-visible:outline-offset-[3px] rounded-[12px]"
+                        style={{ touchAction: 'manipulation' }}
+                        aria-label="Remind Me"
+                      >
+                        <div className="w-11 h-11 rounded-[12px] bg-white border border-[#e2e8f0] flex items-center justify-center text-[#334155] group-hover:border-[#cbd5e1] transition-colors">
+                          <Clock className="w-[18px] h-[18px] stroke-[1.9]" />
+                        </div>
+                        <span className="text-[12px] text-[#475569] font-medium leading-none">
+                          Remind Me
+                        </span>
+                      </button>
 
-                    <button
-                      type="button"
-                      onClick={handleRemindOrMessage}
-                      className="flex flex-col items-center gap-1.5 cursor-pointer group select-none active:scale-95 transition-transform focus-visible:outline-2 focus-visible:outline-[#2563eb] focus-visible:outline-offset-2 rounded-lg p-1"
-                      style={{ touchAction: 'manipulation' }}
-                      aria-label="Message"
-                    >
-                      <div className="w-[42px] h-[42px] rounded-full bg-white border border-[rgba(11,21,48,0.10)] flex items-center justify-center text-[#1e293b] shadow-2xs group-hover:border-[rgba(37,99,235,0.35)] transition-colors">
-                        <MessageSquare className="w-4 h-4 stroke-[1.8]" />
+                      <button
+                        type="button"
+                        onClick={handleRemindOrMessage}
+                        className="flex flex-col items-center gap-1.5 cursor-pointer group select-none active:scale-[0.96] transition-transform focus-visible:outline-2 focus-visible:outline-[#2563eb] focus-visible:outline-offset-[3px] rounded-[12px]"
+                        style={{ touchAction: 'manipulation' }}
+                        aria-label="Message"
+                      >
+                        <div className="w-11 h-11 rounded-[12px] bg-white border border-[#e2e8f0] flex items-center justify-center text-[#334155] group-hover:border-[#cbd5e1] transition-colors">
+                          <MessageSquare className="w-[18px] h-[18px] stroke-[1.9]" />
+                        </div>
+                        <span className="text-[12px] text-[#475569] font-medium leading-none">
+                          Message
+                        </span>
+                      </button>
+                    </div>
+                  </>
+                )}
+
+                {/* LIVE: 3 Small Decorative Ghost Controls */}
+                {callState === 'answered' && (
+                  <div
+                    className="console-compact-hide mt-4 flex items-center justify-center gap-3.5 opacity-80 pointer-events-none"
+                    aria-hidden="true"
+                  >
+                    {[Mic, Grid3x3, Volume2].map((Icon, idx) => (
+                      <div
+                        key={idx}
+                        className="w-10 h-10 rounded-[12px] bg-white border border-[#e2e8f0] flex items-center justify-center text-[#475569]"
+                      >
+                        <Icon className="w-[17px] h-[17px] stroke-[1.9]" />
                       </div>
-                      <span className="text-[11px] text-[#475569] font-medium leading-none">
-                        Message
-                      </span>
-                    </button>
+                    ))}
                   </div>
                 )}
 
-                {/* DESKTOP BOTTOM CALL ACTION BUTTONS */}
-                <div className="hidden md:flex w-full items-center justify-center shrink-0">
+                {/* Bottom Main Action Buttons */}
+                <div
+                  className={`mt-auto pt-3 w-full flex items-center justify-center shrink-0 transition-opacity duration-300 ${
+                    callState === 'ended' ? 'opacity-0 pointer-events-none' : 'opacity-100'
+                  }`}
+                >
                   {callState === 'answered' ? (
                     <button
                       ref={hangUpBtnRef}
                       type="button"
                       onClick={() => handleEndCall('hang-up')}
-                      className="flex flex-col items-center gap-1.5 cursor-pointer group select-none active:scale-95 transition-transform focus-visible:outline-2 focus-visible:outline-[#2563eb] focus-visible:outline-offset-2 rounded-full"
+                      className="flex flex-col items-center gap-1.5 cursor-pointer group select-none active:scale-[0.96] transition-transform focus-visible:outline-2 focus-visible:outline-[#2563eb] focus-visible:outline-offset-[3px] rounded-full"
                       style={{ touchAction: 'manipulation' }}
-                      aria-label="Hang up call"
+                      aria-label="End call"
                     >
                       <div
-                        className="w-[56px] h-[56px] rounded-full bg-[#FF4B4B] flex items-center justify-center text-white shadow-md group-hover:brightness-105 transition-all"
-                        style={{ boxShadow: '0 10px 22px -8px rgba(255, 75, 75, 0.55)' }}
+                        className="w-16 h-16 rounded-full bg-[#FF4B4B] flex items-center justify-center text-white group-hover:brightness-105 transition-all"
+                        style={{ boxShadow: '0 12px 26px -10px rgba(255, 75, 75, 0.55)' }}
                       >
                         <PhoneOff className="w-6 h-6 stroke-[2.2]" />
                       </div>
-                      <span className="text-[11px] text-[#64748b] font-medium leading-none">
-                        Hang up
+                      <span className="text-[12px] text-[#475569] font-medium leading-none">
+                        End call
                       </span>
                     </button>
                   ) : (
                     <div className="flex items-center justify-center gap-9">
-                      {/* Decline */}
                       <button
                         type="button"
                         onClick={handleDecline}
-                        className="flex flex-col items-center gap-1.5 cursor-pointer group select-none active:scale-95 transition-transform focus-visible:outline-2 focus-visible:outline-[#2563eb] focus-visible:outline-offset-2 rounded-full"
+                        className="flex flex-col items-center gap-1.5 cursor-pointer group select-none active:scale-[0.96] transition-transform focus-visible:outline-2 focus-visible:outline-[#2563eb] focus-visible:outline-offset-[3px] rounded-full"
                         style={{ touchAction: 'manipulation' }}
                         aria-label="Decline call"
                       >
                         <div
-                          className="w-[58px] h-[58px] rounded-full flex items-center justify-center text-white shadow-md group-hover:brightness-105 transition-all"
+                          className="w-16 h-16 rounded-full flex items-center justify-center text-white group-hover:brightness-105 transition-all"
                           style={{
                             background: 'linear-gradient(135deg, #ff5a52 0%, #ff3b30 100%)',
-                            boxShadow: '0 10px 22px -8px rgba(255, 59, 48, 0.5)',
+                            boxShadow: '0 12px 26px -10px rgba(255, 59, 48, 0.5)',
                           }}
                         >
                           <PhoneOff className="w-6 h-6 stroke-[2.2]" />
                         </div>
-                        <span className="text-[11px] text-[#475569] font-medium leading-none">
+                        <span className="text-[12px] text-[#475569] font-medium leading-none">
                           Decline
                         </span>
                       </button>
 
-                      {/* Accept with pulse rings */}
                       <button
                         ref={acceptBtnRef}
                         type="button"
                         onClick={handleAcceptCall}
-                        className="flex flex-col items-center gap-1.5 cursor-pointer group select-none active:scale-95 transition-transform focus-visible:outline-2 focus-visible:outline-[#2563eb] focus-visible:outline-offset-2 rounded-full relative"
+                        className="flex flex-col items-center gap-1.5 cursor-pointer group select-none active:scale-[0.96] transition-transform focus-visible:outline-2 focus-visible:outline-[#2563eb] focus-visible:outline-offset-[3px] rounded-full relative"
                         style={{ touchAction: 'manipulation' }}
                         aria-label="Accept call"
                       >
                         <motion.div
                           animate={acceptPulse ? { scale: [1, 1.12, 1] } : { scale: 1 }}
                           transition={{ duration: 0.45 }}
-                          className="relative w-[58px] h-[58px]"
+                          className="relative w-16 h-16"
                         >
                           {!reduceMotion && (
                             <>
@@ -524,16 +869,16 @@ export const HeroCallConsole: React.FC = () => {
                             </>
                           )}
                           <div
-                            className="w-full h-full rounded-full flex items-center justify-center text-white shadow-md group-hover:brightness-105 transition-all relative z-10"
+                            className="w-full h-full rounded-full flex items-center justify-center text-white group-hover:brightness-105 transition-all relative z-10"
                             style={{
                               background: 'linear-gradient(135deg, #46d36e 0%, #28b84f 100%)',
-                              boxShadow: '0 10px 22px -8px rgba(40, 184, 79, 0.5)',
+                              boxShadow: '0 12px 26px -10px rgba(40, 184, 79, 0.5)',
                             }}
                           >
                             <Phone className="w-6 h-6 stroke-[2.2]" />
                           </div>
                         </motion.div>
-                        <span className="text-[11px] text-[#475569] font-medium leading-none">
+                        <span className="text-[12px] text-[#475569] font-medium leading-none">
                           Accept
                         </span>
                       </button>
@@ -541,38 +886,50 @@ export const HeroCallConsole: React.FC = () => {
                   )}
                 </div>
               </div>
+            </div>
 
-              {/* RIGHT PANE: Slack-Style Live Transcript + Job Details */}
-              <div className="bg-white flex flex-col h-[320px] md:h-[430px] min-w-0 overflow-hidden">
-                {/* Pane Sub-header */}
-                <div className="px-4 md:px-5 py-3 border-b border-[rgba(11,21,48,0.06)] flex items-center justify-between shrink-0">
-                  <div className="flex items-center gap-2 min-w-0">
-                    <span className="text-[12.5px] font-semibold text-[#0b1530]">
-                      Live transcript
-                    </span>
-                    <span className="text-[11.5px] text-[#64748b] truncate">
-                      {callState === 'answered'
-                        ? 'Live audio stream'
-                        : 'Sample call · Tap Accept to listen'}
-                    </span>
-                  </div>
-                  <div className="flex items-center gap-1.5 shrink-0">
-                    {callState === 'answered' ? (
-                      <span className="w-2 h-2 rounded-full bg-[#3b82f6] animate-pulse" />
-                    ) : (
-                      <span className="text-[11px] font-medium text-[#64748b] tabular-nums">
-                        00:54
-                      </span>
-                    )}
-                  </div>
+            {/* COLUMN 2: TRANSCRIPT PANE */}
+            <div className="bg-white flex flex-col min-w-0 min-h-0 overflow-hidden">
+              {/* Sub-header */}
+              <div className="min-h-[56px] py-2.5 sm:py-0 sm:h-[56px] px-4 md:px-[22px] border-b border-[#eceff5] flex items-center justify-between gap-2 shrink-0">
+                <div className="flex flex-col sm:flex-row sm:items-center gap-0.5 sm:gap-2 min-w-0 text-left">
+                  <span className="text-[14px] font-bold text-[#0b1530] shrink-0 leading-tight">
+                    Live transcript
+                  </span>
+                  <span className="text-[12px] sm:text-[12.5px] text-[#94a3b8] sm:truncate leading-tight">
+                    {callState === 'answered'
+                      ? 'Live audio stream'
+                      : 'Sample call · Tap Accept to listen'}
+                  </span>
                 </div>
 
-                {/* Scrollable Messages Feed */}
+                {/* Compact timer chip */}
+                <span className="h-[26px] px-2.5 rounded-[8px] bg-[#f3f5fa] text-[12px] font-medium text-[#64748b] tabular-nums inline-flex items-center gap-1.5 shrink-0">
+                  {callState === 'answered' && (
+                    <span className="w-1.5 h-1.5 rounded-full bg-[#3b82f6] shrink-0" />
+                  )}
+                  <span>
+                    {callState === 'answered'
+                      ? `${formatCompactTime(callTime)} / ${formatCompactTime(safeDuration)}`
+                      : formatCompactTime(safeDuration)}
+                  </span>
+                </span>
+              </div>
+
+              {/* Subtle interactive hint when live */}
+              {callState === 'answered' && (
+                <div className="px-4 md:px-[22px] pt-2 pb-0.5 text-[11.5px] text-[#94a3b8] shrink-0 text-left">
+                  Click any line to jump
+                </div>
+              )}
+
+              {/* Scrollable Feed Wrapper */}
+              <div className="relative flex-1 min-h-0 flex flex-col">
                 <div
                   ref={transcriptListRef}
                   onScroll={handleListScroll}
                   aria-live="polite"
-                  className="flex-1 overflow-y-auto px-4 md:px-5 py-4 flex flex-col gap-3.5 relative no-scrollbar select-text"
+                  className="h-[320px] lg:h-auto lg:flex-1 overflow-y-auto px-4 md:px-[22px] pt-[18px] pb-[18px] flex flex-col gap-3.5 no-scrollbar select-text"
                   style={{
                     scrollbarWidth: 'none',
                     msOverflowStyle: 'none',
@@ -585,43 +942,56 @@ export const HeroCallConsole: React.FC = () => {
                   }}
                 >
                   {callState !== 'answered' ? (
-                    <div className="flex flex-col gap-4 text-left">
-                      {/* Idle Slack-style row */}
-                      <div className="flex items-start gap-3">
-                        <div className="w-[34px] h-[34px] rounded-[10px] bg-[#eff6ff] border border-[#bfdbfe] flex items-center justify-center shrink-0">
-                          <AppsianMark size={16} fill="#2563eb" />
-                        </div>
-                        <div className="flex-1 min-w-0">
-                          <div className="flex items-baseline gap-2">
-                            <span className="text-[13.5px] font-bold text-[#0b1530]">
-                              Allison · AI Receptionist
-                            </span>
-                            <span className="text-[11px] font-medium text-[#94a3b8] tabular-nums">
-                              00:00
-                            </span>
-                          </div>
-                          <p className="mt-1 text-[13.5px] leading-[1.5] text-[#475569]">
-                            {callState === 'ended'
-                              ? 'Call completed and booked to the calendar. Tap Accept to replay the live call.'
-                              : 'Ready to answer an incoming plumbing call. Tap Accept to hear the audio and follow the live transcript.'}
-                          </p>
-                        </div>
+                    <div className="my-auto w-full max-w-[460px] mx-auto flex flex-col items-center text-center py-2">
+                      {/* 44px Waveform Icon Tile */}
+                      <div className="w-11 h-11 rounded-[12px] bg-[#eef4ff] text-[#2563eb] flex items-center justify-center mb-3 shrink-0">
+                        <AudioLines className="w-5 h-5 stroke-[2]" />
                       </div>
 
-                      {/* Subtle preview call info box */}
-                      <div className="ml-[46px] rounded-[12px] border border-[rgba(11,21,48,0.08)] bg-[#f8fafc] p-3 flex items-center justify-between gap-3">
-                        <div className="min-w-0">
-                          <div className="text-[12px] font-semibold text-[#0b1530] truncate">
-                            New York Plumbing · Sample Inbound Call
+                      <div className="text-[13px] font-semibold text-[#64748b]">
+                        Allison · AI Receptionist
+                      </div>
+
+                      <p className="mt-1.5 text-[14.5px] leading-[1.5] text-[#0b1530] font-medium max-w-[410px]">
+                        {callState === 'ended'
+                          ? 'Call completed and booked to the calendar. Tap Accept to replay the live call.'
+                          : 'Ready to answer an incoming plumbing call. Tap Accept to hear the audio and follow the live transcript.'}
+                      </p>
+
+                      {/* Sample Inbound Call Card */}
+                      <div
+                        className="mt-4 w-full rounded-[16px] p-[14px_16px] border border-[#e3e9f6] flex items-center justify-between gap-3 text-left"
+                        style={{
+                          background: 'linear-gradient(180deg, #fbfcff, #f4f7ff)',
+                        }}
+                      >
+                        <div className="flex items-center gap-3 min-w-0">
+                          <div
+                            className="w-9 h-9 rounded-[10px] flex items-center justify-center text-white shrink-0"
+                            style={{
+                              background: 'linear-gradient(145deg, #3b82f6, #1d4ed8)',
+                            }}
+                          >
+                            <Play className="w-4 h-4 fill-white ml-0.5" />
                           </div>
-                          <div className="text-[11.5px] text-[#64748b] mt-0.5">
-                            Answers, qualifies issue &amp; address, books tomorrow 10:00 AM
+                          <div className="min-w-0">
+                            <div className="text-[13px] font-bold text-[#0b1530] leading-snug sm:truncate">
+                              New York Plumbing · Sample Inbound Call
+                            </div>
+                            <div className="text-[12px] text-[#64748b] mt-0.5 leading-snug">
+                              Answers, qualifies issue &amp; address, books tomorrow 10:00 AM
+                            </div>
                           </div>
                         </div>
+
                         <button
                           type="button"
                           onClick={handleAcceptCall}
-                          className="shrink-0 px-3 py-1.5 rounded-full bg-[#2563eb] text-white text-[12px] font-semibold cursor-pointer hover:bg-[#1d4ed8] transition-colors shadow-2xs"
+                          className="shrink-0 h-[34px] px-4 rounded-[10px] text-white text-[13px] font-semibold cursor-pointer hover:brightness-105 active:scale-[0.97] transition-all focus-visible:outline-2 focus-visible:outline-[#2563eb] focus-visible:outline-offset-[2px]"
+                          style={{
+                            background: 'linear-gradient(135deg, #2563eb, #1d4ed8)',
+                            boxShadow: '0 6px 14px -6px rgba(37, 99, 235, 0.5)',
+                          }}
                         >
                           Listen
                         </button>
@@ -631,42 +1001,81 @@ export const HeroCallConsole: React.FC = () => {
                     <>
                       {visibleLines.map((line, idx) => {
                         const isAi = line.speaker === 'ai';
-                        const lineTimeLabel = formatTimer(line.start);
+                        const isActiveLine = idx === activeLineIndex;
+                        const lineTimeLabel = formatCompactTime(line.start);
+
                         return (
-                          <motion.div
+                          <button
                             key={idx}
-                            initial={reduceMotion ? false : { opacity: 0, y: 8 }}
-                            animate={{ opacity: 1, y: 0 }}
-                            transition={{ duration: 0.3, ease: 'easeOut' }}
-                            className="flex items-start gap-3 text-left"
+                            type="button"
+                            onClick={() => handleSeek(line.start + TRANSCRIPT_OFFSET)}
+                            className={`group/row w-full text-left flex items-start gap-3 rounded-[14px] px-[10px] py-2 -mx-[10px] cursor-pointer transition-colors focus-visible:outline-2 focus-visible:outline-[#2563eb] focus-visible:outline-offset-[2px] ${
+                              isActiveLine
+                                ? 'bg-[rgba(59,130,246,0.06)]'
+                                : 'hover:bg-[rgba(15,23,42,0.03)]'
+                            }`}
                           >
-                            {/* Avatar */}
+                            {/* 36px Avatar */}
                             {isAi ? (
-                              <div className="w-[34px] h-[34px] rounded-[10px] bg-[#eff6ff] border border-[#bfdbfe] flex items-center justify-center shrink-0 mt-0.5">
-                                <AppsianMark size={16} fill="#2563eb" />
+                              <div
+                                className={`w-9 h-9 rounded-[10px] flex items-center justify-center shrink-0 mt-0.5 ${
+                                  isActiveLine ? 'ring-2 ring-[#3b82f6] ring-offset-2' : ''
+                                }`}
+                                style={{
+                                  background: 'linear-gradient(145deg, #7aa9ff, #1d4ed8)',
+                                }}
+                              >
+                                <AppsianMark size={17} fill="#ffffff" />
                               </div>
                             ) : (
-                              <div className="w-[34px] h-[34px] rounded-[10px] bg-[#f1f5f9] border border-[rgba(11,21,48,0.08)] flex items-center justify-center text-[#334155] shrink-0 mt-0.5">
-                                <User className="w-4 h-4 stroke-[2]" />
+                              <div
+                                className={`w-9 h-9 rounded-full bg-[#cbd5e1] flex items-center justify-center text-white shrink-0 mt-0.5 ${
+                                  isActiveLine ? 'ring-2 ring-[#3b82f6] ring-offset-2' : ''
+                                }`}
+                              >
+                                <User className="w-4 h-4 stroke-[2.2]" />
                               </div>
                             )}
 
                             {/* Speaker + Timestamp + Word-by-word body */}
                             <div className="flex-1 min-w-0">
-                              <div className="flex items-baseline gap-2">
-                                <span className="text-[13.5px] font-bold text-[#0b1530]">
+                              <div className="flex items-center gap-2 flex-wrap">
+                                <span className="text-[14px] font-bold text-[#0b1530]">
                                   {isAi
                                     ? 'Allison · AI Receptionist'
                                     : showCaller
                                     ? 'Zach Phillips'
                                     : 'Incoming Caller'}
                                 </span>
-                                <span className="text-[11px] font-medium text-[#94a3b8] tabular-nums">
+                                <span className="text-[12px] font-medium text-[#94a3b8] group-hover/row:text-[#2563eb] tabular-nums transition-colors">
                                   {lineTimeLabel}
                                 </span>
+                                <span className="text-[11px] font-semibold text-[#2563eb] opacity-0 group-hover/row:opacity-100 transition-opacity">
+                                  Jump
+                                </span>
+
+                                {isActiveLine && (
+                                  <span
+                                    className="inline-flex items-end gap-[2px] h-3 ml-0.5"
+                                    aria-hidden="true"
+                                  >
+                                    <span
+                                      className="transcript-eq-bar w-[2px] h-2.5 rounded-full bg-[#2563eb]"
+                                      style={{ animationDelay: '0s' }}
+                                    />
+                                    <span
+                                      className="transcript-eq-bar w-[2px] h-3 rounded-full bg-[#2563eb]"
+                                      style={{ animationDelay: '0.2s' }}
+                                    />
+                                    <span
+                                      className="transcript-eq-bar w-[2px] h-2 rounded-full bg-[#2563eb]"
+                                      style={{ animationDelay: '0.4s' }}
+                                    />
+                                  </span>
+                                )}
                               </div>
 
-                              <p className="mt-0.5 text-[14px] leading-[1.5]">
+                              <p className="mt-0.5 text-[14.5px] leading-[1.55]">
                                 <span className="sr-only">{line.text}</span>
                                 <span aria-hidden="true">
                                   {line.words && line.words.length > 0 ? (
@@ -716,101 +1125,91 @@ export const HeroCallConsole: React.FC = () => {
                                 </span>
                               </p>
                             </div>
-                          </motion.div>
+                          </button>
                         );
                       })}
 
-                      {/* Job Details Attachment Card */}
-                      <AnimatePresence>
-                        {hasVisibleJobDetails && (
-                          <motion.div
-                            initial={reduceMotion ? false : { opacity: 0, y: 10, scale: 0.97 }}
-                            animate={{ opacity: 1, y: 0, scale: 1 }}
-                            exit={{ opacity: 0 }}
-                            transition={{ duration: 0.3 }}
-                            className="ml-[46px] mt-1 p-3.5 rounded-[14px] bg-[#f8faff] border border-[rgba(37,99,235,0.24)] shadow-2xs flex flex-col gap-2 text-left shrink-0"
-                          >
-                            <div className="flex items-center justify-between pb-1.5 border-b border-[rgba(11,21,48,0.06)]">
-                              <span className="text-[12px] font-bold text-[#0b1530]">
-                                Job details
-                              </span>
-                              {showBooked ? (
-                                <motion.span
-                                  initial={reduceMotion ? false : { opacity: 0, scale: 0.9 }}
-                                  animate={{ opacity: 1, scale: 1 }}
-                                  className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10.5px] font-semibold bg-[#10B981]/15 text-[#059669]"
-                                >
-                                  <Check className="w-2.5 h-2.5 stroke-[3]" />
-                                  <span>{jobDetails.booked?.value || 'Booked'}</span>
-                                </motion.span>
-                              ) : (
-                                <span className="text-[10.5px] font-medium text-[#2563eb]">
-                                  Qualifying...
-                                </span>
-                              )}
+                      {/* Typing Cue (<= 0.8s before next speaker starts) */}
+                      {showTypingCue && (
+                        <div className="flex items-start gap-3 text-left py-1" aria-hidden="true">
+                          {typingSpeakerIsAi ? (
+                            <div
+                              className="w-9 h-9 rounded-[10px] flex items-center justify-center shrink-0"
+                              style={{
+                                background: 'linear-gradient(145deg, #7aa9ff, #1d4ed8)',
+                              }}
+                            >
+                              <AppsianMark size={17} fill="#ffffff" />
                             </div>
+                          ) : (
+                            <div className="w-9 h-9 rounded-full bg-[#cbd5e1] flex items-center justify-center text-white shrink-0">
+                              <User className="w-4 h-4 stroke-[2.2]" />
+                            </div>
+                          )}
 
-                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-4 gap-y-1.5">
-                              {showIssue && (
-                                <motion.div
-                                  initial={reduceMotion ? false : { opacity: 0, y: 4 }}
-                                  animate={{ opacity: 1, y: 0 }}
-                                  transition={{ duration: 0.25 }}
-                                  className="flex flex-col text-[11.5px]"
-                                >
-                                  <span className="text-[#64748b] text-[10.5px]">Issue</span>
-                                  <span className="font-semibold text-[#0b1530] truncate">
-                                    {jobDetails.issue?.value}
-                                  </span>
-                                </motion.div>
-                              )}
-                              {showCaller && (
-                                <motion.div
-                                  initial={reduceMotion ? false : { opacity: 0, y: 4 }}
-                                  animate={{ opacity: 1, y: 0 }}
-                                  transition={{ duration: 0.25 }}
-                                  className="flex flex-col text-[11.5px]"
-                                >
-                                  <span className="text-[#64748b] text-[10.5px]">Caller</span>
-                                  <span className="font-semibold text-[#0b1530] truncate">
-                                    {jobDetails.callerName?.value}
-                                  </span>
-                                </motion.div>
-                              )}
-                              {showAddress && (
-                                <motion.div
-                                  initial={reduceMotion ? false : { opacity: 0, y: 4 }}
-                                  animate={{ opacity: 1, y: 0 }}
-                                  transition={{ duration: 0.25 }}
-                                  className="flex flex-col text-[11.5px]"
-                                >
-                                  <span className="text-[#64748b] text-[10.5px]">Address</span>
-                                  <span className="font-semibold text-[#0b1530] truncate">
-                                    {jobDetails.address?.value}
-                                  </span>
-                                </motion.div>
-                              )}
-                              {showAppointment && (
-                                <motion.div
-                                  initial={reduceMotion ? false : { opacity: 0, y: 4 }}
-                                  animate={{ opacity: 1, y: 0 }}
-                                  transition={{ duration: 0.25 }}
-                                  className="flex flex-col text-[11.5px]"
-                                >
-                                  <span className="text-[#64748b] text-[10.5px]">Appointment</span>
-                                  <span className="font-semibold text-[#0b1530] truncate">
-                                    {jobDetails.appointment?.value}
-                                  </span>
-                                </motion.div>
-                              )}
+                          <div className="flex flex-col items-start">
+                            <span className="text-[12.5px] font-semibold text-[#64748b]">
+                              {typingSpeakerIsAi
+                                ? 'Allison · AI Receptionist'
+                                : showCaller
+                                ? 'Zach Phillips'
+                                : 'Incoming Caller'}
+                            </span>
+                            <div className="mt-1 bg-[#f1f5f9] rounded-[12px] px-3 py-2 inline-flex items-center gap-1">
+                              <span className="w-1.5 h-1.5 rounded-full bg-[#64748b] typing-dot-1" />
+                              <span className="w-1.5 h-1.5 rounded-full bg-[#64748b] typing-dot-2" />
+                              <span className="w-1.5 h-1.5 rounded-full bg-[#64748b] typing-dot-3" />
                             </div>
-                          </motion.div>
-                        )}
-                      </AnimatePresence>
+                          </div>
+                        </div>
+                      )}
                     </>
                   )}
                 </div>
+
+                {/* Floating "Jump to live" Pill when user scrolled up during playback */}
+                {callState === 'answered' && isUserScrolledUp && (
+                  <button
+                    type="button"
+                    onClick={jumpToLive}
+                    className="absolute bottom-3 left-1/2 -translate-x-1/2 z-20 h-8 px-[14px] rounded-[10px] bg-[#0b1530] text-white text-[12.5px] font-semibold inline-flex items-center gap-1.5 cursor-pointer hover:bg-[#1e293b] active:scale-[0.97] transition-all focus-visible:outline-2 focus-visible:outline-[#2563eb] focus-visible:outline-offset-[2px]"
+                    style={{
+                      boxShadow: '0 10px 24px -10px rgba(11, 21, 48, 0.5)',
+                    }}
+                  >
+                    <ArrowDown className="w-3.5 h-3.5 stroke-[2.2]" />
+                    <span>Jump to live</span>
+                  </button>
+                )}
               </div>
+
+              {/* Compact Bottom-Docked Job Details for 1024px–1279px & Mobile (< 1280px) */}
+              <div className="xl:hidden px-4 pb-4 pt-2 shrink-0 border-t border-[#eceff5] lg:border-t-0">
+                <JobDetailsPanel
+                  layout="compact"
+                  callState={callState}
+                  revealedDetailsCount={revealedDetailsCount}
+                  showIssue={showIssue}
+                  showCaller={showCaller}
+                  showAddress={showAddress}
+                  showAppointment={showAppointment}
+                  showBooked={showBooked}
+                />
+              </div>
+            </div>
+
+            {/* COLUMN 3: DEDICATED JOB DETAILS PANEL (Desktop 1280px+) */}
+            <div className="hidden xl:block h-full min-h-0">
+              <JobDetailsPanel
+                layout="sidebar"
+                callState={callState}
+                revealedDetailsCount={revealedDetailsCount}
+                showIssue={showIssue}
+                showCaller={showCaller}
+                showAddress={showAddress}
+                showAppointment={showAppointment}
+                showBooked={showBooked}
+              />
             </div>
           </div>
         </div>
