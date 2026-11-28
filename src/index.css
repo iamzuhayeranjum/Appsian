@@ -1171,6 +1171,46 @@
 }
 
 /* =====================================================================
+   HERO CALL CONSOLE COMFORT DIMENSIONS & CSS VARIABLES
+   ===================================================================== */
+.cw-root {
+  --cw-height: clamp(540px, calc(100svh - 330px), 600px);
+  --cw-radius: 30px;
+  --cw-frame-radius: 40px;
+  --cw-frame-pad: 10px;
+  --cw-header-h: 72px;
+  --cw-header-px: 18px;
+  --cw-pad: 22px 18px;
+  --cw-pad-sm: 14px;
+  --cw-transcript-header-h: 58px;
+  --cw-transcript-px: 18px;
+  --cw-transcript-pad: 22px 18px 18px;
+  --cw-details-pad: 22px 18px;
+  --cw-gap: 16px;
+  --cw-row-gap: 20px;
+  --cw-font: 15.5px;
+  --cw-timeline-h: 8px;
+  --cw-timeline-hover-h: 12px;
+  --cw-transcript-h: 360px;
+}
+
+@media (min-width: 768px) {
+  .cw-root {
+    --cw-frame-pad: 12px;
+    --cw-header-h: 76px;
+    --cw-header-px: 28px;
+    --cw-pad: 30px 26px;
+    --cw-pad-sm: 16px;
+    --cw-transcript-header-h: 60px;
+    --cw-transcript-px: 28px;
+    --cw-transcript-pad: 24px 28px 12px;
+    --cw-details-pad: 26px 22px;
+    --cw-gap: 18px;
+    --cw-row-gap: 22px;
+  }
+}
+
+/* =====================================================================
    HERO CALL CONSOLE ANIMATIONS & COMPACT RULES
    ===================================================================== */
 @keyframes heroWaveBar {

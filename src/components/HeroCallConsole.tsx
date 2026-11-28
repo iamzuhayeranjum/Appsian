@@ -97,39 +97,40 @@ const JobDetailsPanel: React.FC<JobDetailsPanelProps> = ({
     <div
       className={
         isSidebar
-          ? 'flex flex-col h-full bg-[#fafbff] px-[18px] py-4 border-l border-[#eceff5] text-left'
-          : 'flex flex-col bg-[#fafbff] border border-[#e3e9f6] rounded-[16px] px-3.5 py-3 text-left'
+          ? 'flex flex-col h-full bg-[#fafbff] border-l border-[#eceff5] text-left'
+          : 'flex flex-col bg-[#fafbff] border border-[#e3e9f6] rounded-[18px] px-[20px] py-[18px] text-left'
       }
+      style={isSidebar ? { padding: 'var(--cw-details-pad)' } : undefined}
       aria-label="Job details"
     >
       {/* Top Header + Pill */}
       <div className="flex items-center justify-between gap-2">
-        <span className="text-[14px] font-bold text-[#0b1530] tracking-[-0.01em]">
+        <span className="text-[15px] font-bold text-[#0b1530] tracking-[-0.01em]">
           Job details
         </span>
-        <span className="bg-[#e8f0ff] text-[#1d4ed8] text-[11px] font-semibold rounded-[8px] px-2 py-[3px] whitespace-nowrap">
+        <span className="bg-[#e8f0ff] text-[#1d4ed8] text-[11.5px] font-semibold rounded-[8px] px-[9px] py-[4px] whitespace-nowrap leading-none">
           Captured automatically
         </span>
       </div>
 
       {/* Counter & Progress Bar */}
-      <div className="mt-2.5">
-        <div className="flex items-center justify-between text-[12px] text-[#64748b] tabular-nums mb-1.5">
+      <div className="mt-3">
+        <div className="flex items-center justify-between text-[12.5px] text-[#64748b] tabular-nums mb-1.5">
           <span>{revealedDetailsCount} of 4 captured</span>
           {!isSidebar && (
             <span
-              className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-[7px] text-[11px] font-semibold ${
+              className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-[8px] text-[12px] font-semibold ${
                 showBooked
                   ? 'bg-[#dcfce7] text-[#15803d]'
                   : 'bg-[#f1f5f9] text-[#64748b]'
               }`}
             >
-              {showBooked && <Check className="w-3 h-3 stroke-[2.5]" />}
+              {showBooked && <Check className="w-3.5 h-3.5 stroke-[2.5]" />}
               <span>{showBooked ? 'Booked' : 'Waiting'}</span>
             </span>
           )}
         </div>
-        <div className="w-full h-1 rounded-full bg-[#e8ecf7] overflow-hidden">
+        <div className="w-full h-[5px] rounded-full bg-[#e8ecf7] overflow-hidden">
           <div
             className="h-full rounded-full bg-[#2563eb] transition-[width] duration-300 ease-out"
             style={{ width: `${(revealedDetailsCount / 4) * 100}%` }}
@@ -141,8 +142,8 @@ const JobDetailsPanel: React.FC<JobDetailsPanelProps> = ({
       <div
         className={
           isSidebar
-            ? 'mt-3.5 flex flex-col gap-2'
-            : 'mt-3 grid grid-cols-1 sm:grid-cols-2 gap-2'
+            ? 'mt-[12px] flex flex-col gap-[12px]'
+            : 'mt-[12px] grid grid-cols-1 sm:grid-cols-2 gap-[12px]'
         }
       >
         {detailRows.map((row) => {
@@ -150,19 +151,19 @@ const JobDetailsPanel: React.FC<JobDetailsPanelProps> = ({
           return (
             <div
               key={row.key}
-              className="rounded-[12px] px-3 py-[10px] border border-[#eef1f7] bg-white flex items-center gap-[10px] min-w-0"
+              className="rounded-[14px] px-[var(--cw-pad-sm)] py-[14px] border border-[#eef1f7] bg-white flex items-center gap-3 min-w-0"
             >
               {row.revealed ? (
-                <div className="job-detail-reveal flex items-center gap-[10px] w-full min-w-0">
-                  <span className="w-8 h-8 rounded-[9px] bg-[#eef4ff] text-[#2563eb] flex items-center justify-center shrink-0">
-                    <Icon className="w-4 h-4 stroke-[2]" />
+                <div className="job-detail-reveal flex items-center gap-3 w-full min-w-0">
+                  <span className="w-[38px] h-[38px] rounded-[11px] bg-[#eef4ff] text-[#2563eb] flex items-center justify-center shrink-0">
+                    <Icon className="w-[18px] h-[18px] stroke-[2]" />
                   </span>
                   <div className="flex-1 min-w-0">
-                    <div className="text-[11px] font-semibold uppercase tracking-[0.06em] text-[#94a3b8] leading-none">
+                    <div className="text-[11.5px] font-semibold uppercase tracking-[0.06em] text-[#94a3b8] leading-none">
                       {row.label}
                     </div>
                     <div
-                      className="text-[13px] font-semibold text-[#0b1530] leading-[1.3] mt-0.5 break-words line-clamp-2"
+                      className="text-[15px] font-semibold text-[#0b1530] leading-[1.3] mt-0.5 break-words line-clamp-2"
                       title={row.value}
                     >
                       {row.value}
@@ -176,13 +177,13 @@ const JobDetailsPanel: React.FC<JobDetailsPanelProps> = ({
                   </span>
                 </div>
               ) : (
-                <div className="flex items-center gap-[10px] w-full min-w-0" aria-label={`${row.label} pending`}>
-                  <span className="w-8 h-8 rounded-[9px] bg-[#f1f5f9] text-[#94a3b8] flex items-center justify-center shrink-0">
-                    <Icon className="w-4 h-4 stroke-[1.9]" />
+                <div className="flex items-center gap-3 w-full min-w-0" aria-label={`${row.label} pending`}>
+                  <span className="w-[38px] h-[38px] rounded-[11px] bg-[#f1f5f9] text-[#94a3b8] flex items-center justify-center shrink-0">
+                    <Icon className="w-[18px] h-[18px] stroke-[1.9]" />
                   </span>
                   <div className="flex-1 min-w-0 flex flex-col justify-center">
                     <span className="sr-only">{row.label}</span>
-                    <div className="h-3 w-[70%] rounded-[6px] job-skeleton-bar" />
+                    <div className="h-[13px] w-[70%] rounded-[6px] job-skeleton-bar" />
                   </div>
                 </div>
               )}
@@ -193,9 +194,9 @@ const JobDetailsPanel: React.FC<JobDetailsPanelProps> = ({
 
       {/* Footer Status Row (Sidebar) + Idle Caption */}
       {isSidebar && (
-        <div className="mt-auto pt-3 border-t border-[#eceff5]">
+        <div className="mt-[16px] pt-3.5 border-t border-[#eceff5]">
           <div className="flex items-center justify-between">
-            <span className="text-[12px] font-semibold text-[#64748b]">Status</span>
+            <span className="text-[12.5px] font-semibold text-[#64748b]">Status</span>
             {showBooked ? (
               <span className="job-detail-reveal inline-flex items-center gap-1 px-2.5 py-1 rounded-[8px] text-[12px] font-semibold bg-[#dcfce7] text-[#15803d]">
                 <Check className="w-3.5 h-3.5 stroke-[2.5]" />
@@ -208,7 +209,7 @@ const JobDetailsPanel: React.FC<JobDetailsPanelProps> = ({
             )}
           </div>
           {callState === 'ringing' && (
-            <p className="text-[11.5px] text-[#94a3b8] mt-2 text-center">
+            <p className="text-[12px] text-[#94a3b8] mt-2.5 text-center">
               Details appear as the caller speaks
             </p>
           )}
@@ -216,7 +217,7 @@ const JobDetailsPanel: React.FC<JobDetailsPanelProps> = ({
       )}
 
       {!isSidebar && callState === 'ringing' && (
-        <p className="text-[11.5px] text-[#94a3b8] mt-2 text-center">
+        <p className="text-[12px] text-[#94a3b8] mt-2.5 text-center">
           Details appear as the caller speaks
         </p>
       )}
@@ -360,10 +361,10 @@ export const HeroCallConsole: React.FC = () => {
     upcomingLineIndex >= 0 ? lines[upcomingLineIndex].speaker === 'ai' : true;
 
   return (
-    <div ref={consoleRef} className="w-full relative z-20">
+    <div ref={consoleRef} className="cw-root w-full relative z-20">
       {/* Frosted glass outer frame (must stay free of opacity<1 / filter / mask on ancestors) */}
       <div
-        className="w-full rounded-[26px] p-[8px] md:p-[10px] select-none"
+        className="w-full rounded-[var(--cw-frame-radius)] p-[var(--cw-frame-pad)] select-none"
         style={{
           background: 'rgba(255, 255, 255, 0.42)',
           backdropFilter: 'blur(22px) saturate(160%)',
@@ -375,7 +376,7 @@ export const HeroCallConsole: React.FC = () => {
       >
         {/* Main White Call Window (Sidebar-free) */}
         <div
-          className="w-full rounded-[20px] md:rounded-[22px] border border-[rgba(11,21,48,0.08)] overflow-hidden flex flex-col"
+          className="w-full rounded-[var(--cw-radius)] border border-[rgba(11,21,48,0.08)] overflow-hidden flex flex-col"
           style={{
             backgroundColor: '#ffffff',
             backgroundImage:
@@ -383,11 +384,11 @@ export const HeroCallConsole: React.FC = () => {
           }}
         >
           {/* 1. HEADER */}
-          <div className="min-h-[68px] md:h-[68px] px-4 py-3 md:py-0 md:px-[22px] border-b border-[#eceff5] flex flex-col md:flex-row md:items-center md:justify-between gap-2.5 shrink-0">
+          <div className="min-h-[var(--cw-header-h)] py-3 md:py-0 md:h-[var(--cw-header-h)] px-[var(--cw-header-px)] border-b border-[#eceff5] flex flex-col md:flex-row md:items-center md:justify-between gap-3 shrink-0">
             {/* Left: Blue gradient logo tile + 2-line title */}
-            <div className="flex items-center gap-3 min-w-0">
+            <div className="flex items-center gap-3.5 min-w-0">
               <div
-                className="w-9 h-9 rounded-[11px] flex items-center justify-center shrink-0"
+                className="w-10 h-10 rounded-[12px] flex items-center justify-center shrink-0"
                 style={{
                   background: 'linear-gradient(145deg, #7aa9ff, #1d4ed8)',
                   border: '1px solid rgba(255, 255, 255, 0.45)',
@@ -395,16 +396,16 @@ export const HeroCallConsole: React.FC = () => {
                     'inset 0 1px 0 rgba(255, 255, 255, 0.5), 0 6px 14px -6px rgba(29, 78, 216, 0.4)',
                 }}
               >
-                <AppsianMark size={19} fill="#ffffff" />
+                <AppsianMark size={20} fill="#ffffff" />
               </div>
 
               <div className="min-w-0 text-left">
-                <div className="flex items-center gap-2 flex-wrap">
-                  <span className="text-[16px] font-bold text-[#0b1530] tracking-[-0.01em] leading-tight">
+                <div className="flex items-center gap-2.5 flex-wrap">
+                  <span className="text-[17px] font-bold text-[#0b1530] tracking-[-0.01em] leading-tight">
                     Incoming call
                   </span>
                   <span
-                    className={`h-[22px] px-[9px] rounded-[8px] text-[11.5px] font-semibold inline-flex items-center gap-1.5 leading-none ${
+                    className={`h-[24px] px-[10px] rounded-[8px] text-[12px] font-semibold inline-flex items-center gap-1.5 leading-none ${
                       callState === 'answered'
                         ? 'bg-[#dcfce7] text-[#15803d]'
                         : callState === 'ended'
@@ -430,7 +431,7 @@ export const HeroCallConsole: React.FC = () => {
                     </span>
                   </span>
                 </div>
-                <p className="text-[12.5px] text-[#64748b] leading-tight mt-0.5 truncate">
+                <p className="text-[13px] text-[#64748b] leading-tight mt-0.5 truncate">
                   New York Plumbing · Sample inbound call
                 </p>
               </div>
@@ -438,7 +439,7 @@ export const HeroCallConsole: React.FC = () => {
 
             {/* Right: 3-Segment Phase Control */}
             <div
-              className="bg-[#f3f5fa] rounded-[12px] p-1 grid grid-cols-3 md:inline-flex items-center gap-1 shrink-0"
+              className="bg-[#f3f5fa] rounded-[14px] p-[5px] grid grid-cols-3 md:inline-flex items-center gap-[6px] shrink-0"
               role="group"
               aria-label="Call progression phases"
             >
@@ -455,7 +456,7 @@ export const HeroCallConsole: React.FC = () => {
                         ? `Jump to ${tile.label} (${tile.time})`
                         : `${tile.label} at ${tile.time}`
                     }
-                    className={`h-[34px] px-2 md:px-[14px] rounded-[9px] text-[12px] md:text-[13px] font-semibold leading-none inline-flex items-center justify-center gap-1.5 transition-all whitespace-nowrap focus-visible:outline-2 focus-visible:outline-[#2563eb] focus-visible:outline-offset-[2px] ${
+                    className={`h-[48px] md:h-[38px] px-2 md:px-[16px] rounded-[10px] text-[12px] md:text-[13.5px] font-semibold leading-none inline-flex items-center justify-center gap-1.5 transition-all whitespace-nowrap focus-visible:outline-2 focus-visible:outline-[#2563eb] focus-visible:outline-offset-[2px] ${
                       callState === 'ringing'
                         ? 'text-[#64748b] opacity-60 cursor-default'
                         : tile.active
@@ -497,10 +498,10 @@ export const HeroCallConsole: React.FC = () => {
             onPointerUp={handleTimelinePointerUp}
             onPointerCancel={handleTimelinePointerUp}
             onKeyDown={handleTimelineKeyDown}
-            className={`relative w-full h-[6px] bg-[#eef1f7] transition-[height] duration-150 shrink-0 touch-none select-none focus-visible:outline-2 focus-visible:outline-[#2563eb] focus-visible:outline-offset-[-2px] ${
+            className={`relative w-full h-[var(--cw-timeline-h)] bg-[#eef1f7] transition-[height] duration-150 shrink-0 touch-none select-none focus-visible:outline-2 focus-visible:outline-[#2563eb] focus-visible:outline-offset-[-2px] ${
               callState === 'answered'
-                ? `cursor-pointer hover:h-[10px] focus-visible:h-[10px] ${
-                    isDraggingTimeline ? 'h-[10px]' : ''
+                ? `cursor-pointer hover:h-[var(--cw-timeline-hover-h)] focus-visible:h-[var(--cw-timeline-hover-h)] ${
+                    isDraggingTimeline ? 'h-[var(--cw-timeline-hover-h)]' : ''
                   }`
                 : 'cursor-default'
             }`}
@@ -522,13 +523,13 @@ export const HeroCallConsole: React.FC = () => {
                 className="group/marker absolute top-1/2 -translate-y-1/2 -translate-x-1/2 z-10 pointer-events-auto"
               >
                 <span
-                  className={`w-[10px] h-[10px] rounded-full flex items-center justify-center transition-colors ${
+                  className={`w-[12px] h-[12px] rounded-full flex items-center justify-center transition-colors ${
                     tile.active
                       ? 'bg-[#2563eb] border-2 border-[#2563eb] text-white'
                       : 'bg-white border-2 border-[#3b82f6]'
                   }`}
                 >
-                  {tile.active && <Check className="w-[7px] h-[7px] stroke-[3.5]" />}
+                  {tile.active && <Check className="w-[8px] h-[8px] stroke-[3.5]" />}
                 </span>
 
                 <span
@@ -543,11 +544,12 @@ export const HeroCallConsole: React.FC = () => {
           </div>
 
           {/* 3. BODY COLUMNS */}
-          <div className="grid grid-cols-1 lg:grid-cols-[296px_minmax(0,1fr)] xl:grid-cols-[296px_minmax(0,1fr)_276px] lg:h-[590px] xl:h-[464px] min-h-0">
+          <div className="grid grid-cols-1 lg:grid-cols-[304px_minmax(0,1fr)] xl:grid-cols-[304px_minmax(0,1fr)_288px] lg:min-h-[var(--cw-height)] xl:h-[var(--cw-height)] min-h-0">
             {/* COLUMN 1: CALL PANE */}
             <div
-              className="border-b lg:border-b-0 lg:border-r border-[#eceff5] px-4 py-4 md:px-[22px] md:py-6 flex flex-col items-center text-center min-h-0"
+              className="border-b lg:border-b-0 lg:border-r border-[#eceff5] flex flex-col items-center text-center min-h-0"
               style={{
+                padding: 'var(--cw-pad)',
                 background: 'linear-gradient(180deg, #f8faff 0%, #eef3ff 100%)',
               }}
             >
@@ -575,7 +577,7 @@ export const HeroCallConsole: React.FC = () => {
                   </div>
 
                   <div className="text-left min-w-0 pr-1">
-                    <h3 className="text-[13.5px] sm:text-[16px] font-bold text-[#0b1530] leading-tight tracking-[-0.015em] truncate">
+                    <h3 className="text-[14px] sm:text-[16px] font-bold text-[#0b1530] leading-tight tracking-[-0.015em] truncate">
                       AI Sales Receptionist
                     </h3>
                     <div className="mt-0.5 text-[12px] sm:text-[12.5px] font-medium text-[#64748b] tabular-nums flex items-center gap-1.5 whitespace-nowrap">
@@ -598,13 +600,13 @@ export const HeroCallConsole: React.FC = () => {
                   </div>
                 </div>
 
-                {/* Mobile quick actions >= 44px touch targets */}
+                {/* Mobile quick actions >= 48px touch targets */}
                 <div className="flex items-center gap-2.5 shrink-0">
                   {callState === 'answered' ? (
                     <button
                       type="button"
                       onClick={() => handleEndCall('hang-up')}
-                      className="w-[46px] h-[46px] rounded-full bg-[#FF4B4B] flex items-center justify-center text-white shadow-sm cursor-pointer active:scale-95 transition-transform focus-visible:outline-2 focus-visible:outline-[#2563eb] focus-visible:outline-offset-[3px]"
+                      className="w-12 h-12 rounded-full bg-[#FF4B4B] flex items-center justify-center text-white shadow-sm cursor-pointer active:scale-95 transition-transform focus-visible:outline-2 focus-visible:outline-[#2563eb] focus-visible:outline-offset-[3px]"
                       style={{ touchAction: 'manipulation' }}
                       aria-label="End call"
                     >
@@ -615,7 +617,7 @@ export const HeroCallConsole: React.FC = () => {
                       <button
                         type="button"
                         onClick={handleDecline}
-                        className={`w-[44px] h-[44px] rounded-full flex items-center justify-center text-white shadow-sm cursor-pointer active:scale-95 transition-all focus-visible:outline-2 focus-visible:outline-[#2563eb] focus-visible:outline-offset-[3px] ${
+                        className={`w-12 h-12 rounded-full flex items-center justify-center text-white shadow-sm cursor-pointer active:scale-95 transition-all focus-visible:outline-2 focus-visible:outline-[#2563eb] focus-visible:outline-offset-[3px] ${
                           callState === 'ended' ? 'opacity-0 pointer-events-none' : 'opacity-100'
                         }`}
                         style={{
@@ -629,7 +631,7 @@ export const HeroCallConsole: React.FC = () => {
                       <button
                         type="button"
                         onClick={handleAcceptCall}
-                        className={`w-[46px] h-[46px] rounded-full flex items-center justify-center text-white shadow-sm cursor-pointer active:scale-95 transition-all focus-visible:outline-2 focus-visible:outline-[#2563eb] focus-visible:outline-offset-[3px] ${
+                        className={`w-12 h-12 rounded-full flex items-center justify-center text-white shadow-sm cursor-pointer active:scale-95 transition-all focus-visible:outline-2 focus-visible:outline-[#2563eb] focus-visible:outline-offset-[3px] ${
                           callState === 'ended' ? 'opacity-0 pointer-events-none' : 'opacity-100'
                         }`}
                         style={{
@@ -647,8 +649,8 @@ export const HeroCallConsole: React.FC = () => {
 
               {/* DESKTOP/TABLET CALL LAYOUT (md: 768px+) */}
               <div className="hidden md:flex flex-col items-center w-full h-full">
-                {/* 92px Avatar + Concentric Rings while Ringing */}
-                <div className="relative w-[92px] h-[92px] flex items-center justify-center shrink-0">
+                {/* 104px Avatar + Concentric Rings while Ringing */}
+                <div className="relative w-[104px] h-[104px] flex items-center justify-center shrink-0">
                   {callState === 'ringing' && !reduceMotion && (
                     <>
                       <span className="avatar-ripple-1 absolute inset-0 rounded-full border border-[#3b82f6]/55 pointer-events-none" />
@@ -657,7 +659,7 @@ export const HeroCallConsole: React.FC = () => {
                     </>
                   )}
                   <div
-                    className="w-[92px] h-[92px] rounded-full flex items-center justify-center relative z-10"
+                    className="w-[104px] h-[104px] rounded-full flex items-center justify-center relative z-10"
                     style={{
                       background: 'linear-gradient(145deg, #7aa9ff, #1d4ed8)',
                       border: '1px solid rgba(255, 255, 255, 0.5)',
@@ -665,18 +667,18 @@ export const HeroCallConsole: React.FC = () => {
                         '0 22px 40px -18px rgba(29, 78, 216, 0.6), inset 0 2px 0 rgba(255, 255, 255, 0.45)',
                     }}
                   >
-                    <AppsianMark size={40} fill="#ffffff" />
+                    <AppsianMark size={46} fill="#ffffff" />
                   </div>
                 </div>
 
                 {/* Caller Title */}
-                <h3 className="mt-[14px] text-[18px] font-bold text-[#0b1530] leading-tight tracking-[-0.015em]">
+                <h3 className="mt-[20px] text-[19px] font-bold text-[#0b1530] leading-tight tracking-[-0.015em]">
                   AI Sales Receptionist
                 </h3>
 
                 {/* Sub-status / Live Timer + Waveform */}
                 {callState === 'answered' ? (
-                  <div className="flex flex-col items-center mt-2">
+                  <div className="flex flex-col items-center mt-[6px]">
                     {/* 7-bar Indigo Waveform */}
                     <div className="h-[30px] flex items-center justify-center gap-1" aria-hidden="true">
                       {WAVE_BARS.map((bar, idx) => (
@@ -691,25 +693,25 @@ export const HeroCallConsole: React.FC = () => {
                       ))}
                     </div>
 
-                    <div className="mt-1.5 text-[28px] font-semibold text-[#0b1530] tabular-nums leading-none">
+                    <div className="mt-1.5 text-[30px] font-semibold text-[#0b1530] tabular-nums leading-none">
                       {formatCompactTime(callTime)}
                     </div>
 
-                    <div className="mt-1.5 flex items-center gap-1.5 text-[12px] font-medium text-[#15803d]">
+                    <div className="mt-1.5 flex items-center gap-1.5 text-[12.5px] font-medium text-[#15803d]">
                       <span className="w-1.5 h-1.5 rounded-full bg-[#22c55e] inline-block" />
                       <span>Connected</span>
                     </div>
                   </div>
                 ) : callState === 'ended' ? (
-                  <p className="mt-1 text-[13px] font-medium text-[#64748b] tabular-nums">
+                  <p className="mt-[6px] text-[13.5px] font-medium text-[#64748b] tabular-nums">
                     Call ended · {formatCompactTime(finalDuration || callTime || 54)}
                   </p>
                 ) : isDeclined ? (
-                  <p className="mt-1 text-[13px] font-semibold text-[#EF4444]">
+                  <p className="mt-[6px] text-[13.5px] font-semibold text-[#EF4444]">
                     Call declined
                   </p>
                 ) : (
-                  <p className="mt-1 text-[13px] font-medium text-[#64748b]">
+                  <p className="mt-[6px] text-[13.5px] font-medium text-[#64748b]">
                     Incoming demo call
                   </p>
                 )}
@@ -718,12 +720,12 @@ export const HeroCallConsole: React.FC = () => {
                 {(notAllowedHint || (audioPlayFailed && callState === 'answered')) && (
                   <div className="mt-2 w-full text-center">
                     {notAllowedHint && callState === 'ringing' && (
-                      <span className="text-[11.5px] text-[#2563eb] font-medium block leading-tight">
+                      <span className="text-[12px] text-[#2563eb] font-medium block leading-tight">
                         Tap Accept again to enable sound
                       </span>
                     )}
                     {audioPlayFailed && callState === 'answered' && (
-                      <span className="text-[11.5px] text-[#EF4444] block leading-tight">
+                      <span className="text-[12px] text-[#EF4444] block leading-tight">
                         {audioStatus === 'missing' || audioStatus === 'wrong-type'
                           ? 'Audio file not found — playing live transcript'
                           : 'Audio unavailable — playing live transcript'}
@@ -735,7 +737,7 @@ export const HeroCallConsole: React.FC = () => {
                 {/* RINGING Hint Chip & Ghost Buttons */}
                 {callState === 'ringing' && (
                   <>
-                    <div className="console-compact-hide mt-3 inline-flex items-center gap-1 bg-[#e8f0ff] text-[#1d4ed8] text-[12px] font-semibold rounded-[10px] px-[11px] py-[5px]">
+                    <div className="console-compact-hide mt-[18px] inline-flex items-center gap-1.5 bg-[#e8f0ff] text-[#1d4ed8] text-[12.5px] font-semibold rounded-[10px] px-[13px] py-[6px]">
                       <span>Tap Accept to hear a real call</span>
                       <ChevronDown
                         className={`w-3.5 h-3.5 shrink-0 ${
@@ -744,18 +746,18 @@ export const HeroCallConsole: React.FC = () => {
                       />
                     </div>
 
-                    <div className="console-compact-hide mt-[18px] flex items-center justify-center gap-7">
+                    <div className="console-compact-hide mt-[26px] flex items-center justify-center gap-[var(--cw-gap)]">
                       <button
                         type="button"
                         onClick={handleRemindOrMessage}
-                        className="flex flex-col items-center gap-1.5 cursor-pointer group select-none active:scale-[0.96] transition-transform focus-visible:outline-2 focus-visible:outline-[#2563eb] focus-visible:outline-offset-[3px] rounded-[12px]"
+                        className="flex flex-col items-center gap-1.5 cursor-pointer group select-none active:scale-[0.96] transition-transform focus-visible:outline-2 focus-visible:outline-[#2563eb] focus-visible:outline-offset-[3px] rounded-[13px] px-1"
                         style={{ touchAction: 'manipulation' }}
                         aria-label="Remind Me"
                       >
-                        <div className="w-11 h-11 rounded-[12px] bg-white border border-[#e2e8f0] flex items-center justify-center text-[#334155] group-hover:border-[#cbd5e1] transition-colors">
-                          <Clock className="w-[18px] h-[18px] stroke-[1.9]" />
+                        <div className="w-12 h-12 rounded-[13px] bg-white border border-[#e2e8f0] flex items-center justify-center text-[#334155] group-hover:border-[#cbd5e1] transition-colors">
+                          <Clock className="w-[19px] h-[19px] stroke-[1.9]" />
                         </div>
-                        <span className="text-[12px] text-[#475569] font-medium leading-none">
+                        <span className="text-[12.5px] text-[#475569] font-medium leading-none">
                           Remind Me
                         </span>
                       </button>
@@ -763,14 +765,14 @@ export const HeroCallConsole: React.FC = () => {
                       <button
                         type="button"
                         onClick={handleRemindOrMessage}
-                        className="flex flex-col items-center gap-1.5 cursor-pointer group select-none active:scale-[0.96] transition-transform focus-visible:outline-2 focus-visible:outline-[#2563eb] focus-visible:outline-offset-[3px] rounded-[12px]"
+                        className="flex flex-col items-center gap-1.5 cursor-pointer group select-none active:scale-[0.96] transition-transform focus-visible:outline-2 focus-visible:outline-[#2563eb] focus-visible:outline-offset-[3px] rounded-[13px] px-1"
                         style={{ touchAction: 'manipulation' }}
                         aria-label="Message"
                       >
-                        <div className="w-11 h-11 rounded-[12px] bg-white border border-[#e2e8f0] flex items-center justify-center text-[#334155] group-hover:border-[#cbd5e1] transition-colors">
-                          <MessageSquare className="w-[18px] h-[18px] stroke-[1.9]" />
+                        <div className="w-12 h-12 rounded-[13px] bg-white border border-[#e2e8f0] flex items-center justify-center text-[#334155] group-hover:border-[#cbd5e1] transition-colors">
+                          <MessageSquare className="w-[19px] h-[19px] stroke-[1.9]" />
                         </div>
-                        <span className="text-[12px] text-[#475569] font-medium leading-none">
+                        <span className="text-[12.5px] text-[#475569] font-medium leading-none">
                           Message
                         </span>
                       </button>
@@ -781,15 +783,15 @@ export const HeroCallConsole: React.FC = () => {
                 {/* LIVE: 3 Small Decorative Ghost Controls */}
                 {callState === 'answered' && (
                   <div
-                    className="console-compact-hide mt-4 flex items-center justify-center gap-3.5 opacity-80 pointer-events-none"
+                    className="console-compact-hide mt-[18px] flex items-center justify-center gap-[14px] opacity-80 pointer-events-none"
                     aria-hidden="true"
                   >
                     {[Mic, Grid3x3, Volume2].map((Icon, idx) => (
                       <div
                         key={idx}
-                        className="w-10 h-10 rounded-[12px] bg-white border border-[#e2e8f0] flex items-center justify-center text-[#475569]"
+                        className="w-11 h-11 rounded-[13px] bg-white border border-[#e2e8f0] flex items-center justify-center text-[#475569]"
                       >
-                        <Icon className="w-[17px] h-[17px] stroke-[1.9]" />
+                        <Icon className="w-[18px] h-[18px] stroke-[1.9]" />
                       </div>
                     ))}
                   </div>
@@ -797,7 +799,7 @@ export const HeroCallConsole: React.FC = () => {
 
                 {/* Bottom Main Action Buttons */}
                 <div
-                  className={`mt-auto pt-3 w-full flex items-center justify-center shrink-0 transition-opacity duration-300 ${
+                  className={`mt-auto pt-4 w-full flex items-center justify-center shrink-0 transition-opacity duration-300 ${
                     callState === 'ended' ? 'opacity-0 pointer-events-none' : 'opacity-100'
                   }`}
                 >
@@ -806,39 +808,39 @@ export const HeroCallConsole: React.FC = () => {
                       ref={hangUpBtnRef}
                       type="button"
                       onClick={() => handleEndCall('hang-up')}
-                      className="flex flex-col items-center gap-1.5 cursor-pointer group select-none active:scale-[0.96] transition-transform focus-visible:outline-2 focus-visible:outline-[#2563eb] focus-visible:outline-offset-[3px] rounded-full"
+                      className="flex flex-col items-center gap-[10px] cursor-pointer group select-none active:scale-[0.96] transition-transform focus-visible:outline-2 focus-visible:outline-[#2563eb] focus-visible:outline-offset-[3px] rounded-full"
                       style={{ touchAction: 'manipulation' }}
                       aria-label="End call"
                     >
                       <div
-                        className="w-16 h-16 rounded-full bg-[#FF4B4B] flex items-center justify-center text-white group-hover:brightness-105 transition-all"
-                        style={{ boxShadow: '0 12px 26px -10px rgba(255, 75, 75, 0.55)' }}
+                        className="w-[72px] h-[72px] rounded-full bg-[#FF4B4B] flex items-center justify-center text-white group-hover:brightness-105 transition-all"
+                        style={{ boxShadow: '0 14px 30px -10px rgba(255, 75, 75, 0.55)' }}
                       >
-                        <PhoneOff className="w-6 h-6 stroke-[2.2]" />
+                        <PhoneOff className="w-[26px] h-[26px] stroke-[2.2]" />
                       </div>
-                      <span className="text-[12px] text-[#475569] font-medium leading-none">
+                      <span className="text-[12.5px] text-[#475569] font-medium leading-none">
                         End call
                       </span>
                     </button>
                   ) : (
-                    <div className="flex items-center justify-center gap-9">
+                    <div className="flex items-center justify-center gap-[28px]">
                       <button
                         type="button"
                         onClick={handleDecline}
-                        className="flex flex-col items-center gap-1.5 cursor-pointer group select-none active:scale-[0.96] transition-transform focus-visible:outline-2 focus-visible:outline-[#2563eb] focus-visible:outline-offset-[3px] rounded-full"
+                        className="flex flex-col items-center gap-[10px] cursor-pointer group select-none active:scale-[0.96] transition-transform focus-visible:outline-2 focus-visible:outline-[#2563eb] focus-visible:outline-offset-[3px] rounded-full"
                         style={{ touchAction: 'manipulation' }}
                         aria-label="Decline call"
                       >
                         <div
-                          className="w-16 h-16 rounded-full flex items-center justify-center text-white group-hover:brightness-105 transition-all"
+                          className="w-[72px] h-[72px] rounded-full flex items-center justify-center text-white group-hover:brightness-105 transition-all"
                           style={{
                             background: 'linear-gradient(135deg, #ff5a52 0%, #ff3b30 100%)',
-                            boxShadow: '0 12px 26px -10px rgba(255, 59, 48, 0.5)',
+                            boxShadow: '0 14px 30px -10px rgba(255, 59, 48, 0.5)',
                           }}
                         >
-                          <PhoneOff className="w-6 h-6 stroke-[2.2]" />
+                          <PhoneOff className="w-[26px] h-[26px] stroke-[2.2]" />
                         </div>
-                        <span className="text-[12px] text-[#475569] font-medium leading-none">
+                        <span className="text-[12.5px] text-[#475569] font-medium leading-none">
                           Decline
                         </span>
                       </button>
@@ -847,14 +849,14 @@ export const HeroCallConsole: React.FC = () => {
                         ref={acceptBtnRef}
                         type="button"
                         onClick={handleAcceptCall}
-                        className="flex flex-col items-center gap-1.5 cursor-pointer group select-none active:scale-[0.96] transition-transform focus-visible:outline-2 focus-visible:outline-[#2563eb] focus-visible:outline-offset-[3px] rounded-full relative"
+                        className="flex flex-col items-center gap-[10px] cursor-pointer group select-none active:scale-[0.96] transition-transform focus-visible:outline-2 focus-visible:outline-[#2563eb] focus-visible:outline-offset-[3px] rounded-full relative"
                         style={{ touchAction: 'manipulation' }}
                         aria-label="Accept call"
                       >
                         <motion.div
                           animate={acceptPulse ? { scale: [1, 1.12, 1] } : { scale: 1 }}
                           transition={{ duration: 0.45 }}
-                          className="relative w-16 h-16"
+                          className="relative w-[72px] h-[72px]"
                         >
                           {!reduceMotion && (
                             <>
@@ -872,13 +874,13 @@ export const HeroCallConsole: React.FC = () => {
                             className="w-full h-full rounded-full flex items-center justify-center text-white group-hover:brightness-105 transition-all relative z-10"
                             style={{
                               background: 'linear-gradient(135deg, #46d36e 0%, #28b84f 100%)',
-                              boxShadow: '0 12px 26px -10px rgba(40, 184, 79, 0.5)',
+                              boxShadow: '0 14px 30px -10px rgba(40, 184, 79, 0.5)',
                             }}
                           >
-                            <Phone className="w-6 h-6 stroke-[2.2]" />
+                            <Phone className="w-[26px] h-[26px] stroke-[2.2]" />
                           </div>
                         </motion.div>
-                        <span className="text-[12px] text-[#475569] font-medium leading-none">
+                        <span className="text-[12.5px] text-[#475569] font-medium leading-none">
                           Accept
                         </span>
                       </button>
@@ -891,12 +893,15 @@ export const HeroCallConsole: React.FC = () => {
             {/* COLUMN 2: TRANSCRIPT PANE */}
             <div className="bg-white flex flex-col min-w-0 min-h-0 overflow-hidden">
               {/* Sub-header */}
-              <div className="min-h-[56px] py-2.5 sm:py-0 sm:h-[56px] px-4 md:px-[22px] border-b border-[#eceff5] flex items-center justify-between gap-2 shrink-0">
-                <div className="flex flex-col sm:flex-row sm:items-center gap-0.5 sm:gap-2 min-w-0 text-left">
-                  <span className="text-[14px] font-bold text-[#0b1530] shrink-0 leading-tight">
+              <div
+                className="min-h-[var(--cw-transcript-header-h)] py-2.5 sm:py-0 sm:h-[var(--cw-transcript-header-h)] border-b border-[#eceff5] flex items-center justify-between gap-2 shrink-0"
+                style={{ paddingLeft: 'var(--cw-transcript-px)', paddingRight: 'var(--cw-transcript-px)' }}
+              >
+                <div className="flex flex-col sm:flex-row sm:items-center gap-0.5 sm:gap-2.5 min-w-0 text-left">
+                  <span className="text-[14.5px] font-bold text-[#0b1530] shrink-0 leading-tight">
                     Live transcript
                   </span>
-                  <span className="text-[12px] sm:text-[12.5px] text-[#94a3b8] sm:truncate leading-tight">
+                  <span className="text-[12.5px] text-[#94a3b8] sm:truncate leading-tight">
                     {callState === 'answered'
                       ? 'Live audio stream'
                       : 'Sample call · Tap Accept to listen'}
@@ -904,7 +909,7 @@ export const HeroCallConsole: React.FC = () => {
                 </div>
 
                 {/* Compact timer chip */}
-                <span className="h-[26px] px-2.5 rounded-[8px] bg-[#f3f5fa] text-[12px] font-medium text-[#64748b] tabular-nums inline-flex items-center gap-1.5 shrink-0">
+                <span className="h-[28px] px-3 rounded-[9px] bg-[#f3f5fa] text-[12.5px] font-medium text-[#64748b] tabular-nums inline-flex items-center gap-1.5 shrink-0">
                   {callState === 'answered' && (
                     <span className="w-1.5 h-1.5 rounded-full bg-[#3b82f6] shrink-0" />
                   )}
@@ -918,7 +923,10 @@ export const HeroCallConsole: React.FC = () => {
 
               {/* Subtle interactive hint when live */}
               {callState === 'answered' && (
-                <div className="px-4 md:px-[22px] pt-2 pb-0.5 text-[11.5px] text-[#94a3b8] shrink-0 text-left">
+                <div
+                  className="pt-2.5 pb-0.5 text-[12px] text-[#94a3b8] shrink-0 text-left"
+                  style={{ paddingLeft: 'var(--cw-transcript-px)', paddingRight: 'var(--cw-transcript-px)' }}
+                >
                   Click any line to jump
                 </div>
               )}
@@ -929,8 +937,9 @@ export const HeroCallConsole: React.FC = () => {
                   ref={transcriptListRef}
                   onScroll={handleListScroll}
                   aria-live="polite"
-                  className="h-[320px] lg:h-auto lg:flex-1 overflow-y-auto px-4 md:px-[22px] pt-[18px] pb-[18px] flex flex-col gap-3.5 no-scrollbar select-text"
+                  className="h-[var(--cw-transcript-h)] lg:h-[340px] lg:flex-none xl:h-auto xl:flex-[1_1_0%] min-h-0 overflow-y-auto flex flex-col gap-[var(--cw-row-gap)] no-scrollbar select-text"
                   style={{
+                    padding: 'var(--cw-transcript-pad)',
                     scrollbarWidth: 'none',
                     msOverflowStyle: 'none',
                     maskImage: isScrolled
@@ -942,43 +951,48 @@ export const HeroCallConsole: React.FC = () => {
                   }}
                 >
                   {callState !== 'answered' ? (
-                    <div className="my-auto w-full max-w-[460px] mx-auto flex flex-col items-center text-center py-2">
-                      {/* 44px Waveform Icon Tile */}
-                      <div className="w-11 h-11 rounded-[12px] bg-[#eef4ff] text-[#2563eb] flex items-center justify-center mb-3 shrink-0">
-                        <AudioLines className="w-5 h-5 stroke-[2]" />
+                    <div className="my-auto w-full max-w-[490px] mx-auto flex flex-col items-center text-center py-2">
+                      {/* 52px Waveform Icon Tile */}
+                      <div className="w-[52px] h-[52px] rounded-[14px] bg-[#eef4ff] text-[#2563eb] flex items-center justify-center shrink-0">
+                        <AudioLines className="w-6 h-6 stroke-[2]" />
                       </div>
 
-                      <div className="text-[13px] font-semibold text-[#64748b]">
-                        Allison · AI Receptionist
-                      </div>
+                      <div className="mt-[20px] mb-[20px] flex flex-col items-center">
+                        <div className="text-[13.5px] font-semibold text-[#64748b]">
+                          Allison · AI Receptionist
+                        </div>
 
-                      <p className="mt-1.5 text-[14.5px] leading-[1.5] text-[#0b1530] font-medium max-w-[410px]">
-                        {callState === 'ended'
-                          ? 'Call completed and booked to the calendar. Tap Accept to replay the live call.'
-                          : 'Ready to answer an incoming plumbing call. Tap Accept to hear the audio and follow the live transcript.'}
-                      </p>
+                        <p
+                          className="mt-2 leading-[1.55] text-[#0b1530] font-medium max-w-[440px]"
+                          style={{ fontSize: 'var(--cw-font)' }}
+                        >
+                          {callState === 'ended'
+                            ? 'Call completed and booked to the calendar. Tap Accept to replay the live call.'
+                            : 'Ready to answer an incoming plumbing call. Tap Accept to hear the audio and follow the live transcript.'}
+                        </p>
+                      </div>
 
                       {/* Sample Inbound Call Card */}
                       <div
-                        className="mt-4 w-full rounded-[16px] p-[14px_16px] border border-[#e3e9f6] flex items-center justify-between gap-3 text-left"
+                        className="w-full rounded-[18px] p-[18px_20px] border border-[#e3e9f6] flex items-center justify-between gap-3.5 text-left"
                         style={{
                           background: 'linear-gradient(180deg, #fbfcff, #f4f7ff)',
                         }}
                       >
-                        <div className="flex items-center gap-3 min-w-0">
+                        <div className="flex items-center gap-3.5 min-w-0">
                           <div
-                            className="w-9 h-9 rounded-[10px] flex items-center justify-center text-white shrink-0"
+                            className="w-[42px] h-[42px] rounded-[11px] flex items-center justify-center text-white shrink-0"
                             style={{
                               background: 'linear-gradient(145deg, #3b82f6, #1d4ed8)',
                             }}
                           >
-                            <Play className="w-4 h-4 fill-white ml-0.5" />
+                            <Play className="w-[18px] h-[18px] fill-white ml-0.5" />
                           </div>
                           <div className="min-w-0">
-                            <div className="text-[13px] font-bold text-[#0b1530] leading-snug sm:truncate">
+                            <div className="text-[13.5px] font-bold text-[#0b1530] leading-snug">
                               New York Plumbing · Sample Inbound Call
                             </div>
-                            <div className="text-[12px] text-[#64748b] mt-0.5 leading-snug">
+                            <div className="text-[12.5px] text-[#64748b] mt-0.5 leading-snug">
                               Answers, qualifies issue &amp; address, books tomorrow 10:00 AM
                             </div>
                           </div>
@@ -987,7 +1001,7 @@ export const HeroCallConsole: React.FC = () => {
                         <button
                           type="button"
                           onClick={handleAcceptCall}
-                          className="shrink-0 h-[34px] px-4 rounded-[10px] text-white text-[13px] font-semibold cursor-pointer hover:brightness-105 active:scale-[0.97] transition-all focus-visible:outline-2 focus-visible:outline-[#2563eb] focus-visible:outline-offset-[2px]"
+                          className="shrink-0 h-[48px] md:h-[38px] px-[18px] rounded-[10px] text-white text-[13.5px] font-semibold cursor-pointer hover:brightness-105 active:scale-[0.97] transition-all focus-visible:outline-2 focus-visible:outline-[#2563eb] focus-visible:outline-offset-[2px]"
                           style={{
                             background: 'linear-gradient(135deg, #2563eb, #1d4ed8)',
                             boxShadow: '0 6px 14px -6px rgba(37, 99, 235, 0.5)',
@@ -1009,73 +1023,73 @@ export const HeroCallConsole: React.FC = () => {
                             key={idx}
                             type="button"
                             onClick={() => handleSeek(line.start + TRANSCRIPT_OFFSET)}
-                            className={`group/row w-full text-left flex items-start gap-3 rounded-[14px] px-[10px] py-2 -mx-[10px] cursor-pointer transition-colors focus-visible:outline-2 focus-visible:outline-[#2563eb] focus-visible:outline-offset-[2px] ${
+                            className={`group/row w-full text-left flex items-start gap-3.5 rounded-[16px] px-[12px] py-[10px] -mx-[12px] -my-[10px] cursor-pointer transition-colors focus-visible:outline-2 focus-visible:outline-[#2563eb] focus-visible:outline-offset-[2px] ${
                               isActiveLine
                                 ? 'bg-[rgba(59,130,246,0.06)]'
                                 : 'hover:bg-[rgba(15,23,42,0.03)]'
                             }`}
                           >
-                            {/* 36px Avatar */}
+                            {/* 40px Avatar */}
                             {isAi ? (
                               <div
-                                className={`w-9 h-9 rounded-[10px] flex items-center justify-center shrink-0 mt-0.5 ${
+                                className={`w-10 h-10 rounded-[11px] flex items-center justify-center shrink-0 mt-0.5 ${
                                   isActiveLine ? 'ring-2 ring-[#3b82f6] ring-offset-2' : ''
                                 }`}
                                 style={{
                                   background: 'linear-gradient(145deg, #7aa9ff, #1d4ed8)',
                                 }}
                               >
-                                <AppsianMark size={17} fill="#ffffff" />
+                                <AppsianMark size={19} fill="#ffffff" />
                               </div>
                             ) : (
                               <div
-                                className={`w-9 h-9 rounded-full bg-[#cbd5e1] flex items-center justify-center text-white shrink-0 mt-0.5 ${
+                                className={`w-10 h-10 rounded-full bg-[#cbd5e1] flex items-center justify-center text-white shrink-0 mt-0.5 ${
                                   isActiveLine ? 'ring-2 ring-[#3b82f6] ring-offset-2' : ''
                                 }`}
                               >
-                                <User className="w-4 h-4 stroke-[2.2]" />
+                                <User className="w-[18px] h-[18px] stroke-[2.2]" />
                               </div>
                             )}
 
                             {/* Speaker + Timestamp + Word-by-word body */}
                             <div className="flex-1 min-w-0">
                               <div className="flex items-center gap-2 flex-wrap">
-                                <span className="text-[14px] font-bold text-[#0b1530]">
+                                <span className="text-[14.5px] font-bold text-[#0b1530]">
                                   {isAi
                                     ? 'Allison · AI Receptionist'
                                     : showCaller
                                     ? 'Zach Phillips'
                                     : 'Incoming Caller'}
                                 </span>
-                                <span className="text-[12px] font-medium text-[#94a3b8] group-hover/row:text-[#2563eb] tabular-nums transition-colors">
+                                <span className="text-[12.5px] font-medium text-[#94a3b8] group-hover/row:text-[#2563eb] tabular-nums transition-colors">
                                   {lineTimeLabel}
                                 </span>
-                                <span className="text-[11px] font-semibold text-[#2563eb] opacity-0 group-hover/row:opacity-100 transition-opacity">
+                                <span className="text-[11.5px] font-semibold text-[#2563eb] opacity-0 group-hover/row:opacity-100 transition-opacity">
                                   Jump
                                 </span>
 
                                 {isActiveLine && (
                                   <span
-                                    className="inline-flex items-end gap-[2px] h-3 ml-0.5"
+                                    className="inline-flex items-end gap-[2px] h-3.5 ml-0.5"
                                     aria-hidden="true"
                                   >
                                     <span
-                                      className="transcript-eq-bar w-[2px] h-2.5 rounded-full bg-[#2563eb]"
+                                      className="transcript-eq-bar w-[2.5px] h-2.5 rounded-full bg-[#2563eb]"
                                       style={{ animationDelay: '0s' }}
                                     />
                                     <span
-                                      className="transcript-eq-bar w-[2px] h-3 rounded-full bg-[#2563eb]"
+                                      className="transcript-eq-bar w-[2.5px] h-3.5 rounded-full bg-[#2563eb]"
                                       style={{ animationDelay: '0.2s' }}
                                     />
                                     <span
-                                      className="transcript-eq-bar w-[2px] h-2 rounded-full bg-[#2563eb]"
+                                      className="transcript-eq-bar w-[2.5px] h-2 rounded-full bg-[#2563eb]"
                                       style={{ animationDelay: '0.4s' }}
                                     />
                                   </span>
                                 )}
                               </div>
 
-                              <p className="mt-0.5 text-[14.5px] leading-[1.55]">
+                              <p className="mt-1 leading-[1.65]" style={{ fontSize: 'var(--cw-font)' }}>
                                 <span className="sr-only">{line.text}</span>
                                 <span aria-hidden="true">
                                   {line.words && line.words.length > 0 ? (
@@ -1131,34 +1145,34 @@ export const HeroCallConsole: React.FC = () => {
 
                       {/* Typing Cue (<= 0.8s before next speaker starts) */}
                       {showTypingCue && (
-                        <div className="flex items-start gap-3 text-left py-1" aria-hidden="true">
+                        <div className="flex items-start gap-3.5 text-left py-1" aria-hidden="true">
                           {typingSpeakerIsAi ? (
                             <div
-                              className="w-9 h-9 rounded-[10px] flex items-center justify-center shrink-0"
+                              className="w-10 h-10 rounded-[11px] flex items-center justify-center shrink-0"
                               style={{
                                 background: 'linear-gradient(145deg, #7aa9ff, #1d4ed8)',
                               }}
                             >
-                              <AppsianMark size={17} fill="#ffffff" />
+                              <AppsianMark size={19} fill="#ffffff" />
                             </div>
                           ) : (
-                            <div className="w-9 h-9 rounded-full bg-[#cbd5e1] flex items-center justify-center text-white shrink-0">
-                              <User className="w-4 h-4 stroke-[2.2]" />
+                            <div className="w-10 h-10 rounded-full bg-[#cbd5e1] flex items-center justify-center text-white shrink-0">
+                              <User className="w-[18px] h-[18px] stroke-[2.2]" />
                             </div>
                           )}
 
                           <div className="flex flex-col items-start">
-                            <span className="text-[12.5px] font-semibold text-[#64748b]">
+                            <span className="text-[13px] font-semibold text-[#64748b]">
                               {typingSpeakerIsAi
                                 ? 'Allison · AI Receptionist'
                                 : showCaller
                                 ? 'Zach Phillips'
                                 : 'Incoming Caller'}
                             </span>
-                            <div className="mt-1 bg-[#f1f5f9] rounded-[12px] px-3 py-2 inline-flex items-center gap-1">
-                              <span className="w-1.5 h-1.5 rounded-full bg-[#64748b] typing-dot-1" />
-                              <span className="w-1.5 h-1.5 rounded-full bg-[#64748b] typing-dot-2" />
-                              <span className="w-1.5 h-1.5 rounded-full bg-[#64748b] typing-dot-3" />
+                            <div className="mt-1.5 bg-[#f1f5f9] rounded-[13px] px-3.5 py-2.5 inline-flex items-center gap-1.5">
+                              <span className="w-2 h-2 rounded-full bg-[#64748b] typing-dot-1" />
+                              <span className="w-2 h-2 rounded-full bg-[#64748b] typing-dot-2" />
+                              <span className="w-2 h-2 rounded-full bg-[#64748b] typing-dot-3" />
                             </div>
                           </div>
                         </div>
@@ -1172,19 +1186,19 @@ export const HeroCallConsole: React.FC = () => {
                   <button
                     type="button"
                     onClick={jumpToLive}
-                    className="absolute bottom-3 left-1/2 -translate-x-1/2 z-20 h-8 px-[14px] rounded-[10px] bg-[#0b1530] text-white text-[12.5px] font-semibold inline-flex items-center gap-1.5 cursor-pointer hover:bg-[#1e293b] active:scale-[0.97] transition-all focus-visible:outline-2 focus-visible:outline-[#2563eb] focus-visible:outline-offset-[2px]"
+                    className="absolute bottom-4 left-1/2 -translate-x-1/2 z-20 h-[48px] md:h-[36px] px-[16px] rounded-[11px] bg-[#0b1530] text-white text-[13px] font-semibold inline-flex items-center gap-1.5 cursor-pointer hover:bg-[#1e293b] active:scale-[0.97] transition-all focus-visible:outline-2 focus-visible:outline-[#2563eb] focus-visible:outline-offset-[2px]"
                     style={{
                       boxShadow: '0 10px 24px -10px rgba(11, 21, 48, 0.5)',
                     }}
                   >
-                    <ArrowDown className="w-3.5 h-3.5 stroke-[2.2]" />
+                    <ArrowDown className="w-4 h-4 stroke-[2.2]" />
                     <span>Jump to live</span>
                   </button>
                 )}
               </div>
 
               {/* Compact Bottom-Docked Job Details for 1024px–1279px & Mobile (< 1280px) */}
-              <div className="xl:hidden px-4 pb-4 pt-2 shrink-0 border-t border-[#eceff5] lg:border-t-0">
+              <div className="xl:hidden p-[22px_18px] lg:p-0 lg:mx-[28px] lg:mb-[22px] shrink-0 border-t border-[#eceff5] lg:border-t-0">
                 <JobDetailsPanel
                   layout="compact"
                   callState={callState}
@@ -1199,7 +1213,7 @@ export const HeroCallConsole: React.FC = () => {
             </div>
 
             {/* COLUMN 3: DEDICATED JOB DETAILS PANEL (Desktop 1280px+) */}
-            <div className="hidden xl:block h-full min-h-0">
+            <div className="hidden xl:block h-full min-h-0 overflow-y-auto no-scrollbar">
               <JobDetailsPanel
                 layout="sidebar"
                 callState={callState}

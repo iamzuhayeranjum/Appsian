@@ -516,7 +516,7 @@ export const Hero: React.FC<HeroProps> = () => {
             delay: reduceMotion ? 0 : 0.22,
             ease: EASE,
           }}
-          className="mt-9 md:mt-12 w-full"
+          className="mt-9 md:mt-[56px] w-full"
         >
           <HeroCallConsole />
         </motion.div>
